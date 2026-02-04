@@ -1,0 +1,28 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=6.0.2",
+    "django-cors-headers>=4.9.0",
+    "django-environ>=0.12.0",
+    "django-filter>=25.2",
+    "django-storages>=1.14.6",
+    "djangorestframework>=3.16.1",
+    "djangorestframework-simplejwt>=5.5.1",
+    "drf-spectacular>=0.29.0",
+    "pillow>=12.1.0",
+    "psycopg2-binary>=2.9.11",
+    "redis>=7.1.0",
+]
+
+[dependency-groups]
+dev = [
+    "black>=26.1.0",
+    "coverage>=7.13.3",
+    "pre-commit>=4.5.1",
+    "pytest-django>=4.11.1",
+    "ruff>=0.15.0",
+]
