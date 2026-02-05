@@ -10,7 +10,7 @@ Antes de comenzar, asegúrate de tener instalado lo siguiente:
 
 * **uv**: [Instalar uv](https://github.com/astral-sh/uv) (Gestor de paquetes de Python ultra rápido).
 * **Node.js**: [Descargar Node.js](https://nodejs.org/dist/v24.13.0/node-v24.13.0-x64.msi)
-* **Git**[Instalar git](https://git-scm.com/install/windows): Para la clonación y control de versiones desde la terminal.
+* **Git**: [Instala git](https://git-scm.com/install/windows) (Para la clonación y control de versiones desde la terminal.)
 
 ---
 
@@ -44,14 +44,14 @@ El backend utiliza `uv` para gestionar el entorno virtual y las dependencias de 
     ```
 
 > [!IMPORTANT]
-> **Regla de equipo:** NUNCA invocar `python` directamente. Usa siempre `uv run python` para asegurar que se utilice el entorno virtual correctamente.
+> **Regla de equipo:** Favor de NUNCA invocar `python` directamente. Usa siempre `uv run python` para asegurar que se utilice el entorno virtual correctamente.
 >
 > *Si necesitas activar el shell del entorno manualmente:*
 > * PowerShell: `.venv\Scripts\Activate.ps1`
 > * CMD: `.venv\Scripts\Activate`
 
 ### 3. Frontend (Vue.js)
-1.  Desactiva el entorno virtual y navega a la carpeta:
+1.  Desactiva el entorno virtual mediante `deactivate` (si se encuentra activado) y navega a la carpeta:
     ```powershell
     cd frontend
     ```
@@ -71,6 +71,7 @@ El backend utiliza `uv` para gestionar el entorno virtual y las dependencias de 
 
 * `/backend`: Lógica del servidor, API y modelos de datos (Django).
 * `/frontend`: Interfaz de usuario y componentes (Vue/Vite).
+* `/infra`: Despliegue
 * `pyproject.toml`: Configuración de dependencias de Python gestionada por `uv`.
 * `package.json`: Configuración de dependencias de JavaScript.
 
