@@ -4,7 +4,7 @@ Este proyecto es una aplicación full-stack que utiliza **Django** en el backend
 
 ---
 
-## Requisitos Previos
+## Requisitos previos
 
 Antes de comenzar, asegúrate de tener instalado lo siguiente:
 
@@ -55,7 +55,7 @@ El backend utiliza `uv` para gestionar el entorno virtual y las dependencias de 
     ```
 
 > [!IMPORTANT]
-> **Regla de equipo:** Favor de NUNCA invocar `python` directamente. Usa siempre `uv run python` para asegurar que se utilice el entorno virtual correctamente.
+> **Advertencia:** Favor de **NUNCA** invocar `python` directamente en este proyecto. Usa siempre `uv run python` para asegurar que se utilice el entorno virtual correctamente.
 >
 > *Si necesitas activar el shell del entorno manualmente:*
 > * PowerShell: `.venv\Scripts\Activate.ps1`
