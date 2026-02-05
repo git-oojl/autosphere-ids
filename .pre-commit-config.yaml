@@ -18,3 +18,17 @@ repos:
         entry: bash -c "cd frontend && npm run build"
         language: system
         pass_filenames: false
+
+      - id: frontend-eslint
+        name: frontend eslint
+        entry: bash -c "cd frontend && npm run lint"
+        language: system
+        pass_filenames: false
+
+      - id: frontend-prettier
+        name: frontend prettier check
+        entry: bash -c "cd frontend && npm run format:check"
+        language: system
+        pass_filenames: false
+
+

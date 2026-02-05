@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { defineConfig } from 'vite';
+import vue from '@vitejs/plugin-vue';
 
 // adjust port/target as needed
 export default defineConfig({
@@ -14,4 +14,4 @@ export default defineConfig({
       },
     },
   },
-})
+});

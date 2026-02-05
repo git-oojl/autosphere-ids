@@ -6,9 +6,10 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-// Scripts de JS deben estar dentro de este mismo archivo
-// La lógica ira aquí
+const foo = 1;
+if (foo == 1) {
+  console.log('hello');
+}
 </script>
 
 <style scoped src="./styles.css"></style>
