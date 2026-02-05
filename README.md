@@ -9,7 +9,18 @@ Este proyecto es una aplicación full-stack que utiliza **Django** en el backend
 Antes de comenzar, asegúrate de tener instalado lo siguiente:
 
 * **uv**: [Instalar uv](https://github.com/astral-sh/uv) (Gestor de paquetes de Python ultra rápido).
-* **Node.js**: [Descargar Node.js](https://nodejs.org/dist/v24.13.0/node-v24.13.0-x64.msi)
+
+```bash
+# En macOS y Linux.
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+```bash
+# En Windows (y añadir a Path de usuario si no se hizo automáticamente)
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+* **Node.js**: [(Descarga para Windows)](https://nodejs.org/dist/v24.13.0/node-v24.13.0-x64.msi) [(Descarga para MacOS)](https://nodejs.org/dist/v24.13.0/node-v24.13.0.pkg)
 * **Git**: [Instala git](https://git-scm.com/install/windows) (Para la clonación y control de versiones desde la terminal.)
 
 ---
