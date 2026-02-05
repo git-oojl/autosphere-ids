@@ -30,7 +30,7 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 ### 1. Clonar el repositorio
 Abre tu terminal y ejecuta:
 ```bash
-git clone https://github.com/tu-usuario/autosphere-ids.git
+https://github.com/git-oojl/autosphere-ids
 cd autosphere-ids
 ```
 
@@ -77,7 +77,7 @@ El backend utiliza `uv` para gestionar el entorno virtual y las dependencias de 
     npm run dev
     ```
 
-## 4. Calidad de Código (Linting & Formatting)
+## Calidad de Código (Linting & Formatting)
 
 Este proyecto utiliza pre-commit hooks y GitHub Actions para asegurar que el código sea consistente y funcional antes de integrarse. Al proponer un commit en la terminal, se realizarán pruebas de calidad. Si una falla, **no se permitirá el commit hasta que sea corregida.**
 
@@ -87,14 +87,14 @@ Este proyecto utiliza pre-commit hooks y GitHub Actions para asegurar que el có
 
 Para que los chequeos automáticos funcionen en tu máquina al hacer `git commit`, debes ejecutar esto una sola vez:
 
-4.1. **Configurar Hooks del Backend**  
+### 4.1. **Configurar Hooks del Backend**  
    ```powershell
    cd backend
    uv sync
    uv run pre-commit install --install-hooks
    ```
 
-4.2. **Configurar Dependencias del Frontend**  
+### 4.2. **Configurar Dependencias del Frontend**  
    ```powershell
    cd frontend
    npm ci
