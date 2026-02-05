@@ -77,7 +77,7 @@ El backend utiliza `uv` para gestionar el entorno virtual y las dependencias de 
     npm run dev
     ```
 
-## Calidad de Código (Linting & Formatting)
+### 4. Calidad de Código (Linting & Formatting)
 
 Este proyecto utiliza pre-commit hooks y GitHub Actions para asegurar que el código sea consistente y funcional antes de integrarse. Al proponer un commit en la terminal, se realizarán pruebas de calidad. Si una falla, **no se permitirá el commit hasta que sea corregida.**
 
