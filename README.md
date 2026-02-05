@@ -25,7 +25,7 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 
 ---
 
-## Inicio Rápido (Windows)
+## Preparación del proyecto (Windows)
 
 ### 1. Clonar el repositorio
 Abre tu terminal y ejecuta:
@@ -71,12 +71,68 @@ El backend utiliza `uv` para gestionar el entorno virtual y las dependencias de 
 2.  Instala las dependencias de Node.js:
     ```bash
     npm ci
-    # o bien: npm install
     ```
 3.  Inicia el servidor de desarrollo de Vite:
     ```bash
     npm run dev
     ```
+
+## 4. Calidad de Código (Linting & Formatting)
+
+Este proyecto utiliza pre-commit hooks y GitHub Actions para asegurar que el código sea consistente y funcional antes de integrarse. Al proponer un commit en la terminal, se realizarán pruebas de calidad. Si una falla, **no se permitirá el commit hasta que sea corregida.**
+
+### Herramientas
+- **Backend (Python):** Ruff (linting) y Black (formateo).
+- **Frontend (Vue):** ESLint (reglas de código) y Prettier (formateo).
+
+Para que los chequeos automáticos funcionen en tu máquina al hacer `git commit`, debes ejecutar esto una sola vez:
+
+4.1. **Configurar Hooks del Backend**  
+   ```powershell
+   cd backend
+   uv sync
+   uv run pre-commit install --install-hooks
+   ```
+
+4.2. **Configurar Dependencias del Frontend**  
+   ```powershell
+   cd frontend
+   npm ci
+   ```
+
+### **¿Qué hacer si falla un commit?**
+Si `pre-commit` bloquea tu intento de commit, la terminal te indicará qué falló. Sigue estos pasos para arreglarlo:
+
+#### Si falla el Frontend (Vue/JS)  
+Ejecuta desde `/frontend`:
+
+- Para errores de código (ESLint):
+```bash
+npm run lint:fix
+```
+> Nota: Algunos errores de lógica deben corregirse manualmente.
+
+- Para errores de formato (Prettier):
+```bash
+npm run format
+```
+
+### Ejecución Manual (Simular CI)
+Si quieres correr todas las pruebas localmente (igual que lo hace GitHub Actions), usa estos comandos:
+
+**Backend:**
+```powershell
+cd backend
+uv run pytest
+```
+
+**Frontend:**
+```bash
+cd frontend
+npm run lint
+npm run format:check
+npm run build
+```
 
 ---
 
