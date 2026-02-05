@@ -49,7 +49,8 @@ El backend utiliza `uv` para gestionar el entorno virtual y las dependencias de 
 > *Si necesitas activar el shell del entorno manualmente:*
 > * PowerShell: `.venv\Scripts\Activate.ps1`
 > * CMD: `.venv\Scripts\Activate`
-> Activar el entorno virtual **no es estrictamente necesario** al usar `uv`, **ya que cualquier invocación de uv lo activará sigilosamente de forma automática**.
+>
+> **Nota:** Activar el entorno virtual **no es estrictamente necesario** al usar `uv`, **ya que cualquier invocación de `uv` lo activará sigilosamente de forma automática**. Esto es para ahorrar tiempo.
 
 ### 3. Frontend (Vue.js)
 1.  Desactiva el entorno virtual mediante `deactivate` (si se encuentra activado) y navega a la carpeta:
