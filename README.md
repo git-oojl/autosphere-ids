@@ -28,9 +28,9 @@ powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | ie
 ## Preparación del proyecto (Windows)
 
 ### 1. Clonar el repositorio
-Abre tu terminal y ejecuta:
+Abre tu terminal en el directorio donde quieres el proyecto y ejecuta:
 ```bash
-https://github.com/git-oojl/autosphere-ids
+git clone https://github.com/git-oojl/autosphere-ids
 cd autosphere-ids
 ```
 
@@ -90,14 +90,7 @@ Para que los chequeos automáticos funcionen en tu máquina al hacer `git commit
 ### 4.1. **Configurar Hooks del Backend**  
    ```powershell
    cd backend
-   uv sync
    uv run pre-commit install --install-hooks
-   ```
-
-### 4.2. **Configurar Dependencias del Frontend**  
-   ```powershell
-   cd frontend
-   npm ci
    ```
 
 ### **¿Qué hacer si falla un commit?**
