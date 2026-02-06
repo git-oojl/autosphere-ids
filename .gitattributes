@@ -32,6 +32,8 @@ Dockerfile text eol=lf
 .gitattributes text eol=lf
 LICENSE text eol=lf
 CHANGELOG text eol=lf
+*.vue text eol=lf
+.prettierrc text eol=lf
 
 # Denote all binary files. 
 # (Git usually detects these, but explicit is better for safety).
