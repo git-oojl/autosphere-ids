@@ -48,8 +48,16 @@ El backend utiliza `uv` para gestionar el entorno virtual y las dependencias de 
 3.  Ejecuta las migraciones de la base de datos:
     ```powershell
     uv run python manage.py migrate
+
+4. Configurar Hooks del Backend:  
+   ```powershell
+   cd backend
+   uv run pre-commit install --install-hooks
+   # Para que los chequeos automáticos funcionen en tu máquina al hacer `git commit`, debes ejecutar esto una sola vez
+   ```
+
     ```
-4.  Inicia el servidor de desarrollo:
+5.  Inicia el servidor de desarrollo:
     ```powershell
     uv run python manage.py runserver
     ```
@@ -77,21 +85,13 @@ El backend utiliza `uv` para gestionar el entorno virtual y las dependencias de 
     npm run dev
     ```
 
-### 4. Calidad de Código (Linting & Formatting)
+### Calidad de Código (Linting & Formatting)
 
 Este proyecto utiliza pre-commit hooks y GitHub Actions para asegurar que el código sea consistente y funcional antes de integrarse. Al proponer un commit en la terminal, se realizarán pruebas de calidad. Si una falla, **no se permitirá el commit hasta que sea corregida.**
 
 ### Herramientas
 - **Backend (Python):** Ruff (linting) y Black (formateo).
 - **Frontend (Vue):** ESLint (reglas de código) y Prettier (formateo).
-
-Para que los chequeos automáticos funcionen en tu máquina al hacer `git commit`, debes ejecutar esto una sola vez:
-
-### 4.1. **Configurar Hooks del Backend**  
-   ```powershell
-   cd backend
-   uv run pre-commit install --install-hooks
-   ```
 
 ### **¿Qué hacer si falla un commit?**
 Si `pre-commit` bloquea tu intento de commit, la terminal te indicará qué falló. Sigue estos pasos para arreglarlo:
@@ -103,12 +103,13 @@ Ejecuta desde `/frontend`:
 ```bash
 npm run lint:fix
 ```
-> Nota: Algunos errores de lógica deben corregirse manualmente.
 
 - Para errores de formato (Prettier):
 ```bash
 npm run format
 ```
+
+> Nota: Hay errores que estos comandos no podran arreglar automáticamente, y deberá atenderse manual.
 
 ### Ejecución Manual (Simular CI)
 Si quieres correr todas las pruebas localmente (igual que lo hace GitHub Actions), usa estos comandos:
