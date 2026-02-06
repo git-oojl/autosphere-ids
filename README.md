@@ -10,15 +10,28 @@ Antes de comenzar, asegúrate de tener instalado lo siguiente:
 
 * **uv**: [Instalar uv](https://github.com/astral-sh/uv) (Gestor de paquetes de Python ultra rápido).
 
-```bash
-# En macOS y Linux.
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
+    ```bash
+    # En macOS y Linux
+    curl -LsSf [https://astral.sh/uv/install.sh](https://astral.sh/uv/install.sh) | sh
+    ```
 
-```bash
-# En Windows (y añadir a Path de usuario si no se hizo automáticamente)
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
-```
+    ```powershell
+    # En Windows (Instalación)
+    powershell -ExecutionPolicy ByPass -c "irm [https://astral.sh/uv/install.ps1](https://astral.sh/uv/install.ps1) | iex"
+
+    # Añadir 'uv' a PATH (Si no se reconoció automáticamente)
+    # PowerShell:
+    $env:Path = "$env:USERPROFILE\.local\bin;$env:Path"
+    # CMD:
+    set Path=%USERPROFILE%\.local\bin;%Path%
+
+    # Configurar uv para gestionar Python (Recomendado)
+    # PowerShell:
+    $env:UV_MANAGED_PYTHON = "true"
+    # CMD:
+    set UV_MANAGED_PYTHON=true
+    ```
+    > **Nota:** Para verificar cambios, busca en Windows "Variables de entorno", entra en "Variables de entorno" y revisa que `Path` tenga la ruta `.local\bin` y exista la variable `UV_MANAGED_PYTHON`.
 
 * **Node.js**: [(Descarga para Windows)](https://nodejs.org/dist/v24.13.0/node-v24.13.0-x64.msi) [(Descarga para MacOS)](https://nodejs.org/dist/v24.13.0/node-v24.13.0.pkg)
 * **Git**: [Instala git](https://git-scm.com/install/windows) (Para la clonación y control de versiones desde la terminal.)
