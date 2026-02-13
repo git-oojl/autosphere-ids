@@ -69,7 +69,6 @@ El backend utiliza `uv` para gestionar el entorno virtual y las dependencias de 
    # Para que los chequeos automáticos funcionen en tu máquina al hacer `git commit`, debes ejecutar esto una sola vez
    ```
 
-    ```
 5.  Inicia el servidor de desarrollo:
     ```powershell
     uv run python manage.py runserver
