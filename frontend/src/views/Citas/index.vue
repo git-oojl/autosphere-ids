@@ -23,7 +23,6 @@
 
     <!-- Contenedor principal -->
     <div class="calendar-container">
-
       <!-- Agenda lateral -->
       <div class="sidebar">
         <h3>Agenda Semanal</h3>
