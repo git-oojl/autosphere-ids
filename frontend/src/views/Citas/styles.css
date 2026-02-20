@@ -1,7 +1,5 @@
-/* Importar Roboto desde Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
-/* Aplicar Roboto a toda la página */
 * {
     margin: 0;
     padding: 0;
@@ -9,11 +7,11 @@
     font-family: 'Roboto', sans-serif;
 }
 
-/* Estilos principales */
 .citas-page {
     padding: 30px;
 }
 
+/* Barra superior */
 .top-bar {
     margin-bottom: 20px;
 }
@@ -21,7 +19,7 @@
 .filtros {
     display: flex;
     justify-content: space-between;
-    margin-top: 15px;
+    align-items: center;
 }
 
 /* Contenedor del calendario */
@@ -33,29 +31,28 @@
 
 /* Barra lateral */
 .sidebar {
-    width: 200px;
+    width: 220px;
     background: #f3f3f3;
     padding: 15px;
     border-radius: 8px;
 }
 
-/* Días del calendario */
+/* Días */
 .calendar-days {
     display: flex;
     gap: 20px;
     flex: 1;
 }
 
-/* Tarjetas de días  */
 .day-card {
     background: white;
     padding: 15px;
     border-radius: 8px;
     border: 1px solid #ddd;
-    width: 200px;
+    width: 220px;
 }
 
-/* Sección de detalle */
+/* Detalle */
 .detalle {
     margin-top: 30px;
     padding: 20px;
@@ -63,14 +60,13 @@
     border-radius: 8px;
 }
 
-/* Contenedor de acciones */
 .actions {
     margin-top: 15px;
     display: flex;
     gap: 10px;
 }
 
-/* ESTILOS DE BOTONES  */
+/* Botones */
 .btn {
     padding: 6px 12px;
     border: none;
@@ -78,6 +74,11 @@
     cursor: pointer;
     background: #ddd;
     font-weight: 500;
+    transition: 0.2s ease;
+}
+
+.btn:hover {
+    opacity: 0.85;
 }
 
 .btn.primary {
@@ -104,7 +105,7 @@
     font-size: 12px;
 }
 
-/* ESTADOS DE CITAS  */
+/* Estados */
 .status {
     display: inline-block;
     margin-top: 5px;
@@ -120,7 +121,7 @@
     color: orange;
 }
 
-/* TIPOGRAFÍA */
+/* Tipografía */
 h1 {
     font-weight: 700;
     font-size: 24px;
@@ -153,7 +154,7 @@ strong {
     color: #333;
 }
 
-/* Estilos para la lista de la barra lateral */
+/* Sidebar */
 .sidebar ul {
     list-style: none;
 }
@@ -168,22 +169,16 @@ strong {
     border-bottom: none;
 }
 
-.sidebar strong {
-    color: #333;
-    margin-right: 5px;
-}
-
-/* Estilos para el select */
+/* Select */
 select {
     padding: 6px 12px;
     border: 1px solid #ddd;
     border-radius: 6px;
     margin: 0 10px;
-    font-family: 'Roboto', sans-serif;
     background: white;
 }
 
-/* espaciado */
+/* Espaciado */
 .filtros div {
     display: flex;
     align-items: center;

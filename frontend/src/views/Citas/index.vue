@@ -4,8 +4,6 @@
 
     <!-- Barra superior -->
     <div class="top-bar">
-      <button class="btn">Volver</button>
-
       <div class="filtros">
         <div>
           <span>Vista:</span>
@@ -76,7 +74,7 @@
 </template>
 
 <script setup>
-//  lógica aquí
+// lógica aquí
 </script>
 
 <style scoped src="./styles.css"></style>
