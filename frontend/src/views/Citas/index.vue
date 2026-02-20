@@ -76,7 +76,7 @@
 </template>
 
 <script setup>
-// después podemos agregar lógica aquí
+//  lógica aquí
 </script>
 
 <style scoped src="./styles.css"></style>
