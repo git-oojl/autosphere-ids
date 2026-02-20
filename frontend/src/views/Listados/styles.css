@@ -4,25 +4,9 @@
 }
 
 /* HEADER */
-.header {
-  height: 70px;
-  background: #020617;
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 30px;
-}
 
 .title {
   font-size: 22px;
-}
-
-.search {
-  padding: 8px 12px;
-  border-radius: 8px;
-  border: none;
-  outline: none;
 }
 
 /* CONTENT */
