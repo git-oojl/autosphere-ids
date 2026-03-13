@@ -1,0 +1,27 @@
+[
+  {
+    "id": "mx-cdmx",
+    "name": "Ciudad de México",
+    "state": "CDMX"
+  },
+  {
+    "id": "mx-gdl",
+    "name": "Guadalajara",
+    "state": "Jalisco"
+  },
+  {
+    "id": "mx-mty",
+    "name": "Monterrey",
+    "state": "Nuevo León"
+  },
+  {
+    "id": "mx-pue",
+    "name": "Puebla",
+    "state": "Puebla"
+  },
+  {
+    "id": "mx-mer",
+    "name": "Mérida",
+    "state": "Yucatán"
+  }
+]

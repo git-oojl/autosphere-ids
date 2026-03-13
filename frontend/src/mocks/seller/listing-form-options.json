@@ -1,0 +1,35 @@
+{
+  "brands": [
+    "Mazda",
+    "Toyota",
+    "Ford",
+    "Kia",
+    "Volkswagen",
+    "Nissan",
+    "Honda",
+    "Chevrolet"
+  ],
+  "types": [
+    "Sedán",
+    "SUV",
+    "Pickup",
+    "Hatchback"
+  ],
+  "transmissions": [
+    "Manual",
+    "Automática"
+  ],
+  "fuelTypes": [
+    "Gasolina",
+    "Diésel",
+    "Híbrido"
+  ],
+  "colors": [
+    "Blanco",
+    "Negro",
+    "Plata",
+    "Rojo",
+    "Azul",
+    "Gris"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "items": [
+    {
+      "id": "u-buyer-001",
+      "name": "Mariana López",
+      "email": "mariana@example.com",
+      "roles": [
+        "buyer"
+      ],
+      "status": "active",
+      "createdAt": "2025-12-01"
+    },
+    {
+      "id": "u-seller-001",
+      "name": "Auto Select Norte",
+      "email": "ventas@autoselectnorte.mx",
+      "roles": [
+        "seller"
+      ],
+      "status": "active",
+      "createdAt": "2025-10-20"
+    },
+    {
+      "id": "u-lessor-001",
+      "name": "Rentas Ejecutivas MX",
+      "email": "operacion@rentasejecutivas.mx",
+      "roles": [
+        "lessor"
+      ],
+      "status": "review",
+      "createdAt": "2026-01-08"
+    },
+    {
+      "id": "u-admin-001",
+      "name": "Ana Admin",
+      "email": "ana.admin@example.com",
+      "roles": [
+        "admin"
+      ],
+      "status": "active",
+      "createdAt": "2025-09-10"
+    }
+  ]
+}

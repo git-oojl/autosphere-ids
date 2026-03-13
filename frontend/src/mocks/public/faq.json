@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "id": "faq-001",
+      "question": "¿Cómo agendo una cita?",
+      "answer": "Desde el detalle del vehículo, selecciona fecha y horario disponibles."
+    },
+    {
+      "id": "faq-002",
+      "question": "¿Necesito una cuenta para guardar vehículos?",
+      "answer": "Sí, las funciones de panel requieren autenticación."
+    },
+    {
+      "id": "faq-003",
+      "question": "¿Puedo publicar como vendedor?",
+      "answer": "Sí, el panel de vendedor concentra alta, edición y seguimiento de publicaciones."
+    }
+  ]
+}

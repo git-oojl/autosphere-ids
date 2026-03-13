@@ -1,0 +1,33 @@
+{
+  "hero": {
+    "headline": "Encuentra tu próximo vehículo en AutoSphere",
+    "subheadline": "Explora publicaciones, agenda citas y compara opciones con un flujo claro para comprador y vendedor.",
+    "ctaPrimary": {
+      "label": "Ver vehículos",
+      "routeName": "public-catalog"
+    },
+    "ctaSecondary": {
+      "label": "Conocer más",
+      "routeName": "public-about"
+    }
+  },
+  "featuredVehicleIds": [
+    "vh-001",
+    "vh-005",
+    "vh-007"
+  ],
+  "stats": [
+    {
+      "label": "Vehículos publicados",
+      "value": "57+"
+    },
+    {
+      "label": "Citas este mes",
+      "value": "120+"
+    },
+    {
+      "label": "Vendedores verificados",
+      "value": "34"
+    }
+  ]
+}
