@@ -1,0 +1,9 @@
+{
+  "id": 101,
+  "firstName": "Lucía",
+  "lastName": "Mendoza",
+  "email": "lucia.mendoza@autosphere.test",
+  "phone": "664-555-0101",
+  "city": "Tijuana",
+  "roles": ["buyer"]
+}

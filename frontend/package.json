@@ -4,13 +4,15 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "dev": "node ./node_modules/vite/bin/vite.js",
+    "build": "node ./node_modules/vite/bin/vite.js build",
+    "preview": "node ./node_modules/vite/bin/vite.js preview",
+    "lint": "node ./node_modules/eslint/bin/eslint.js .",
+    "lint:fix": "node ./node_modules/eslint/bin/eslint.js . --fix",
+    "format": "node ./node_modules/prettier/bin/prettier.cjs --write .",
+    "format:check": "node ./node_modules/prettier/bin/prettier.cjs --check .",
+    "test": "node --test",
+    "test:watch": "node --test --watch"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
