@@ -1,9 +1,8 @@
 {
-  "id": 101,
-  "firstName": "Lucía",
-  "lastName": "Mendoza",
-  "email": "lucia.mendoza@autosphere.test",
-  "phone": "664-555-0101",
-  "city": "Tijuana",
-  "roles": ["buyer"]
+  "id": "u-buyer-001",
+  "name": "Mariana López",
+  "email": "mariana@example.com",
+  "phone": "+52 55 5555 0101",
+  "city": "Ciudad de México",
+  "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330"
 }

@@ -1,0 +1,14 @@
+{
+  "sections": [
+    {
+      "id": "mission",
+      "title": "Nuestra misión",
+      "body": "Conectar compradores, vendedores y arrendadores en una experiencia digital clara y confiable."
+    },
+    {
+      "id": "process",
+      "title": "Cómo funciona",
+      "body": "Explora el catálogo, revisa detalles, agenda una cita y da seguimiento desde tu panel."
+    }
+  ]
+}

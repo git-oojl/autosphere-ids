@@ -1,0 +1,41 @@
+{
+  "rt-001": {
+    "id": "rt-001",
+    "vehicleLabel": "Toyota Corolla LE 2020",
+    "clientName": "Luis Ramírez",
+    "status": "active",
+    "startDate": "2026-03-01",
+    "endDate": "2026-03-15",
+    "monthlyRate": 9800,
+    "deposit": 15000,
+    "insuranceIncluded": true,
+    "pickupLocation": "Sucursal central",
+    "notes": "Contrato temporal de demostración para flujo frontend."
+  },
+  "rt-002": {
+    "id": "rt-002",
+    "vehicleLabel": "Kia Rio Hatchback 2019",
+    "clientName": "Daniela Pérez",
+    "status": "scheduled",
+    "startDate": "2026-03-20",
+    "endDate": "2026-04-20",
+    "monthlyRate": 8500,
+    "deposit": 12000,
+    "insuranceIncluded": true,
+    "pickupLocation": "Sucursal central",
+    "notes": "Contrato temporal de demostración para flujo frontend."
+  },
+  "rt-003": {
+    "id": "rt-003",
+    "vehicleLabel": "Mazda CX-5 i Grand Touring 2021",
+    "clientName": "Grupo Atlas",
+    "status": "closed",
+    "startDate": "2026-01-10",
+    "endDate": "2026-02-10",
+    "monthlyRate": 14500,
+    "deposit": 18000,
+    "insuranceIncluded": true,
+    "pickupLocation": "Sucursal central",
+    "notes": "Contrato temporal de demostración para flujo frontend."
+  }
+}

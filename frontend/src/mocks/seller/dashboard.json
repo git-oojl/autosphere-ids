@@ -1,0 +1,25 @@
+{
+  "summary": {
+    "activeListings": 4,
+    "pendingAppointments": 1,
+    "confirmedAppointments": 2,
+    "monthlyLeads": 16
+  },
+  "widgets": [
+    {
+      "id": "sw-1",
+      "label": "Publicaciones activas",
+      "value": 4
+    },
+    {
+      "id": "sw-2",
+      "label": "Citas pendientes",
+      "value": 1
+    },
+    {
+      "id": "sw-3",
+      "label": "Leads del mes",
+      "value": 16
+    }
+  ]
+}

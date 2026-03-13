@@ -1,75 +1,410 @@
-[
-  {
-    "id": 1,
-    "slug": "toyota-corolla-2020",
-    "title": "Toyota Corolla 2020",
-    "price": 328000,
-    "currency": "MXN",
-    "status": "Disponible",
-    "location": "Tijuana, Baja California",
-    "description": "Sedán seminuevo con historial de servicio y bajo kilometraje.",
-    "specs": {
-      "transmission": "Automática",
-      "fuel": "Gasolina",
-      "kilometers": 42000,
-      "color": "Blanco"
+{
+  "vh-001": {
+    "id": "vh-001",
+    "title": "Mazda CX-5 i Grand Touring 2021",
+    "brand": "Mazda",
+    "model": "CX-5",
+    "year": 2021,
+    "price": 478000,
+    "type": "SUV",
+    "transmission": "Automática",
+    "fuel": "Gasolina",
+    "mileageKm": 42500,
+    "cityId": "mx-cdmx",
+    "sellerId": "u-seller-001",
+    "coverImage": "https://images.unsplash.com/photo-1549399812-1d87fd4a2a28",
+    "status": "published",
+    "color": "Rojo",
+    "description": "Mazda CX-5 i Grand Touring 2021 en excelente estado. Documentación al día, historial de servicio y opción de cita para revisión presencial.",
+    "vinMasked": "***001MX",
+    "doors": 4,
+    "seats": 5,
+    "engine": "2.5L",
+    "traction": "Delantera",
+    "location": {
+      "city": "Ciudad de México",
+      "state": "CDMX",
+      "addressLabel": "Sucursal Ciudad de México Centro",
+      "lat": 19.4326,
+      "lng": -99.1332
     },
     "gallery": [
-      "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80",
-      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1200&q=80"
+      "https://images.unsplash.com/photo-1549399812-1d87fd4a2a28",
+      "https://images.unsplash.com/photo-1549399812-1d87fd4a2a28?2",
+      "https://images.unsplash.com/photo-1549399812-1d87fd4a2a28?3"
     ],
-    "seller": {
-      "id": 301,
-      "displayName": "Autos del Norte",
-      "publicPhone": "664-000-0001"
+    "sellerProfile": {
+      "id": "u-seller-001",
+      "displayName": "Auto Select Norte",
+      "rating": 4.7,
+      "verified": true,
+      "responseTime": "Menos de 2 horas",
+      "activeListings": 4
+    },
+    "specs": {
+      "transmisión": "Automática",
+      "combustible": "Gasolina",
+      "kilometraje": 42500,
+      "color": "Rojo",
+      "año": 2021,
+      "tipo": "SUV"
     }
   },
-  {
-    "id": 2,
-    "slug": "honda-civic-2019",
-    "title": "Honda Civic 2019",
-    "price": 349000,
-    "currency": "MXN",
-    "status": "Disponible",
-    "location": "Mexicali, Baja California",
-    "description": "Unidad compacta con mantenimiento al día y verificación reciente.",
-    "specs": {
-      "transmission": "Manual",
-      "fuel": "Gasolina",
-      "kilometers": 61000,
-      "color": "Gris"
+  "vh-002": {
+    "id": "vh-002",
+    "title": "Toyota Corolla LE 2020",
+    "brand": "Toyota",
+    "model": "Corolla",
+    "year": 2020,
+    "price": 289000,
+    "type": "Sedán",
+    "transmission": "Automática",
+    "fuel": "Gasolina",
+    "mileageKm": 61200,
+    "cityId": "mx-gdl",
+    "sellerId": "u-seller-001",
+    "coverImage": "https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+    "status": "published",
+    "color": "Blanco",
+    "description": "Toyota Corolla LE 2020 en excelente estado. Documentación al día, historial de servicio y opción de cita para revisión presencial.",
+    "vinMasked": "***002MX",
+    "doors": 4,
+    "seats": 5,
+    "engine": "1.8L",
+    "traction": "Delantera",
+    "location": {
+      "city": "Guadalajara",
+      "state": "Jalisco",
+      "addressLabel": "Sucursal Guadalajara Centro",
+      "lat": 20.6597,
+      "lng": -103.3496
     },
     "gallery": [
-      "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=80"
+      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?2",
+      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?3"
     ],
-    "seller": {
-      "id": 302,
-      "displayName": "Seminuevos Cívica",
-      "publicPhone": "686-000-0002"
+    "sellerProfile": {
+      "id": "u-seller-001",
+      "displayName": "Auto Select Norte",
+      "rating": 4.7,
+      "verified": true,
+      "responseTime": "Menos de 2 horas",
+      "activeListings": 4
+    },
+    "specs": {
+      "transmisión": "Automática",
+      "combustible": "Gasolina",
+      "kilometraje": 61200,
+      "color": "Blanco",
+      "año": 2020,
+      "tipo": "Sedán"
     }
   },
-  {
-    "id": 3,
-    "slug": "nissan-sentra-2021",
-    "title": "Nissan Sentra 2021",
-    "price": 356500,
-    "currency": "MXN",
-    "status": "Apartado",
-    "location": "Ensenada, Baja California",
-    "description": "Sedán con paquete de seguridad y financiamiento disponible.",
-    "specs": {
-      "transmission": "CVT",
-      "fuel": "Gasolina",
-      "kilometers": 35000,
-      "color": "Negro"
+  "vh-003": {
+    "id": "vh-003",
+    "title": "Ford Ranger XLT 2022",
+    "brand": "Ford",
+    "model": "Ranger",
+    "year": 2022,
+    "price": 615000,
+    "type": "Pickup",
+    "transmission": "Automática",
+    "fuel": "Diésel",
+    "mileageKm": 28100,
+    "cityId": "mx-mty",
+    "sellerId": "u-seller-002",
+    "coverImage": "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
+    "status": "published",
+    "color": "Gris",
+    "description": "Ford Ranger XLT 2022 en excelente estado. Documentación al día, historial de servicio y opción de cita para revisión presencial.",
+    "vinMasked": "***003MX",
+    "doors": 2,
+    "seats": 5,
+    "engine": "1.8L",
+    "traction": "4x4",
+    "location": {
+      "city": "Monterrey",
+      "state": "Nuevo León",
+      "addressLabel": "Sucursal Monterrey Centro",
+      "lat": 25.6866,
+      "lng": -100.3161
     },
     "gallery": [
-      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80"
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?2",
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?3"
     ],
-    "seller": {
-      "id": 303,
-      "displayName": "Sentra Select",
-      "publicPhone": "646-000-0003"
+    "sellerProfile": {
+      "id": "u-seller-002",
+      "displayName": "Seminuevos La Roca",
+      "rating": 4.4,
+      "verified": true,
+      "responseTime": "Menos de 2 horas",
+      "activeListings": 4
+    },
+    "specs": {
+      "transmisión": "Automática",
+      "combustible": "Diésel",
+      "kilometraje": 28100,
+      "color": "Gris",
+      "año": 2022,
+      "tipo": "Pickup"
+    }
+  },
+  "vh-004": {
+    "id": "vh-004",
+    "title": "Kia Rio Hatchback 2019",
+    "brand": "Kia",
+    "model": "Rio",
+    "year": 2019,
+    "price": 229000,
+    "type": "Hatchback",
+    "transmission": "Manual",
+    "fuel": "Gasolina",
+    "mileageKm": 73500,
+    "cityId": "mx-pue",
+    "sellerId": "u-seller-002",
+    "coverImage": "https://images.unsplash.com/photo-1511919884226-fd3cad34687c",
+    "status": "published",
+    "color": "Azul",
+    "description": "Kia Rio Hatchback 2019 en excelente estado. Documentación al día, historial de servicio y opción de cita para revisión presencial.",
+    "vinMasked": "***004MX",
+    "doors": 4,
+    "seats": 5,
+    "engine": "1.8L",
+    "traction": "Delantera",
+    "location": {
+      "city": "Puebla",
+      "state": "Puebla",
+      "addressLabel": "Sucursal Puebla Centro",
+      "lat": 19.0414,
+      "lng": -98.2063
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1511919884226-fd3cad34687c",
+      "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?2",
+      "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?3"
+    ],
+    "sellerProfile": {
+      "id": "u-seller-002",
+      "displayName": "Seminuevos La Roca",
+      "rating": 4.4,
+      "verified": true,
+      "responseTime": "Menos de 2 horas",
+      "activeListings": 4
+    },
+    "specs": {
+      "transmisión": "Manual",
+      "combustible": "Gasolina",
+      "kilometraje": 73500,
+      "color": "Azul",
+      "año": 2019,
+      "tipo": "Hatchback"
+    }
+  },
+  "vh-005": {
+    "id": "vh-005",
+    "title": "Volkswagen Jetta Comfortline 2023",
+    "brand": "Volkswagen",
+    "model": "Jetta",
+    "year": 2023,
+    "price": 529000,
+    "type": "Sedán",
+    "transmission": "Automática",
+    "fuel": "Gasolina",
+    "mileageKm": 12900,
+    "cityId": "mx-cdmx",
+    "sellerId": "u-seller-001",
+    "coverImage": "https://images.unsplash.com/photo-1502877338535-766e1452684a",
+    "status": "published",
+    "color": "Negro",
+    "description": "Volkswagen Jetta Comfortline 2023 en excelente estado. Documentación al día, historial de servicio y opción de cita para revisión presencial.",
+    "vinMasked": "***005MX",
+    "doors": 4,
+    "seats": 5,
+    "engine": "1.8L",
+    "traction": "Delantera",
+    "location": {
+      "city": "Ciudad de México",
+      "state": "CDMX",
+      "addressLabel": "Sucursal Ciudad de México Centro",
+      "lat": 19.4326,
+      "lng": -99.1332
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1502877338535-766e1452684a",
+      "https://images.unsplash.com/photo-1502877338535-766e1452684a?2",
+      "https://images.unsplash.com/photo-1502877338535-766e1452684a?3"
+    ],
+    "sellerProfile": {
+      "id": "u-seller-001",
+      "displayName": "Auto Select Norte",
+      "rating": 4.7,
+      "verified": true,
+      "responseTime": "Menos de 2 horas",
+      "activeListings": 4
+    },
+    "specs": {
+      "transmisión": "Automática",
+      "combustible": "Gasolina",
+      "kilometraje": 12900,
+      "color": "Negro",
+      "año": 2023,
+      "tipo": "Sedán"
+    }
+  },
+  "vh-006": {
+    "id": "vh-006",
+    "title": "Nissan NP300 2021",
+    "brand": "Nissan",
+    "model": "NP300",
+    "year": 2021,
+    "price": 395000,
+    "type": "Pickup",
+    "transmission": "Manual",
+    "fuel": "Diésel",
+    "mileageKm": 50300,
+    "cityId": "mx-mer",
+    "sellerId": "u-seller-002",
+    "coverImage": "https://images.unsplash.com/photo-1504215680853-026ed2a45def",
+    "status": "draft",
+    "color": "Plata",
+    "description": "Nissan NP300 2021 en excelente estado. Documentación al día, historial de servicio y opción de cita para revisión presencial.",
+    "vinMasked": "***006MX",
+    "doors": 2,
+    "seats": 5,
+    "engine": "1.8L",
+    "traction": "4x4",
+    "location": {
+      "city": "Mérida",
+      "state": "Yucatán",
+      "addressLabel": "Sucursal Mérida Centro",
+      "lat": 20.9674,
+      "lng": -89.5926
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1504215680853-026ed2a45def",
+      "https://images.unsplash.com/photo-1504215680853-026ed2a45def?2",
+      "https://images.unsplash.com/photo-1504215680853-026ed2a45def?3"
+    ],
+    "sellerProfile": {
+      "id": "u-seller-002",
+      "displayName": "Seminuevos La Roca",
+      "rating": 4.4,
+      "verified": true,
+      "responseTime": "Menos de 2 horas",
+      "activeListings": 4
+    },
+    "specs": {
+      "transmisión": "Manual",
+      "combustible": "Diésel",
+      "kilometraje": 50300,
+      "color": "Plata",
+      "año": 2021,
+      "tipo": "Pickup"
+    }
+  },
+  "vh-007": {
+    "id": "vh-007",
+    "title": "Honda CR-V Touring 2022",
+    "brand": "Honda",
+    "model": "CR-V",
+    "year": 2022,
+    "price": 598000,
+    "type": "SUV",
+    "transmission": "Automática",
+    "fuel": "Gasolina",
+    "mileageKm": 24600,
+    "cityId": "mx-gdl",
+    "sellerId": "u-seller-001",
+    "coverImage": "https://images.unsplash.com/photo-1553440569-bcc63803a83d",
+    "status": "published",
+    "color": "Gris",
+    "description": "Honda CR-V Touring 2022 en excelente estado. Documentación al día, historial de servicio y opción de cita para revisión presencial.",
+    "vinMasked": "***007MX",
+    "doors": 4,
+    "seats": 5,
+    "engine": "1.8L",
+    "traction": "Delantera",
+    "location": {
+      "city": "Guadalajara",
+      "state": "Jalisco",
+      "addressLabel": "Sucursal Guadalajara Centro",
+      "lat": 20.6597,
+      "lng": -103.3496
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1553440569-bcc63803a83d",
+      "https://images.unsplash.com/photo-1553440569-bcc63803a83d?2",
+      "https://images.unsplash.com/photo-1553440569-bcc63803a83d?3"
+    ],
+    "sellerProfile": {
+      "id": "u-seller-001",
+      "displayName": "Auto Select Norte",
+      "rating": 4.7,
+      "verified": true,
+      "responseTime": "Menos de 2 horas",
+      "activeListings": 4
+    },
+    "specs": {
+      "transmisión": "Automática",
+      "combustible": "Gasolina",
+      "kilometraje": 24600,
+      "color": "Gris",
+      "año": 2022,
+      "tipo": "SUV"
+    }
+  },
+  "vh-008": {
+    "id": "vh-008",
+    "title": "Chevrolet Onix LT 2021",
+    "brand": "Chevrolet",
+    "model": "Onix",
+    "year": 2021,
+    "price": 255000,
+    "type": "Sedán",
+    "transmission": "Manual",
+    "fuel": "Gasolina",
+    "mileageKm": 38750,
+    "cityId": "mx-pue",
+    "sellerId": "u-seller-002",
+    "coverImage": "https://images.unsplash.com/photo-1489824904134-891ab64532f1",
+    "status": "archived",
+    "color": "Blanco",
+    "description": "Chevrolet Onix LT 2021 en excelente estado. Documentación al día, historial de servicio y opción de cita para revisión presencial.",
+    "vinMasked": "***008MX",
+    "doors": 4,
+    "seats": 5,
+    "engine": "1.8L",
+    "traction": "Delantera",
+    "location": {
+      "city": "Puebla",
+      "state": "Puebla",
+      "addressLabel": "Sucursal Puebla Centro",
+      "lat": 19.0414,
+      "lng": -98.2063
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1489824904134-891ab64532f1",
+      "https://images.unsplash.com/photo-1489824904134-891ab64532f1?2",
+      "https://images.unsplash.com/photo-1489824904134-891ab64532f1?3"
+    ],
+    "sellerProfile": {
+      "id": "u-seller-002",
+      "displayName": "Seminuevos La Roca",
+      "rating": 4.4,
+      "verified": true,
+      "responseTime": "Menos de 2 horas",
+      "activeListings": 4
+    },
+    "specs": {
+      "transmisión": "Manual",
+      "combustible": "Gasolina",
+      "kilometraje": 38750,
+      "color": "Blanco",
+      "año": 2021,
+      "tipo": "Sedán"
     }
   }
-]
+}

@@ -1,0 +1,26 @@
+{
+  "queues": [
+    {
+      "id": "mq-001",
+      "label": "Pendientes de revisión",
+      "count": 3
+    },
+    {
+      "id": "mq-002",
+      "label": "Marcados por usuarios",
+      "count": 2
+    }
+  ],
+  "latestItems": [
+    {
+      "id": "vh-006",
+      "title": "Nissan NP300 2021",
+      "status": "flagged"
+    },
+    {
+      "id": "vh-008",
+      "title": "Chevrolet Onix LT 2021",
+      "status": "reported"
+    }
+  ]
+}

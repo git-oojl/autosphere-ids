@@ -1,0 +1,21 @@
+{
+  "summary": {
+    "upcomingAppointments": 2,
+    "savedVehicles": 4,
+    "searchesThisMonth": 9
+  },
+  "highlights": [
+    {
+      "id": "hl-1",
+      "title": "Tu próxima cita",
+      "value": "Mazda CX-5 i Grand Touring 2021",
+      "meta": "16 mar, 10:00"
+    },
+    {
+      "id": "hl-2",
+      "title": "Vehículos guardados",
+      "value": "4 vehículos",
+      "meta": "Último guardado hace 2 días"
+    }
+  ]
+}

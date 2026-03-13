@@ -1,29 +1,25 @@
-[
-  {
-    "id": 901,
-    "vehicleId": 1,
-    "vehicleTitle": "Toyota Corolla 2020",
-    "buyerName": "Lucía Mendoza",
-    "date": "2026-03-18",
-    "time": "10:00",
-    "status": "confirmada"
-  },
-  {
-    "id": 902,
-    "vehicleId": 2,
-    "vehicleTitle": "Honda Civic 2019",
-    "buyerName": "Diego Ruiz",
-    "date": "2026-03-19",
-    "time": "12:30",
-    "status": "pendiente"
-  },
-  {
-    "id": 903,
-    "vehicleId": 3,
-    "vehicleTitle": "Nissan Sentra 2021",
-    "buyerName": "Fernanda Soto",
-    "date": "2026-03-21",
-    "time": "16:00",
-    "status": "reprogramada"
-  }
-]
+{
+  "highlightedDates": [
+    "2026-03-16",
+    "2026-03-17",
+    "2026-03-18"
+  ],
+  "statusLegend": [
+    {
+      "status": "available",
+      "label": "Disponible"
+    },
+    {
+      "status": "pending",
+      "label": "Pendiente"
+    },
+    {
+      "status": "confirmed",
+      "label": "Confirmada"
+    },
+    {
+      "status": "cancelled",
+      "label": "Cancelada"
+    }
+  ]
+}

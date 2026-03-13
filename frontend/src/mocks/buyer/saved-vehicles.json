@@ -1,0 +1,208 @@
+{
+  "items": [
+    {
+      "id": "vh-001",
+      "title": "Mazda CX-5 i Grand Touring 2021",
+      "brand": "Mazda",
+      "model": "CX-5",
+      "year": 2021,
+      "price": 478000,
+      "type": "SUV",
+      "transmission": "Automática",
+      "fuel": "Gasolina",
+      "mileageKm": 42500,
+      "cityId": "mx-cdmx",
+      "sellerId": "u-seller-001",
+      "coverImage": "https://images.unsplash.com/photo-1549399812-1d87fd4a2a28",
+      "status": "published",
+      "color": "Rojo",
+      "description": "Mazda CX-5 i Grand Touring 2021 en excelente estado. Documentación al día, historial de servicio y opción de cita para revisión presencial.",
+      "vinMasked": "***001MX",
+      "doors": 4,
+      "seats": 5,
+      "engine": "2.5L",
+      "traction": "Delantera",
+      "location": {
+        "city": "Ciudad de México",
+        "state": "CDMX",
+        "addressLabel": "Sucursal Ciudad de México Centro",
+        "lat": 19.4326,
+        "lng": -99.1332
+      },
+      "gallery": [
+        "https://images.unsplash.com/photo-1549399812-1d87fd4a2a28",
+        "https://images.unsplash.com/photo-1549399812-1d87fd4a2a28?2",
+        "https://images.unsplash.com/photo-1549399812-1d87fd4a2a28?3"
+      ],
+      "sellerProfile": {
+        "id": "u-seller-001",
+        "displayName": "Auto Select Norte",
+        "rating": 4.7,
+        "verified": true,
+        "responseTime": "Menos de 2 horas",
+        "activeListings": 4
+      },
+      "specs": {
+        "transmisión": "Automática",
+        "combustible": "Gasolina",
+        "kilometraje": 42500,
+        "color": "Rojo",
+        "año": 2021,
+        "tipo": "SUV"
+      }
+    },
+    {
+      "id": "vh-003",
+      "title": "Ford Ranger XLT 2022",
+      "brand": "Ford",
+      "model": "Ranger",
+      "year": 2022,
+      "price": 615000,
+      "type": "Pickup",
+      "transmission": "Automática",
+      "fuel": "Diésel",
+      "mileageKm": 28100,
+      "cityId": "mx-mty",
+      "sellerId": "u-seller-002",
+      "coverImage": "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
+      "status": "published",
+      "color": "Gris",
+      "description": "Ford Ranger XLT 2022 en excelente estado. Documentación al día, historial de servicio y opción de cita para revisión presencial.",
+      "vinMasked": "***003MX",
+      "doors": 2,
+      "seats": 5,
+      "engine": "1.8L",
+      "traction": "4x4",
+      "location": {
+        "city": "Monterrey",
+        "state": "Nuevo León",
+        "addressLabel": "Sucursal Monterrey Centro",
+        "lat": 25.6866,
+        "lng": -100.3161
+      },
+      "gallery": [
+        "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
+        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?2",
+        "https://images.unsplash.com/photo-1503376780353-7e6692767b70?3"
+      ],
+      "sellerProfile": {
+        "id": "u-seller-002",
+        "displayName": "Seminuevos La Roca",
+        "rating": 4.4,
+        "verified": true,
+        "responseTime": "Menos de 2 horas",
+        "activeListings": 4
+      },
+      "specs": {
+        "transmisión": "Automática",
+        "combustible": "Diésel",
+        "kilometraje": 28100,
+        "color": "Gris",
+        "año": 2022,
+        "tipo": "Pickup"
+      }
+    },
+    {
+      "id": "vh-005",
+      "title": "Volkswagen Jetta Comfortline 2023",
+      "brand": "Volkswagen",
+      "model": "Jetta",
+      "year": 2023,
+      "price": 529000,
+      "type": "Sedán",
+      "transmission": "Automática",
+      "fuel": "Gasolina",
+      "mileageKm": 12900,
+      "cityId": "mx-cdmx",
+      "sellerId": "u-seller-001",
+      "coverImage": "https://images.unsplash.com/photo-1502877338535-766e1452684a",
+      "status": "published",
+      "color": "Negro",
+      "description": "Volkswagen Jetta Comfortline 2023 en excelente estado. Documentación al día, historial de servicio y opción de cita para revisión presencial.",
+      "vinMasked": "***005MX",
+      "doors": 4,
+      "seats": 5,
+      "engine": "1.8L",
+      "traction": "Delantera",
+      "location": {
+        "city": "Ciudad de México",
+        "state": "CDMX",
+        "addressLabel": "Sucursal Ciudad de México Centro",
+        "lat": 19.4326,
+        "lng": -99.1332
+      },
+      "gallery": [
+        "https://images.unsplash.com/photo-1502877338535-766e1452684a",
+        "https://images.unsplash.com/photo-1502877338535-766e1452684a?2",
+        "https://images.unsplash.com/photo-1502877338535-766e1452684a?3"
+      ],
+      "sellerProfile": {
+        "id": "u-seller-001",
+        "displayName": "Auto Select Norte",
+        "rating": 4.7,
+        "verified": true,
+        "responseTime": "Menos de 2 horas",
+        "activeListings": 4
+      },
+      "specs": {
+        "transmisión": "Automática",
+        "combustible": "Gasolina",
+        "kilometraje": 12900,
+        "color": "Negro",
+        "año": 2023,
+        "tipo": "Sedán"
+      }
+    },
+    {
+      "id": "vh-007",
+      "title": "Honda CR-V Touring 2022",
+      "brand": "Honda",
+      "model": "CR-V",
+      "year": 2022,
+      "price": 598000,
+      "type": "SUV",
+      "transmission": "Automática",
+      "fuel": "Gasolina",
+      "mileageKm": 24600,
+      "cityId": "mx-gdl",
+      "sellerId": "u-seller-001",
+      "coverImage": "https://images.unsplash.com/photo-1553440569-bcc63803a83d",
+      "status": "published",
+      "color": "Gris",
+      "description": "Honda CR-V Touring 2022 en excelente estado. Documentación al día, historial de servicio y opción de cita para revisión presencial.",
+      "vinMasked": "***007MX",
+      "doors": 4,
+      "seats": 5,
+      "engine": "1.8L",
+      "traction": "Delantera",
+      "location": {
+        "city": "Guadalajara",
+        "state": "Jalisco",
+        "addressLabel": "Sucursal Guadalajara Centro",
+        "lat": 20.6597,
+        "lng": -103.3496
+      },
+      "gallery": [
+        "https://images.unsplash.com/photo-1553440569-bcc63803a83d",
+        "https://images.unsplash.com/photo-1553440569-bcc63803a83d?2",
+        "https://images.unsplash.com/photo-1553440569-bcc63803a83d?3"
+      ],
+      "sellerProfile": {
+        "id": "u-seller-001",
+        "displayName": "Auto Select Norte",
+        "rating": 4.7,
+        "verified": true,
+        "responseTime": "Menos de 2 horas",
+        "activeListings": 4
+      },
+      "specs": {
+        "transmisión": "Automática",
+        "combustible": "Gasolina",
+        "kilometraje": 24600,
+        "color": "Gris",
+        "año": 2022,
+        "tipo": "SUV"
+      }
+    }
+  ]
+}

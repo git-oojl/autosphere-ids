@@ -1,0 +1,78 @@
+{
+  "sortOptions": [
+    {
+      "value": "relevance",
+      "label": "Más relevantes"
+    },
+    {
+      "value": "price_asc",
+      "label": "Precio: menor a mayor"
+    },
+    {
+      "value": "price_desc",
+      "label": "Precio: mayor a menor"
+    },
+    {
+      "value": "year_desc",
+      "label": "Más nuevos"
+    },
+    {
+      "value": "mileage_asc",
+      "label": "Menor kilometraje"
+    }
+  ],
+  "brandOptions": [
+    "Chevrolet",
+    "Ford",
+    "Honda",
+    "Kia",
+    "Mazda",
+    "Nissan",
+    "Toyota",
+    "Volkswagen"
+  ],
+  "typeOptions": [
+    "Hatchback",
+    "Pickup",
+    "SUV",
+    "Sedán"
+  ],
+  "transmissionOptions": [
+    "Automática",
+    "Manual"
+  ],
+  "fuelOptions": [
+    "Diésel",
+    "Gasolina"
+  ],
+  "cityOptions": [
+    {
+      "value": "mx-cdmx",
+      "label": "Ciudad de México, CDMX"
+    },
+    {
+      "value": "mx-gdl",
+      "label": "Guadalajara, Jalisco"
+    },
+    {
+      "value": "mx-mty",
+      "label": "Monterrey, Nuevo León"
+    },
+    {
+      "value": "mx-pue",
+      "label": "Puebla, Puebla"
+    },
+    {
+      "value": "mx-mer",
+      "label": "Mérida, Yucatán"
+    }
+  ],
+  "priceRange": {
+    "min": 150000,
+    "max": 800000
+  },
+  "yearRange": {
+    "min": 2018,
+    "max": 2024
+  }
+}

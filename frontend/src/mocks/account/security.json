@@ -1,0 +1,16 @@
+{
+  "lastPasswordChange": "2026-01-15T13:00:00",
+  "twoFactorEnabled": false,
+  "activeSessions": [
+    {
+      "id": "sess-001",
+      "device": "Chrome en Windows",
+      "lastSeen": "2026-03-13T10:32:00"
+    },
+    {
+      "id": "sess-002",
+      "device": "Safari en iPhone",
+      "lastSeen": "2026-03-12T21:05:00"
+    }
+  ]
+}

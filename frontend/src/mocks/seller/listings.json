@@ -1,9 +1,4 @@
 {
-  "meta": {
-    "total": 8,
-    "page": 1,
-    "pageSize": 12
-  },
   "items": [
     {
       "id": "vh-001",
@@ -40,6 +35,40 @@
       "color": "Blanco"
     },
     {
+      "id": "vh-005",
+      "title": "Volkswagen Jetta Comfortline 2023",
+      "brand": "Volkswagen",
+      "model": "Jetta",
+      "year": 2023,
+      "price": 529000,
+      "type": "Sedán",
+      "transmission": "Automática",
+      "fuel": "Gasolina",
+      "mileageKm": 12900,
+      "cityId": "mx-cdmx",
+      "sellerId": "u-seller-001",
+      "coverImage": "https://images.unsplash.com/photo-1502877338535-766e1452684a",
+      "status": "published",
+      "color": "Negro"
+    },
+    {
+      "id": "vh-007",
+      "title": "Honda CR-V Touring 2022",
+      "brand": "Honda",
+      "model": "CR-V",
+      "year": 2022,
+      "price": 598000,
+      "type": "SUV",
+      "transmission": "Automática",
+      "fuel": "Gasolina",
+      "mileageKm": 24600,
+      "cityId": "mx-gdl",
+      "sellerId": "u-seller-001",
+      "coverImage": "https://images.unsplash.com/photo-1553440569-bcc63803a83d",
+      "status": "published",
+      "color": "Gris"
+    },
+    {
       "id": "vh-003",
       "title": "Ford Ranger XLT 2022",
       "brand": "Ford",
@@ -74,23 +103,6 @@
       "color": "Azul"
     },
     {
-      "id": "vh-005",
-      "title": "Volkswagen Jetta Comfortline 2023",
-      "brand": "Volkswagen",
-      "model": "Jetta",
-      "year": 2023,
-      "price": 529000,
-      "type": "Sedán",
-      "transmission": "Automática",
-      "fuel": "Gasolina",
-      "mileageKm": 12900,
-      "cityId": "mx-cdmx",
-      "sellerId": "u-seller-001",
-      "coverImage": "https://images.unsplash.com/photo-1502877338535-766e1452684a",
-      "status": "published",
-      "color": "Negro"
-    },
-    {
       "id": "vh-006",
       "title": "Nissan NP300 2021",
       "brand": "Nissan",
@@ -106,23 +118,6 @@
       "coverImage": "https://images.unsplash.com/photo-1504215680853-026ed2a45def",
       "status": "draft",
       "color": "Plata"
-    },
-    {
-      "id": "vh-007",
-      "title": "Honda CR-V Touring 2022",
-      "brand": "Honda",
-      "model": "CR-V",
-      "year": 2022,
-      "price": 598000,
-      "type": "SUV",
-      "transmission": "Automática",
-      "fuel": "Gasolina",
-      "mileageKm": 24600,
-      "cityId": "mx-gdl",
-      "sellerId": "u-seller-001",
-      "coverImage": "https://images.unsplash.com/photo-1553440569-bcc63803a83d",
-      "status": "published",
-      "color": "Gris"
     },
     {
       "id": "vh-008",

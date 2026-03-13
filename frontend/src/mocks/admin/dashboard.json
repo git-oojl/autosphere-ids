@@ -1,0 +1,22 @@
+{
+  "summary": {
+    "totalUsers": 128,
+    "activeListings": 57,
+    "appointmentsThisWeek": 23,
+    "openReports": 5
+  },
+  "recentAlerts": [
+    {
+      "id": "al-001",
+      "type": "report",
+      "message": "Nueva denuncia por contenido duplicado",
+      "severity": "medium"
+    },
+    {
+      "id": "al-002",
+      "type": "suspension",
+      "message": "Usuario suspendido automáticamente por fraude potencial",
+      "severity": "high"
+    }
+  ]
+}

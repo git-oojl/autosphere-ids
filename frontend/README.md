@@ -1,45 +1,30 @@
 # Frontend de AutoSphere
 
-Este frontend es una aplicación construida con **Vue 3 + Vite + Vue Router + Pinia + Vuetify**.  
-La estructura actual fue organizada para que el equipo pueda trabajar en paralelo sin depender todavía del backend.
+Aplicación frontend construida con **Vue 3**, **Vite**, **Vue Router**, **Pinia** y **Vuetify**.
 
----
+La base actual permite desarrollar vistas, rutas y layouts por dominio sin depender todavía del backend.
 
 ## Requisitos previos
-
-Antes de comenzar, asegúrate de tener instalado lo siguiente:
 
 - **Node.js**
 - **npm**
 - **Git**
 
-> **Nota:** El frontend ya cuenta con **ESLint** y **Prettier** configurados en el proyecto. No es necesario agregar otra capa de lint o formateo.
+> El proyecto ya incluye **ESLint** y **Prettier**. No agregues herramientas paralelas de lint o formateo.
 
----
-
-## Preparación del frontend
-
-### 1. Entrar a la carpeta del frontend
+## Puesta en marcha
 
 Desde la raíz del proyecto:
 
 ```bash
 cd frontend
-```
-
-### 2. Instalar dependencias
-
-```bash
 npm ci
-```
-
-### 3. Iniciar el servidor de desarrollo
-
-```bash
 npm run dev
 ```
 
-### 4. Ejecutar chequeos manuales
+## Validaciones mínimas
+
+Antes de abrir un PR, ejecuta:
 
 ```bash
 npm run lint
@@ -48,36 +33,37 @@ npm run test
 npm run build
 ```
 
-> [!IMPORTANT]
-> **Advertencia:** Los chequeos del frontend deben pasar antes de abrir un PR.  
-> En este proyecto, `lint`, `format:check`, `test` y `build` forman el piso mínimo para validar que el scaffold, las rutas y los layouts no se hayan roto.
+Para corregir formato o lint:
 
----
+```bash
+npm run lint:fix
+npm run format
+```
 
 ## Sesión fake de desarrollo
 
-Mientras no exista backend ni autenticación real, el proyecto contempla una **sesión de desarrollo** para inspeccionar layouts y rutas protegidas.
+Mientras no exista autenticación real, el proyecto usa una sesión fake para revisar layouts y rutas protegidas.
 
-### ¿Cómo funciona?
+Archivos involucrados:
 
-El frontend usa un store de sesión (`src/stores/auth.js`) con helpers como:
+```text
+src/stores/auth.js
+src/components/dev/DevSessionSwitcher.vue
+src/App.vue
+```
 
-- `startSession(...)`
-- `clearSession()`
+Contrato mínimo del store:
+
 - `isAuthenticated`
 - `user`
 - `roles`
 - `primaryRole`
+- `startSession(...)`
+- `clearSession()`
+- `hasRole(...)`
+- `hasAnyRole(...)`
 
-Encima de eso, se puede montar un **panel global de cambio de sesión** visible solo en desarrollo:
-
-- `src/components/dev/DevSessionSwitcher.vue`
-- renderizado desde `App.vue`
-- visible únicamente cuando `import.meta.env.DEV` sea verdadero
-
-### ¿Para qué sirve?
-
-Permite cambiar rápidamente entre:
+Roles disponibles en desarrollo:
 
 - invitado
 - comprador
@@ -85,94 +71,131 @@ Permite cambiar rápidamente entre:
 - arrendador
 - admin
 
-Sin backend, esto sirve para revisar:
-
-- `PublicLayout`
-- `AuthLayout`
-- `DashboardLayout`
-- `AdminLayout`
-
-Y también para abrir rutas protegidas como:
+Rutas útiles para validación:
 
 - `/panel/comprador`
 - `/panel/vendedor`
 - `/panel/arrendador`
 - `/admin`
 
-### Regla de retiro
+Cuando exista autenticación real, el switcher debe eliminarse sin afectar la implementación final.
 
-Cuando exista autenticación real, el panel se elimina borrando:
+## Datos mock y servicios
 
-- `src/components/dev/DevSessionSwitcher.vue`
-- su import/render en `App.vue`
-
-No debe mezclarse con la autenticación final.
-
----
-
-## Datos mock para desarrollo
-
-Mientras no exista backend, el frontend puede trabajar con **JSON fake**.
-
-### Regla principal
-
-Las vistas **no** deben importar archivos mock directamente.  
-Las vistas deben consumir **servicios**. Los servicios son quienes leen mock JSON por ahora.
+Mientras no exista backend, la UI consume datos mock a través de la capa de servicios.
 
 Flujo esperado:
 
-1. La vista llama un servicio.
-2. El servicio devuelve datos desde `src/mocks/...`.
-3. Cuando el backend esté listo, se reemplaza la implementación del servicio.
-4. La vista no necesita reescribirse.
+```text
+vista -> servicio -> mock
+```
 
-### Carpeta de mocks
+Flujo futuro:
 
-La carpeta esperada es:
+```text
+vista -> servicio -> backend
+```
+
+Reglas:
+
+- Las vistas **no** deben importar archivos `.json` directamente.
+- Toda lectura de datos debe pasar por `src/services/...`.
+- Los mocks deben vivir en `src/mocks/...`.
+- La lógica de transformación, filtrado o mapeo debe vivir en servicios, no en las vistas.
+
+Estructura sugerida de mocks:
 
 ```text
 src/mocks/
+  auth/
+  public/
+  catalog/
+  appointments/
+  buyer/
+  seller/
+  lessor/
+  admin/
+  account/
+  shared/
 ```
 
-El paquete de mocks incluye datos para:
-
-- `auth/`
-- `public/`
-- `catalog/`
-- `appointments/`
-- `buyer/`
-- `seller/`
-- `lessor/`
-- `admin/`
-- `account/`
-- `shared/`
-
-### Uso práctico
-
-Si solo quieres integrar mocks nuevos, basta con arrastrar y soltar la carpeta `mocks/` dentro de:
+Si se incorpora una carpeta `mocks/` externa, debe copiarse en:
 
 ```text
-frontend/src/
+frontend/src/mocks/
 ```
 
-Eso es suficiente **siempre que** los servicios del proyecto ya apunten a `src/mocks/...`.
+## Servicios documentados
 
-Ejemplos de servicios esperados:
+### `src/services/http.js`
 
-- `src/services/auth.js`
-- `src/services/catalog.js`
-- `src/services/appointments.js`
-- `src/services/account.js`
+Instancia compartida de Axios preparada para backend real:
 
-> **Nota:** Si una pantalla todavía importa datos directos o no tiene servicio, hay que crear esa capa antes de usar los mocks de forma consistente.
+- `baseURL: '/api'`
+- `timeout: 10000`
 
----
+Responsabilidad:
 
-## Organización actual del frontend
+- centralizar requests HTTP
+- centralizar headers
+- preparar manejo futuro de auth, `401` y `403`
+
+### `src/services/mockResponse.js`
+
+Helper actual:
+
+```js
+resolveMock(data, delay = 120)
+```
+
+Uso:
+
+- simula asincronía
+- devuelve una copia segura de datos mock
+
+### `src/services/auth.js`
+
+- `login(credentials = {})`: simula login; futuro `POST /api/auth/login`
+- `logout()`: simula logout; futuro `POST /api/auth/logout`
+- `getCurrentSession()`: devuelve sesión actual; futuro `GET /api/me`
+
+### `src/services/catalog.js`
+
+- `getListings(filters = {})`: devuelve listados mock; futuro `GET /api/listings`
+- `getListingById(id)`: devuelve detalle mock; futuro `GET /api/listings/:id`
+
+### `src/services/appointments.js`
+
+- `getCalendarEvents()`: futuro `GET /api/appointments/calendar`
+- `getBuyerAppointments()`: futuro `GET /api/buyer/appointments`
+- `getSellerAppointments()`: futuro `GET /api/seller/appointments`
+- `createAppointment(payload = {})`: simula creación; futuro `POST /api/appointments`
+
+### `src/services/account.js`
+
+- `getProfile()`: devuelve perfil mock; futuro `GET /api/account/profile`
+- `updatePassword()`: simula actualización; futuro `PATCH /api/account/password`
+
+## Regla para nuevas pantallas
+
+Si una pantalla necesita datos dinámicos, el orden correcto es:
+
+1. definir el mock en `src/mocks/...`
+2. exponer una función en `src/services/...`
+3. consumirla desde la vista
+4. manejar `loading`, `empty` y `error` cuando aplique
+
+No se debe saltar de mock a vista sin pasar por servicios.
+
+## Organización del frontend
 
 ### Layouts
 
-La responsabilidad del shell ya no vive en `App.vue`.
+`App.vue` solo debe contener:
+
+- root de Vuetify
+- `router-view`
+- panel de sesión fake en desarrollo
 
 Layouts disponibles:
 
@@ -181,15 +204,9 @@ Layouts disponibles:
 - `src/layouts/DashboardLayout.vue`
 - `src/layouts/AdminLayout.vue`
 
-`App.vue` solo debe renderizar:
+### Router
 
-- el root de Vuetify
-- el `router-view`
-- y, en desarrollo, el panel global de sesión fake
-
-### Rutas
-
-La organización del router es modular:
+El router está dividido por módulos:
 
 - `src/router/routes/public.js`
 - `src/router/routes/auth.js`
@@ -197,11 +214,11 @@ La organización del router es modular:
 - `src/router/routes/admin.js`
 - `src/router/routes/utility.js`
 
-Todas las páginas en rutas deben cargarse con **lazy imports**.
+Todas las páginas deben cargarse con **lazy imports**.
 
 ### Vistas
 
-Las vistas están agrupadas por dominio:
+Las vistas se agrupan por dominio:
 
 - `src/views/public`
 - `src/views/auth`
@@ -214,16 +231,14 @@ Las vistas están agrupadas por dominio:
 - `src/views/account`
 - `src/views/utility`
 
-Cada vista puede tener:
+Cada vista puede incluir:
 
 - `index.vue`
 - `styles.css`
 
----
-
 ## Vistas protegidas
 
-Estas vistas ya tenían trabajo visual previo y deben preservarse:
+Estas vistas deben preservarse:
 
 - `src/views/public/home/index.vue`
 - `src/views/auth/login/index.vue`
@@ -231,105 +246,79 @@ Estas vistas ya tenían trabajo visual previo y deben preservarse:
 - `src/views/catalog/listings/index.vue`
 - `src/views/catalog/listing-detail/index.vue`
 
-### Cambios permitidos
+Permitido:
 
-- mover o renombrar archivo
-- actualizar imports/exports
-- actualizar rutas
+- mover o renombrar archivos
+- actualizar imports y exports
+- ajustar rutas
 - integrar con layouts
-- hacer ajustes mínimos de compatibilidad
+- hacer cambios mínimos de compatibilidad
 
-### Cambios no permitidos
+No permitido:
 
 - rediseñar template
 - rehacer composición visual
 - cambiar copy sin aprobación
 - reestilizar por preferencia técnica
-- refactorizar solo porque “se vería más limpio”
+- refactorizar sin necesidad funcional
 
-Si una vista protegida requiere un cambio, debe ser pequeño y debe explicarse en el PR.
+Si una vista protegida requiere cambios, deben ser mínimos y explicados en el PR.
 
----
+## Acceso y roles
 
-## Accesos y roles
+La autorización actual usa:
 
-La lógica actual usa `meta.requiresAuth`, `meta.requiresGuest` y `meta.roles`.
+- `meta.requiresAuth`
+- `meta.requiresGuest`
+- `meta.roles`
 
-### Matriz de acceso
-
-| Área             | Requiere auth | Roles                         |
-| ---------------- | ------------- | ----------------------------- |
-| Público          | No            | cualquiera                    |
-| Auth             | Solo invitado | invitado                      |
-| Panel comprador  | Sí            | `buyer`                       |
-| Panel vendedor   | Sí            | `seller`                      |
-| Panel arrendador | Sí            | `lessor`                      |
-| Cuenta           | Sí            | cualquier usuario autenticado |
-| Admin            | Sí            | `admin`                       |
-| Utility          | No            | cualquiera                    |
-
-Si esta lógica cambia, debe modificarse en un solo lugar:
+La lógica centralizada vive en:
 
 ```text
 src/router/guards.js
 ```
 
----
+### Matriz de acceso
 
-## Calidad de código
+| Área | Requiere auth | Roles |
+| --- | --- | --- |
+| Público | No | cualquiera |
+| Auth | Solo invitado | invitado |
+| Panel comprador | Sí | `buyer` |
+| Panel vendedor | Sí | `seller` |
+| Panel arrendador | Sí | `lessor` |
+| Cuenta | Sí | cualquier usuario autenticado |
+| Admin | Sí | `admin` |
+| Utility | No | cualquiera |
 
-Este frontend utiliza las mismas herramientas de calidad ya presentes en el proyecto principal:
+Si la política cambia, debe modificarse en `src/router/guards.js`.
+
+## Calidad y pruebas
+
+Herramientas usadas:
 
 - **ESLint**
 - **Prettier**
 
-Si una validación falla, usa:
+`npm test` debe correrse manualmente como parte del mínimo local, salvo que se configure un hook o CI específico.
 
-```bash
-npm run lint:fix
-npm run format
-```
+Las pruebas actuales cubren la base del scaffold:
 
-Y después vuelve a correr:
-
-```bash
-npm run lint
-npm run format:check
-npm run test
-npm run build
-```
-
----
-
-## Pruebas mínimas del scaffold
-
-Las pruebas actuales no son de negocio. Protegen la arquitectura base.
-
-Cubren:
-
-- existencia y composición de rutas modulares
+- rutas modulares
 - guards y store de auth
 - layouts
-- navegación pública relevante
+- navegación pública principal
 
-Objetivo:
+Su objetivo es evitar regresiones estructurales mientras se implementan features.
 
-- evitar que el scaffold se rompa mientras el equipo implementa features
+## Guía rápida de ubicación
 
----
-
-## Qué agregar en el lugar correcto
-
-Usa esta regla rápida:
-
-- **Nueva página con URL propia:** `src/views/...` + su módulo de rutas correspondiente
+- **Nueva página con URL propia:** `src/views/...` + módulo de rutas correspondiente
 - **Lógica de acceso:** `src/router/guards.js`
 - **Estado de sesión:** `src/stores/auth.js`
 - **Datos de negocio:** `src/services/...`
-- **Shell visual de una zona:** layout correspondiente
-- **JSON fake:** `src/mocks/...`
-
----
+- **Shell visual:** layout correspondiente
+- **Datos mock:** `src/mocks/...`
 
 ## Estructura resumida
 
@@ -345,30 +334,37 @@ Usa esta regla rápida:
     /views
 ```
 
----
-
-## Qué revisar antes de abrir un PR
+## Checklist previo a PR
 
 1. No romper vistas protegidas.
-2. Poner cada ruta nueva en su módulo correcto.
-3. Mantener datos mock detrás de servicios.
-4. Probar el flujo con el panel de sesión fake si la ruta depende de roles.
-5. Ejecutar:
+2. Ubicar cada ruta nueva en su módulo correcto.
+3. Mantener los datos detrás de servicios.
+4. No importar `.json` directamente desde vistas.
+5. Probar rutas con sesión fake si dependen de roles.
+6. Ejecutar:
+
    - `npm run lint`
    - `npm run format:check`
    - `npm run test`
    - `npm run build`
 
----
+## Estructura de carpetas
 
-## Estructura del frontend
+- `/src/components`: componentes reutilizables y soporte visual
+- `/src/layouts`: shells por área de navegación
+- `/src/mocks`: datos mock para desarrollo sin backend
+- `/src/router`: router, guards y módulos de rutas
+- `/src/services`: acceso a datos
+- `/src/stores`: estado global con Pinia
+- `/src/views`: páginas por dominio funcional
 
-- `/src/components`: Componentes reutilizables y soporte visual.
-- `/src/layouts`: Shells por área de navegación.
-- `/src/mocks`: JSON fake para desarrollo sin backend.
-- `/src/router`: Ensamble del router, guards y módulos de rutas.
-- `/src/services`: Capa de acceso a datos.
-- `/src/stores`: Estado global con Pinia.
-- `/src/views`: Páginas por dominio funcional.
+## Criterio general
 
----
+Mientras no exista backend:
+
+- las vistas renderizan
+- los servicios resuelven datos
+- los mocks alimentan los servicios
+- el store fake solo sirve para validar navegación y layouts
+
+Cuando exista backend, el reemplazo debe ocurrir dentro de la capa de servicios, no en la UI.

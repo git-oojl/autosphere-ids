@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "id": "rp-001",
+      "listingId": "vh-008",
+      "reason": "Información engañosa",
+      "status": "open",
+      "createdAt": "2026-03-10"
+    },
+    {
+      "id": "rp-002",
+      "listingId": "vh-006",
+      "reason": "Posible duplicado",
+      "status": "in_review",
+      "createdAt": "2026-03-11"
+    },
+    {
+      "id": "rp-003",
+      "listingId": "vh-002",
+      "reason": "Precio inconsistente",
+      "status": "closed",
+      "createdAt": "2026-03-08"
+    }
+  ]
+}
