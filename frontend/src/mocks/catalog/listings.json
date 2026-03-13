@@ -1,0 +1,35 @@
+[
+  {
+    "id": 1,
+    "slug": "toyota-corolla-2020",
+    "title": "Toyota Corolla 2020",
+    "brand": "Toyota",
+    "price": 328000,
+    "currency": "MXN",
+    "status": "Disponible",
+    "location": "Tijuana, Baja California",
+    "thumbnail": "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": 2,
+    "slug": "honda-civic-2019",
+    "title": "Honda Civic 2019",
+    "brand": "Honda",
+    "price": 349000,
+    "currency": "MXN",
+    "status": "Disponible",
+    "location": "Mexicali, Baja California",
+    "thumbnail": "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=900&q=80"
+  },
+  {
+    "id": 3,
+    "slug": "nissan-sentra-2021",
+    "title": "Nissan Sentra 2021",
+    "brand": "Nissan",
+    "price": 356500,
+    "currency": "MXN",
+    "status": "Apartado",
+    "location": "Ensenada, Baja California",
+    "thumbnail": "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=900&q=80"
+  }
+]

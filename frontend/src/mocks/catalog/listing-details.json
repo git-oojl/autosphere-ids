@@ -1,0 +1,75 @@
+[
+  {
+    "id": 1,
+    "slug": "toyota-corolla-2020",
+    "title": "Toyota Corolla 2020",
+    "price": 328000,
+    "currency": "MXN",
+    "status": "Disponible",
+    "location": "Tijuana, Baja California",
+    "description": "Sedán seminuevo con historial de servicio y bajo kilometraje.",
+    "specs": {
+      "transmission": "Automática",
+      "fuel": "Gasolina",
+      "kilometers": 42000,
+      "color": "Blanco"
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "seller": {
+      "id": 301,
+      "displayName": "Autos del Norte",
+      "publicPhone": "664-000-0001"
+    }
+  },
+  {
+    "id": 2,
+    "slug": "honda-civic-2019",
+    "title": "Honda Civic 2019",
+    "price": 349000,
+    "currency": "MXN",
+    "status": "Disponible",
+    "location": "Mexicali, Baja California",
+    "description": "Unidad compacta con mantenimiento al día y verificación reciente.",
+    "specs": {
+      "transmission": "Manual",
+      "fuel": "Gasolina",
+      "kilometers": 61000,
+      "color": "Gris"
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1553440569-bcc63803a83d?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "seller": {
+      "id": 302,
+      "displayName": "Seminuevos Cívica",
+      "publicPhone": "686-000-0002"
+    }
+  },
+  {
+    "id": 3,
+    "slug": "nissan-sentra-2021",
+    "title": "Nissan Sentra 2021",
+    "price": 356500,
+    "currency": "MXN",
+    "status": "Apartado",
+    "location": "Ensenada, Baja California",
+    "description": "Sedán con paquete de seguridad y financiamiento disponible.",
+    "specs": {
+      "transmission": "CVT",
+      "fuel": "Gasolina",
+      "kilometers": 35000,
+      "color": "Negro"
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1200&q=80"
+    ],
+    "seller": {
+      "id": 303,
+      "displayName": "Sentra Select",
+      "publicPhone": "646-000-0003"
+    }
+  }
+]

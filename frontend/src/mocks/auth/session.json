@@ -1,0 +1,11 @@
+{
+  "isAuthenticated": true,
+  "accessToken": "mock-access-token",
+  "user": {
+    "id": 101,
+    "firstName": "Lucía",
+    "lastName": "Mendoza",
+    "email": "lucia.mendoza@autosphere.test"
+  },
+  "roles": ["buyer"]
+}
