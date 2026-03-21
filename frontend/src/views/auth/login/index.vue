@@ -229,9 +229,9 @@
       <div class="card-footer">
         <p class="footer-text">
           ¿No tienes una cuenta?
-          <a href="#" class="footer-link" @click.prevent="handleRegister"
-            >Regístrate</a
-          >
+          <router-link :to="{ name: 'auth-register' }" class="footer-link">
+            Regístrate
+          </router-link>
         </p>
       </div>
     </div>
