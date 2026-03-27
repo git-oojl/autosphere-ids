@@ -28,19 +28,24 @@ function buildSessionForUser(user, token = 'mock-access-token') {
 
 export async function login(credentials = {}) {
   // TODO: replace with POST /api/auth/login.
-  const matchedUser = authUsers.find((user) => {
-    if (credentials.email) {
-      return user.email.toLowerCase() === credentials.email.trim().toLowerCase();
-    }
+  const matchedUser =
+    authUsers.find((user) => {
+      if (credentials.email) {
+        return (
+          user.email.toLowerCase() === credentials.email.trim().toLowerCase()
+        );
+      }
 
-    if (credentials.role) {
-      return user.roles.includes(credentials.role);
-    }
+      if (credentials.role) {
+        return user.roles.includes(credentials.role);
+      }
 
-    return user.id === 'u-buyer-001';
-  }) || authUsers[0];
+      return user.id === 'u-buyer-001';
+    }) || authUsers[0];
 
-  return resolveMock(buildSessionForUser(matchedUser, `mock-token-${matchedUser.id}`));
+  return resolveMock(
+    buildSessionForUser(matchedUser, `mock-token-${matchedUser.id}`)
+  );
 }
 
 export async function logout() {

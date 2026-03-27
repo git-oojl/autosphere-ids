@@ -12,7 +12,10 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -39,7 +42,7 @@ body {
 .logo {
   font-size: 26px;
   font-weight: 700;
-  color: #c2d6e1 ;
+  color: #c2d6e1;
   cursor: pointer;
 }
 
@@ -76,7 +79,8 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1920') center/cover;
+  background: url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1920')
+    center/cover;
   opacity: 0.05;
 }
 
@@ -153,7 +157,7 @@ body {
 --------------------------------------------- */
 .faq-content {
   padding: 60px 40px;
-  background: linear-gradient(135deg, #f8f9fb 0%, #c2d6e1  100%);
+  background: linear-gradient(135deg, #f8f9fb 0%, #c2d6e1 100%);
 }
 
 .content-container {
@@ -355,7 +359,8 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920') center/cover;
+  background: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920')
+    center/cover;
   opacity: 0.05;
 }
 

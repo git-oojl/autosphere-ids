@@ -19,8 +19,14 @@ export async function getUsers(filters = {}) {
   const query = normalizeText(filters.query);
 
   const filtered = users.filter((user) => {
-    const matchesRole = roleFilters.length === 0 || roleFilters.some((role) => user.roles.includes(role));
-    const matchesQuery = !query || [user.name, user.email, user.id].some((field) => includesText(field, query));
+    const matchesRole =
+      roleFilters.length === 0 ||
+      roleFilters.some((role) => user.roles.includes(role));
+    const matchesQuery =
+      !query ||
+      [user.name, user.email, user.id].some((field) =>
+        includesText(field, query)
+      );
 
     return matchesRole && matchesQuery;
   });

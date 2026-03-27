@@ -145,7 +145,7 @@ Responsabilidad:
 Helper actual:
 
 ```js
-resolveMock(data, delay = 120)
+resolveMock(data, (delay = 120));
 ```
 
 Uso:
@@ -280,16 +280,16 @@ src/router/guards.js
 
 ### Matriz de acceso
 
-| Área | Requiere auth | Roles |
-| --- | --- | --- |
-| Público | No | cualquiera |
-| Auth | Solo invitado | invitado |
-| Panel comprador | Sí | `buyer` |
-| Panel vendedor | Sí | `seller` |
-| Panel arrendador | Sí | `lessor` |
-| Cuenta | Sí | cualquier usuario autenticado |
-| Admin | Sí | `admin` |
-| Utility | No | cualquiera |
+| Área             | Requiere auth | Roles                         |
+| ---------------- | ------------- | ----------------------------- |
+| Público          | No            | cualquiera                    |
+| Auth             | Solo invitado | invitado                      |
+| Panel comprador  | Sí            | `buyer`                       |
+| Panel vendedor   | Sí            | `seller`                      |
+| Panel arrendador | Sí            | `lessor`                      |
+| Cuenta           | Sí            | cualquier usuario autenticado |
+| Admin            | Sí            | `admin`                       |
+| Utility          | No            | cualquiera                    |
 
 Si la política cambia, debe modificarse en `src/router/guards.js`.
 
@@ -342,7 +342,6 @@ Su objetivo es evitar regresiones estructurales mientras se implementan features
 4. No importar `.json` directamente desde vistas.
 5. Probar rutas con sesión fake si dependen de roles.
 6. Ejecutar:
-
    - `npm run lint`
    - `npm run format:check`
    - `npm run test`

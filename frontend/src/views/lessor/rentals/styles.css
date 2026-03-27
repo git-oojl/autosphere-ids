@@ -4,8 +4,9 @@
 
 .lessor-dashboard {
   min-height: 100vh;
-  background: linear-gradient(rgba(15, 31, 61, 0.85), rgba(30, 58, 95, 0.9)), 
-              url('https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=1200&h=800&fit=crop');
+  background:
+    linear-gradient(rgba(15, 31, 61, 0.85), rgba(30, 58, 95, 0.9)),
+    url('https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=1200&h=800&fit=crop');
   background-attachment: fixed;
   background-size: cover;
   background-position: center;

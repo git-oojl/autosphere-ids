@@ -12,7 +12,10 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -28,7 +31,6 @@ body {
   transition: all 0.3s ease;
   padding: 20px 0;
 }
-
 
 .navbar-container {
   max-width: 1400px;
@@ -110,11 +112,11 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920') center/cover;
+  background: url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?w=1920')
+    center/cover;
   opacity: 0.15;
   z-index: 0;
 }
-
 
 .hero-content {
   position: relative;
@@ -411,7 +413,8 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1920') center/cover;
+  background: url('https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=1920')
+    center/cover;
   opacity: 0.05;
 }
 

@@ -21,9 +21,15 @@ export async function getAdminUsers(filters = {}) {
   const query = filters.q || filters.query || '';
 
   const items = usersData.items.filter((item) => {
-    const matchesStatus = statuses.length === 0 || statuses.includes(item.status);
-    const matchesRole = roles.length === 0 || roles.some((role) => item.roles.includes(role));
-    const matchesQuery = !query || [item.name, item.email, item.id].some((value) => includesText(value, query));
+    const matchesStatus =
+      statuses.length === 0 || statuses.includes(item.status);
+    const matchesRole =
+      roles.length === 0 || roles.some((role) => item.roles.includes(role));
+    const matchesQuery =
+      !query ||
+      [item.name, item.email, item.id].some((value) =>
+        includesText(value, query)
+      );
 
     return matchesStatus && matchesRole && matchesQuery;
   });
@@ -41,9 +47,15 @@ export async function getAdminListings(filters = {}) {
   const query = filters.q || filters.query || '';
 
   const items = listingsData.items.filter((item) => {
-    const matchesStatus = statuses.length === 0 || statuses.includes(item.status);
-    const matchesSeller = !filters.sellerId || item.sellerId === filters.sellerId;
-    const matchesQuery = !query || [item.title, item.brand, item.model, item.id].some((value) => includesText(value, query));
+    const matchesStatus =
+      statuses.length === 0 || statuses.includes(item.status);
+    const matchesSeller =
+      !filters.sellerId || item.sellerId === filters.sellerId;
+    const matchesQuery =
+      !query ||
+      [item.title, item.brand, item.model, item.id].some((value) =>
+        includesText(value, query)
+      );
 
     return matchesStatus && matchesSeller && matchesQuery;
   });
@@ -57,8 +69,13 @@ export async function getAdminAppointments(filters = {}) {
   const query = filters.q || filters.query || '';
 
   const items = appointmentsData.items.filter((item) => {
-    const matchesStatus = statuses.length === 0 || statuses.includes(item.status);
-    const matchesQuery = !query || [item.id, item.notes, item.locationLabel].some((value) => includesText(value, query));
+    const matchesStatus =
+      statuses.length === 0 || statuses.includes(item.status);
+    const matchesQuery =
+      !query ||
+      [item.id, item.notes, item.locationLabel].some((value) =>
+        includesText(value, query)
+      );
     return matchesStatus && matchesQuery;
   });
 
@@ -81,8 +98,13 @@ export async function getAdminReports(filters = {}) {
   const query = filters.q || filters.query || '';
 
   const items = reportsData.items.filter((item) => {
-    const matchesStatus = statuses.length === 0 || statuses.includes(item.status);
-    const matchesQuery = !query || [item.id, item.reason, item.listingId].some((value) => includesText(value, query));
+    const matchesStatus =
+      statuses.length === 0 || statuses.includes(item.status);
+    const matchesQuery =
+      !query ||
+      [item.id, item.reason, item.listingId].some((value) =>
+        includesText(value, query)
+      );
     return matchesStatus && matchesQuery;
   });
 
@@ -95,8 +117,13 @@ export async function getAdminSuspensions(filters = {}) {
   const query = filters.q || filters.query || '';
 
   const items = suspensionsData.items.filter((item) => {
-    const matchesStatus = statuses.length === 0 || statuses.includes(item.status);
-    const matchesQuery = !query || [item.id, item.userId, item.reason].some((value) => includesText(value, query));
+    const matchesStatus =
+      statuses.length === 0 || statuses.includes(item.status);
+    const matchesQuery =
+      !query ||
+      [item.id, item.userId, item.reason].some((value) =>
+        includesText(value, query)
+      );
     return matchesStatus && matchesQuery;
   });
 

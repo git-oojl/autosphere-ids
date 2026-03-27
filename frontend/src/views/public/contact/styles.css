@@ -12,7 +12,10 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family:
+    'Inter',
+    -apple-system,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -76,7 +79,8 @@ body {
   content: '';
   position: absolute;
   inset: 0;
-  background: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920') center/cover;
+  background: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1920')
+    center/cover;
   opacity: 0.05;
 }
 
@@ -114,7 +118,7 @@ body {
 --------------------------------------------- */
 .contact-methods {
   padding: 80px 40px;
-  background: linear-gradient(135deg, #f8f9fb 0%, #c2d6e1  100%);
+  background: linear-gradient(135deg, #f8f9fb 0%, #c2d6e1 100%);
 }
 
 .methods-container {
@@ -298,7 +302,7 @@ body {
   gap: 12px;
 }
 
-.form-checkbox input[type="checkbox"] {
+.form-checkbox input[type='checkbox'] {
   width: 18px;
   height: 18px;
   margin-top: 2px;

@@ -4,7 +4,12 @@ import listingsData from '../mocks/catalog/listings.json';
 import cities from '../mocks/shared/cities.json';
 import users from '../mocks/shared/users.json';
 import { resolveMock } from './mockResponse.js';
-import { includesText, paginateItems, sortItems, toArray } from './mockUtils.js';
+import {
+  includesText,
+  paginateItems,
+  sortItems,
+  toArray,
+} from './mockUtils.js';
 
 const cityMap = cities.reduce((acc, city) => {
   acc[city.id] = city;
@@ -45,7 +50,9 @@ function applyListingFilters(items, filters = {}) {
   const query = filters.q || filters.query || '';
   const brandFilters = toArray(filters.brand || filters.brands);
   const typeFilters = toArray(filters.type || filters.types);
-  const transmissionFilters = toArray(filters.transmission || filters.transmissions);
+  const transmissionFilters = toArray(
+    filters.transmission || filters.transmissions
+  );
   const fuelFilters = toArray(filters.fuel || filters.fuels);
   const cityFilters = toArray(filters.cityId || filters.cityIds);
   const statusFilters = toArray(filters.status || filters.statuses);
@@ -58,25 +65,31 @@ function applyListingFilters(items, filters = {}) {
   const maxYear = Number(filters.maxYear ?? Number.POSITIVE_INFINITY);
 
   return items.filter((listing) => {
-    const matchesQuery = !query
-      || [listing.title, listing.brand, listing.model, listing.cityLabel, listing.sellerDisplayName]
-        .some((value) => includesText(value, query));
+    const matchesQuery =
+      !query ||
+      [
+        listing.title,
+        listing.brand,
+        listing.model,
+        listing.cityLabel,
+        listing.sellerDisplayName,
+      ].some((value) => includesText(value, query));
 
     return (
-      matchesQuery
-      && matchesMultiValue(listing.brand, brandFilters)
-      && matchesMultiValue(listing.type, typeFilters)
-      && matchesMultiValue(listing.transmission, transmissionFilters)
-      && matchesMultiValue(listing.fuel, fuelFilters)
-      && matchesMultiValue(listing.cityId, cityFilters)
-      && matchesMultiValue(listing.status, statusFilters)
-      && matchesMultiValue(listing.sellerId, sellerFilters)
-      && matchesMultiValue(listing.color, colorFilters)
-      && matchesMultiValue(listing.id, idFilters)
-      && listing.price >= minPrice
-      && listing.price <= maxPrice
-      && listing.year >= minYear
-      && listing.year <= maxYear
+      matchesQuery &&
+      matchesMultiValue(listing.brand, brandFilters) &&
+      matchesMultiValue(listing.type, typeFilters) &&
+      matchesMultiValue(listing.transmission, transmissionFilters) &&
+      matchesMultiValue(listing.fuel, fuelFilters) &&
+      matchesMultiValue(listing.cityId, cityFilters) &&
+      matchesMultiValue(listing.status, statusFilters) &&
+      matchesMultiValue(listing.sellerId, sellerFilters) &&
+      matchesMultiValue(listing.color, colorFilters) &&
+      matchesMultiValue(listing.id, idFilters) &&
+      listing.price >= minPrice &&
+      listing.price <= maxPrice &&
+      listing.year >= minYear &&
+      listing.year <= maxYear
     );
   });
 }
@@ -111,9 +124,10 @@ export async function getListingById(id) {
 
 export async function getFeaturedListings(options = {}) {
   const ids = toArray(options.ids);
-  const items = ids.length > 0
-    ? ids.map((id) => listingDetails[id]).filter(Boolean)
-    : listingsData.items.filter((item) => item.status === 'published');
+  const items =
+    ids.length > 0
+      ? ids.map((id) => listingDetails[id]).filter(Boolean)
+      : listingsData.items.filter((item) => item.status === 'published');
 
   const limit = Number(options.limit || 3);
   return resolveMock(items.slice(0, limit).map(enrichListing));
@@ -128,7 +142,9 @@ export async function getRelatedListings(id, options = {}) {
 
   const related = listingsData.items
     .filter((item) => item.id !== id)
-    .filter((item) => item.type === current.type || item.brand === current.brand)
+    .filter(
+      (item) => item.type === current.type || item.brand === current.brand
+    )
     .slice(0, Number(options.limit || 4))
     .map(enrichListing);
 
@@ -136,11 +152,17 @@ export async function getRelatedListings(id, options = {}) {
 }
 
 export async function getListingsBySeller(sellerId, filters = {}) {
-  return getListings({ ...filters, sellerId, pageSize: filters.pageSize || 50 });
+  return getListings({
+    ...filters,
+    sellerId,
+    pageSize: filters.pageSize || 50,
+  });
 }
 
 export async function getSellerProfile(sellerId) {
   // TODO: replace with GET /api/public/sellers/:id.
-  const listing = Object.values(listingDetails).find((item) => item.sellerId === sellerId);
+  const listing = Object.values(listingDetails).find(
+    (item) => item.sellerId === sellerId
+  );
   return resolveMock(listing?.sellerProfile || null);
 }

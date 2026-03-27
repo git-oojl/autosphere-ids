@@ -31,20 +31,9 @@
     "Toyota",
     "Volkswagen"
   ],
-  "typeOptions": [
-    "Hatchback",
-    "Pickup",
-    "SUV",
-    "Sedán"
-  ],
-  "transmissionOptions": [
-    "Automática",
-    "Manual"
-  ],
-  "fuelOptions": [
-    "Diésel",
-    "Gasolina"
-  ],
+  "typeOptions": ["Hatchback", "Pickup", "SUV", "Sedán"],
+  "transmissionOptions": ["Automática", "Manual"],
+  "fuelOptions": ["Diésel", "Gasolina"],
   "cityOptions": [
     {
       "value": "mx-cdmx",

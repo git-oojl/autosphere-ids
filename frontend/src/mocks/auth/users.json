@@ -3,48 +3,36 @@
     "id": "u-buyer-001",
     "name": "Mariana López",
     "email": "mariana@example.com",
-    "roles": [
-      "buyer"
-    ]
+    "roles": ["buyer"]
   },
   {
     "id": "u-buyer-002",
     "name": "Ricardo Torres",
     "email": "ricardo@example.com",
-    "roles": [
-      "buyer"
-    ]
+    "roles": ["buyer"]
   },
   {
     "id": "u-seller-001",
     "name": "Auto Select Norte",
     "email": "ventas@autoselectnorte.mx",
-    "roles": [
-      "seller"
-    ]
+    "roles": ["seller"]
   },
   {
     "id": "u-seller-002",
     "name": "Seminuevos La Roca",
     "email": "contacto@laroca.mx",
-    "roles": [
-      "seller"
-    ]
+    "roles": ["seller"]
   },
   {
     "id": "u-lessor-001",
     "name": "Rentas Ejecutivas MX",
     "email": "operacion@rentasejecutivas.mx",
-    "roles": [
-      "lessor"
-    ]
+    "roles": ["lessor"]
   },
   {
     "id": "u-admin-001",
     "name": "Ana Admin",
     "email": "ana.admin@example.com",
-    "roles": [
-      "admin"
-    ]
+    "roles": ["admin"]
   }
 ]

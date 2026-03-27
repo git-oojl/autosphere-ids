@@ -39,7 +39,7 @@ export default [
       },
       {
         path: 'vehiculos/:id',
-        name: 'listadoDetalle',
+        name: 'public-listing-detail',
         alias: ['/listados/:id'],
         component: () => import('../../views/catalog/listing-detail/index.vue'),
       },

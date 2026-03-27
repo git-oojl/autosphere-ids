@@ -3,29 +3,21 @@
   "buyer": {
     "token": "dev-token-buyer",
     "userId": "u-buyer-001",
-    "roles": [
-      "buyer"
-    ]
+    "roles": ["buyer"]
   },
   "seller": {
     "token": "dev-token-seller",
     "userId": "u-seller-001",
-    "roles": [
-      "seller"
-    ]
+    "roles": ["seller"]
   },
   "lessor": {
     "token": "dev-token-lessor",
     "userId": "u-lessor-001",
-    "roles": [
-      "lessor"
-    ]
+    "roles": ["lessor"]
   },
   "admin": {
     "token": "dev-token-admin",
     "userId": "u-admin-001",
-    "roles": [
-      "admin"
-    ]
+    "roles": ["admin"]
   }
 }

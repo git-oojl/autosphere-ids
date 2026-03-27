@@ -7,7 +7,7 @@ function cloneData(data) {
 }
 
 export function resolveMock(data, options = {}) {
-  const delay = typeof options === 'number' ? options : options.delay ?? 120;
+  const delay = typeof options === 'number' ? options : (options.delay ?? 120);
 
   return new Promise((resolve) => {
     globalThis.setTimeout(() => {
@@ -17,7 +17,7 @@ export function resolveMock(data, options = {}) {
 }
 
 export function rejectMock(error, options = {}) {
-  const delay = typeof options === 'number' ? options : options.delay ?? 120;
+  const delay = typeof options === 'number' ? options : (options.delay ?? 120);
 
   return new Promise((_, reject) => {
     globalThis.setTimeout(() => {

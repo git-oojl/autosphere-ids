@@ -6,7 +6,12 @@
 }
 
 body {
-  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  font-family:
+    'Inter',
+    'Segoe UI',
+    system-ui,
+    -apple-system,
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -18,7 +23,7 @@ body {
   position: relative;
   width: 100vw;
   min-height: 100vh;
-  background-color: #05080B;
+  background-color: #05080b;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -66,8 +71,11 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  background: 
-    radial-gradient(circle at 50% 50%, rgba(184, 194, 219, 0.04) 0%, transparent 60%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(184, 194, 219, 0.04) 0%,
+    transparent 60%
+  );
   z-index: 2;
 }
 
@@ -80,7 +88,7 @@ body {
   background: linear-gradient(
     90deg,
     transparent 0%,
-    #B8C2DB 50%,
+    #b8c2db 50%,
     transparent 100%
   );
   opacity: 0.12;
@@ -113,7 +121,7 @@ body {
   padding: 45px 55px;
   width: 100%;
   max-width: 950px;
-  box-shadow: 
+  box-shadow:
     0 25px 70px rgba(0, 0, 0, 0.6),
     0 0 1px rgba(184, 194, 219, 0.35),
     inset 0 1px 0 rgba(184, 194, 219, 0.1);
@@ -141,7 +149,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 
+  box-shadow:
     0 10px 28px rgba(56, 72, 97, 0.4),
     inset 0 2px 0 rgba(184, 194, 219, 0.25);
 }
@@ -149,7 +157,7 @@ body {
 .brand-icon svg {
   width: 26px;
   height: 26px;
-  color: #B8C2DB;
+  color: #b8c2db;
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
 }
 
@@ -157,7 +165,7 @@ body {
   font-size: 26px;
   font-weight: 700;
   letter-spacing: 5px;
-  color: #B8C2DB;
+  color: #b8c2db;
   text-transform: uppercase;
   text-shadow: 0 3px 12px rgba(0, 0, 0, 0.6);
   margin: 0;
@@ -181,7 +189,7 @@ body {
 .register-title {
   font-size: 28px;
   font-weight: 600;
-  color: #B8C2DB;
+  color: #b8c2db;
   margin: 0 0 8px 0;
   text-align: center;
   letter-spacing: 0.5px;
@@ -258,7 +266,7 @@ body {
   border-radius: 11px;
   font-size: 14px;
   font-weight: 400;
-  color: #B8C2DB;
+  color: #b8c2db;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   outline: none;
   font-family: inherit;
@@ -272,8 +280,8 @@ body {
 
 .form-input:focus {
   background: rgba(56, 72, 97, 0.28);
-  border-color: #B8C2DB;
-  box-shadow: 
+  border-color: #b8c2db;
+  box-shadow:
     inset 0 2px 5px rgba(0, 0, 0, 0.25),
     0 0 0 3px rgba(184, 194, 219, 0.12),
     0 5px 15px rgba(184, 194, 219, 0.18);
@@ -291,7 +299,7 @@ body {
 
 .form-input.input-error:focus {
   border-color: rgba(239, 68, 68, 0.85);
-  box-shadow: 
+  box-shadow:
     inset 0 2px 5px rgba(0, 0, 0, 0.25),
     0 0 0 3px rgba(239, 68, 68, 0.12),
     0 5px 15px rgba(239, 68, 68, 0.18);
@@ -356,7 +364,7 @@ body {
   cursor: pointer;
 }
 
-.role-option input[type="radio"] {
+.role-option input[type='radio'] {
   position: absolute;
   opacity: 0;
   pointer-events: none;
@@ -383,9 +391,13 @@ body {
 }
 
 .role-selected .role-card {
-  background: linear-gradient(135deg, rgba(71, 89, 117, 0.35) 0%, rgba(90, 110, 138, 0.3) 100%);
-  border-color: #B8C2DB;
-  box-shadow: 
+  background: linear-gradient(
+    135deg,
+    rgba(71, 89, 117, 0.35) 0%,
+    rgba(90, 110, 138, 0.3) 100%
+  );
+  border-color: #b8c2db;
+  box-shadow:
     0 0 0 3px rgba(184, 194, 219, 0.12),
     0 6px 18px rgba(184, 194, 219, 0.2);
   transform: translateY(-2px);
@@ -416,7 +428,7 @@ body {
 }
 
 .role-selected .role-icon svg {
-  color: #B8C2DB;
+  color: #b8c2db;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
@@ -430,7 +442,7 @@ body {
 }
 
 .role-selected .role-title {
-  color: #B8C2DB;
+  color: #b8c2db;
 }
 
 .role-description {
@@ -463,7 +475,7 @@ body {
   user-select: none;
 }
 
-.terms-checkbox input[type="checkbox"] {
+.terms-checkbox input[type='checkbox'] {
   position: absolute;
   opacity: 0;
   pointer-events: none;
@@ -481,12 +493,12 @@ body {
   margin-top: 1px;
 }
 
-.terms-checkbox input[type="checkbox"]:checked + .checkbox-custom {
+.terms-checkbox input[type='checkbox']:checked + .checkbox-custom {
   background: linear-gradient(135deg, #475975 0%, #5a6e8a 100%);
-  border-color: #B8C2DB;
+  border-color: #b8c2db;
 }
 
-.terms-checkbox input[type="checkbox"]:checked + .checkbox-custom::after {
+.terms-checkbox input[type='checkbox']:checked + .checkbox-custom::after {
   content: '';
   position: absolute;
   left: 50%;
@@ -494,7 +506,7 @@ body {
   transform: translate(-50%, -50%) rotate(45deg);
   width: 5px;
   height: 10px;
-  border: solid #B8C2DB;
+  border: solid #b8c2db;
   border-width: 0 2px 2px 0;
 }
 
@@ -506,7 +518,7 @@ body {
 }
 
 .link-text {
-  color: #B8C2DB;
+  color: #b8c2db;
   text-decoration: none;
   transition: all 0.2s ease;
   font-weight: 500;
@@ -528,12 +540,12 @@ body {
   border-radius: 13px;
   font-size: 15px;
   font-weight: 600;
-  color: #B8C2DB;
+  color: #b8c2db;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   letter-spacing: 0.6px;
   text-transform: uppercase;
-  box-shadow: 
+  box-shadow:
     0 6px 20px rgba(71, 89, 117, 0.35),
     inset 0 1px 0 rgba(184, 194, 219, 0.15);
   position: relative;
@@ -558,9 +570,9 @@ body {
 
 .register-button:hover:not(:disabled) {
   background: linear-gradient(135deg, #5a6e8a 0%, #6d839d 100%);
-  border-color: #B8C2DB;
+  border-color: #b8c2db;
   transform: translateY(-2px);
-  box-shadow: 
+  box-shadow:
     0 10px 28px rgba(71, 89, 117, 0.5),
     inset 0 1px 0 rgba(184, 194, 219, 0.2);
 }
@@ -571,7 +583,7 @@ body {
 
 .register-button:active:not(:disabled) {
   transform: translateY(0);
-  box-shadow: 
+  box-shadow:
     0 5px 15px rgba(71, 89, 117, 0.4),
     inset 0 1px 0 rgba(184, 194, 219, 0.15);
 }
@@ -610,7 +622,7 @@ body {
   width: 17px;
   height: 17px;
   border: 2px solid rgba(184, 194, 219, 0.25);
-  border-top-color: #B8C2DB;
+  border-top-color: #b8c2db;
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -633,7 +645,7 @@ body {
 }
 
 .footer-link {
-  color: #B8C2DB;
+  color: #b8c2db;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -647,7 +659,7 @@ body {
   bottom: -2px;
   width: 0;
   height: 1px;
-  background: #B8C2DB;
+  background: #b8c2db;
   transition: width 0.3s ease;
 }
 

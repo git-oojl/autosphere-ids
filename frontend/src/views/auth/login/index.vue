@@ -309,10 +309,10 @@ const handleForgotPassword = () => {
 };
 
 // Manejar registro
-const handleRegister = () => {
-  console.log('Ir a registro');
-  // Navegar a la página de registro
-};
+// const handleRegister = () => {
+console.log('Ir a registro');
+// Navegar a la página de registro
+// };
 </script>
 
 <style scoped src="./styles.css"></style>

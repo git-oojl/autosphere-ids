@@ -114,7 +114,7 @@ function goSearch() {
 }
 
 .navbar {
-  background: #0F1E2C;
+  background: #0f1e2c;
   padding: 15px 40px;
   border-radius: 50px;
   display: flex;

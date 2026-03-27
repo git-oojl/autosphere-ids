@@ -11,11 +11,7 @@
       "routeName": "public-about"
     }
   },
-  "featuredVehicleIds": [
-    "vh-001",
-    "vh-005",
-    "vh-007"
-  ],
+  "featuredVehicleIds": ["vh-001", "vh-005", "vh-007"],
   "stats": [
     {
       "label": "Vehículos publicados",
