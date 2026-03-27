@@ -1,6 +1,9 @@
 <template>
   <div v-if="vehicle" class="vehicle-detail-page">
     <!-- HERO SECTION -->
+    <br />
+    <br />
+    <br />
     <div class="hero-section">
       <div class="hero-image-wrapper">
         <img
@@ -48,6 +51,7 @@
           <div class="hero-badges">
             <div class="badge-primary">{{ vehicleBadge }}</div>
             <div class="badge-type">{{ vehicle.type }}</div>
+            <div v-if="isRental" class="badge-rental">En Renta</div>
           </div>
           <h1 class="hero-title">
             {{ vehicle.brand }}
@@ -92,18 +96,45 @@
 
     <!-- CONTENT AREA -->
     <div class="content-area">
-      <!-- Price Card -->
-      <div class="price-card">
+      <!-- Price Card (diferenciado por tipo) -->
+      <div class="price-card" :class="{ 'rental-price-card': isRental }">
         <div class="price-header">
           <div>
-            <p class="price-label">Precio de venta</p>
+            <p class="price-label">
+              {{ isRental ? 'Precio por día' : 'Precio de venta' }}
+            </p>
             <h2 class="price-value">
-              ${{ formatPrice(vehicle.price) }}
+              ${{
+                formatPrice(
+                  isRental ? vehicle.rentalSpecs?.pricePerDay : vehicle.price
+                )
+              }}
               <span class="price-currency">MXN</span>
             </h2>
-            <p v-if="monthlyPayment" class="price-financing">
+            <p v-if="!isRental && monthlyPayment" class="price-financing">
               Desde ${{ formatPrice(monthlyPayment) }}/mes con financiamiento*
             </p>
+            <div v-if="isRental" class="rental-price-options">
+              <span class="price-week"
+                >${{ formatPrice(vehicle.rentalSpecs?.pricePerWeek) }}/sem</span
+              >
+              <span class="price-month"
+                >${{
+                  formatPrice(vehicle.rentalSpecs?.pricePerMonth)
+                }}/mes</span
+              >
+            </div>
+            <div
+              v-if="isRental && !vehicle.rentalSpecs?.available"
+              class="unavailable-badge"
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              Temporalmente no disponible
+            </div>
           </div>
         </div>
 
@@ -121,7 +152,12 @@
             </svg>
             <div>
               <p class="spec-label">Kilometraje</p>
-              <p class="spec-value">{{ formatNumber(vehicle.mileageKm) }} km</p>
+              <p class="spec-value">
+                {{
+                  formatNumber(vehicle.mileageKm || vehicle.specs?.kilometraje)
+                }}
+                km
+              </p>
             </div>
           </div>
           <div class="spec-item">
@@ -136,7 +172,9 @@
             </svg>
             <div>
               <p class="spec-label">Combustible</p>
-              <p class="spec-value">{{ vehicle.fuel }}</p>
+              <p class="spec-value">
+                {{ vehicle.fuel || vehicle.specs?.combustible }}
+              </p>
             </div>
           </div>
           <div class="spec-item">
@@ -152,12 +190,14 @@
             </svg>
             <div>
               <p class="spec-label">Transmisión</p>
-              <p class="spec-value">{{ vehicle.transmission }}</p>
+              <p class="spec-value">
+                {{ vehicle.transmission || vehicle.specs?.transmisión }}
+              </p>
             </div>
           </div>
         </div>
 
-        <!-- CTA Buttons -->
+        <!-- CTA Buttons (diferenciados) -->
         <div class="cta-buttons">
           <button class="btn-secondary" @click="scheduleTestDrive">
             <svg
@@ -169,7 +209,7 @@
               <rect x="3" y="4" width="18" height="18" rx="2" />
               <path d="M16 2v4M8 2v4M3 10h18" />
             </svg>
-            Agendar Prueba
+            {{ isRental ? 'Agendar Renta' : 'Agendar Prueba' }}
           </button>
           <button class="btn-primary" @click="contactSeller">
             <svg
@@ -182,8 +222,164 @@
                 d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z"
               />
             </svg>
-            Contactar Vendedor
+            {{ isRental ? 'Contactar Arrendador' : 'Contactar Vendedor' }}
           </button>
+        </div>
+      </div>
+
+      <!-- PLANES DE PAGO (solo para venta) -->
+      <div v-if="!isRental" class="payment-plans-card">
+        <h3 class="section-title">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path
+              d="M3 10H21M7 15H11M7 18H14M6 3H18C19.1046 3 20 3.89543 20 5V19C20 20.1046 19.1046 21 18 21H6C4.89543 21 4 20.1046 4 19V5C4 3.89543 4.89543 3 6 3Z"
+            />
+          </svg>
+          Opciones de pago
+        </h3>
+        <div class="payment-options">
+          <div
+            class="payment-option"
+            :class="{ active: paymentPlan === 'cash' }"
+            @click="paymentPlan = 'cash'"
+          >
+            <div class="payment-option-header">
+              <span class="payment-option-name">Contado</span>
+              <span class="payment-option-badge">Ahorra hasta 15%</span>
+            </div>
+            <p class="payment-option-desc">
+              Pago único con descuento especial.
+            </p>
+            <div class="payment-option-price">
+              ${{ formatPrice(vehicle.price * 0.85) }} MXN
+            </div>
+          </div>
+          <div
+            class="payment-option"
+            :class="{ active: paymentPlan === 'financing24' }"
+            @click="paymentPlan = 'financing24'"
+          >
+            <div class="payment-option-header">
+              <span class="payment-option-name">Financiamiento 24 meses</span>
+              <span class="payment-option-badge">Tasa fija 9.9%</span>
+            </div>
+            <p class="payment-option-desc">
+              Mensualidades fijas sin penalización por pago anticipado.
+            </p>
+            <div class="payment-option-price">
+              ${{ formatPrice(calculateMonthlyPayment(24, 0.099)) }} MXN / mes
+            </div>
+          </div>
+          <div
+            class="payment-option"
+            :class="{ active: paymentPlan === 'financing48' }"
+            @click="paymentPlan = 'financing48'"
+          >
+            <div class="payment-option-header">
+              <span class="payment-option-name">Financiamiento 48 meses</span>
+              <span class="payment-option-badge">Tasa fija 12.5%</span>
+            </div>
+            <p class="payment-option-desc">
+              Mensualidades bajas para mayor liquidez.
+            </p>
+            <div class="payment-option-price">
+              ${{ formatPrice(calculateMonthlyPayment(48, 0.125)) }} MXN / mes
+            </div>
+          </div>
+        </div>
+        <button class="btn-primary payment-cta" @click="requestQuote">
+          Solicitar cotización personalizada
+        </button>
+      </div>
+
+      <!-- INFO DE RENTA (solo para renta) -->
+      <div v-if="isRental && vehicle.rentalSpecs" class="rental-info-card">
+        <h3 class="section-title">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+            <line x1="16" y1="2" x2="16" y2="6" />
+            <line x1="8" y1="2" x2="8" y2="6" />
+            <line x1="3" y1="10" x2="21" y2="10" />
+          </svg>
+          Detalles de Renta
+        </h3>
+        <div class="rental-details-grid">
+          <div class="rental-detail-item">
+            <span class="detail-label">Depósito de garantía</span>
+            <span class="detail-value"
+              >${{ formatPrice(vehicle.rentalSpecs.depositAmount) }} MXN</span
+            >
+          </div>
+          <div class="rental-detail-item">
+            <span class="detail-label">Km incluidos/día</span>
+            <span class="detail-value"
+              >{{ vehicle.rentalSpecs.kmIncludedPerDay }} km</span
+            >
+          </div>
+          <div class="rental-detail-item">
+            <span class="detail-label">Costo por km extra</span>
+            <span class="detail-value"
+              >${{ vehicle.rentalSpecs.extraKmCost }} MXN/km</span
+            >
+          </div>
+          <div class="rental-detail-item">
+            <span class="detail-label">Disponibilidad</span>
+            <span
+              class="detail-value"
+              :class="
+                vehicle.rentalSpecs.available ? 'text-success' : 'text-danger'
+              "
+            >
+              {{
+                vehicle.rentalSpecs.available ? 'Disponible' : 'No disponible'
+              }}
+            </span>
+          </div>
+          <div
+            v-if="vehicle.rentalSpecs.availableFrom"
+            class="rental-detail-item full-width"
+          >
+            <span class="detail-label">Período de disponibilidad</span>
+            <span class="detail-value"
+              >{{ formatDate(vehicle.rentalSpecs.availableFrom) }} -
+              {{ formatDate(vehicle.rentalSpecs.availableTo) }}</span
+            >
+          </div>
+        </div>
+
+        <div class="included-items">
+          <h4>Incluye</h4>
+          <div class="items-list">
+            <span
+              v-for="item in vehicle.rentalSpecs.includedItems"
+              :key="item"
+              class="included-badge"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              {{ item }}
+            </span>
+          </div>
+        </div>
+
+        <div class="requirements">
+          <h4>Requisitos</h4>
+          <ul>
+            <li v-for="req in vehicle.rentalSpecs.requirements" :key="req">
+              {{ req }}
+            </li>
+          </ul>
         </div>
       </div>
 
@@ -296,7 +492,7 @@
                 d="M16 21V5C16 4.46957 15.7893 3.96086 15.4142 3.58579C15.0391 3.21071 14.5304 3 14 3H10C9.46957 3 8.96086 3.21071 8.58579 3.58579C8.21071 3.96086 8 4.46957 8 5V21"
               />
             </svg>
-            Vendedor
+            {{ isRental ? 'Arrendador' : 'Vendedor' }}
           </h3>
           <div class="seller-content">
             <div class="seller-avatar">
@@ -358,6 +554,121 @@
             </div>
           </div>
         </div>
+
+        <!-- Ubicación -->
+        <div class="location-section info-section">
+          <h3 class="section-title">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            Ubicación
+          </h3>
+          <div class="location-content">
+            <div class="location-address">
+              <p>
+                <strong>{{ vehicleLocation }}</strong>
+              </p>
+              <p class="address-detail">
+                {{ vehicle.location?.addressLabel || 'Sucursal principal' }}
+              </p>
+              <a href="#" class="map-link" @click.prevent="openMaps"
+                >Ver en Google Maps →</a
+              >
+            </div>
+            <div class="map-placeholder">
+              <img
+                src="https://placehold.co/600x300/e2e8f0/2d5179?text=Mapa+estático+de+ubicación"
+                alt="Mapa"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Reseñas -->
+        <div class="reviews-section info-section">
+          <h3 class="section-title">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path
+                d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.07 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"
+              />
+            </svg>
+            Reseñas de {{ isRental ? 'arrendatarios' : 'compradores' }}
+          </h3>
+          <div class="reviews-list">
+            <div v-for="review in reviews" :key="review.id" class="review-item">
+              <div class="review-header">
+                <div class="reviewer-info">
+                  <span class="reviewer-name">{{ review.name }}</span>
+                  <div class="stars stars-sm">
+                    <svg
+                      v-for="star in getReviewStars(review.rating)"
+                      :key="star.key"
+                      viewBox="0 0 24 24"
+                      :fill="star.filled ? 'currentColor' : 'none'"
+                      :stroke="star.filled ? 'none' : 'currentColor'"
+                    >
+                      <path
+                        d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.07 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <span class="review-date">{{ formatDate(review.date) }}</span>
+              </div>
+              <p class="review-comment">{{ review.comment }}</p>
+            </div>
+          </div>
+
+          <!-- Formulario para dejar reseña -->
+          <div class="add-review">
+            <h4>Deja tu reseña</h4>
+            <div class="review-form">
+              <input
+                v-model="newReview.name"
+                type="text"
+                placeholder="Tu nombre"
+                class="form-input"
+              />
+              <div class="rating-input">
+                <span>Calificación: </span>
+                <div class="stars stars-select">
+                  <svg
+                    v-for="i in 5"
+                    :key="i"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    :class="{ active: i <= newReview.rating }"
+                    @click="newReview.rating = i"
+                  >
+                    <path
+                      d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.07 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <textarea
+                v-model="newReview.comment"
+                placeholder="Escribe tu comentario..."
+                rows="3"
+                class="form-input"
+              ></textarea>
+              <button class="btn-secondary" @click="submitReview">
+                Publicar reseña
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -370,23 +681,55 @@ import { useRoute, useRouter } from 'vue-router';
 const route = useRoute();
 const router = useRouter();
 
+const getReviewStars = (rating) =>
+  Array.from({ length: 5 }, (_, index) => ({
+    key: index + 1,
+    filled: index < rating,
+  }));
+
+// IMPORTAR DATOS DESDE JSON
+import salesDetails from '../../../mocks/catalog/listing-details.json';
+import rentalDetails from '../../../mocks/catalog/rental-details.json';
+
 // STATE
 const currentImageIndex = ref(0);
 const showDetails = ref(false);
 const isFavorite = ref(false);
 
-const vehicle = computed(() => {
-  const id = route.params.id;
-  return vehiclesDatabase.value.find((v) => v.id === id) || null;
-});
-
-watch(
-  vehicle,
-  (found) => {
-    if (!found) router.replace('/vehiculos');
+// NUEVO: planes de pago y reseñas
+const paymentPlan = ref('cash');
+const reviews = ref([
+  {
+    id: 1,
+    name: 'Carlos Rodríguez',
+    rating: 5,
+    date: '2025-02-10',
+    comment:
+      'Excelente servicio, el auto llegó en perfectas condiciones. Muy recomendable.',
   },
-  { immediate: true }
-);
+  {
+    id: 2,
+    name: 'María Fernanda López',
+    rating: 4,
+    date: '2025-01-28',
+    comment:
+      'Todo bien, solo un pequeño detalle con la entrega, pero lo resolvieron rápido.',
+  },
+  {
+    id: 3,
+    name: 'Javier Méndez',
+    rating: 5,
+    date: '2025-01-15',
+    comment:
+      'El mejor lugar para comprar un auto seminuevo. Proceso transparente y confiable.',
+  },
+]);
+
+const newReview = ref({
+  name: '',
+  rating: 5,
+  comment: '',
+});
 
 // DEFAULT DATA
 const defaultDescription =
@@ -432,292 +775,70 @@ const getStateFromCity = (cityId) => {
   return states[cityId] || 'México';
 };
 
-// DATABASE (MANTENER INTACTA)
-const vehiclesDatabase = ref([
-  {
-    id: 'vh-001',
-    title: 'Mazda CX-5 i Grand Touring 2021',
-    brand: 'Mazda',
-    model: 'CX-5',
-    year: 2021,
-    price: 478000,
-    type: 'SUV',
-    transmission: 'Automática',
-    fuel: 'Gasolina',
-    mileageKm: 42500,
-    cityId: 'mx-cdmx',
-    coverImage: 'https://images.unsplash.com/photo-1549399812-1d87fd4a2a28',
-    status: 'published',
-    color: 'Rojo',
-    condition: 'Seminuevo',
-    horsepower: 187,
-    engine: 2.5,
-    cylinders: 4,
-    doors: 5,
-    description:
-      'Mazda CX-5 i Grand Touring 2021, SUV compacta premium. Equipamiento completo, único dueño, servicios en agencia.',
-    features: [
-      'Asientos de piel',
-      'Pantalla táctil',
-      'Cámara de reversa',
-      'Sensores de estacionamiento',
-      'Control crucero',
-      'Bluetooth',
-    ],
-    gallery: [
-      'https://images.unsplash.com/photo-1549399812-1d87fd4a2a28',
-      'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800',
-      'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800',
-    ],
-    sellerProfile: {
-      displayName: 'Auto Premium Sur',
-      rating: 4.8,
-      verified: true,
-      responseTime: 'Menos de 1 hora',
-      activeListings: 12,
-    },
-    location: { city: 'Ciudad de México', state: 'CDMX' },
+// DETERMINAR SI ES RENTA O VENTA
+const isRental = computed(() => {
+  const id = route.params.id;
+  return id && id.startsWith('rt-');
+});
+
+// OBTENER VEHÍCULO DE LA FUENTE CORRECTA
+const vehicle = computed(() => {
+  const id = route.params.id;
+  if (!id) return null;
+
+  return isRental.value ? rentalDetails[id] || null : salesDetails[id] || null;
+});
+
+watch(
+  () => route.params.id,
+  () => {
+    if (!vehicle.value) {
+      router.replace('/vehiculos');
+    }
   },
-  {
-    id: 'vh-002',
-    title: 'Toyota Corolla LE 2020',
-    brand: 'Toyota',
-    model: 'Corolla',
-    year: 2020,
-    price: 289000,
-    type: 'Sedán',
-    transmission: 'Automática',
-    fuel: 'Gasolina',
-    mileageKm: 61200,
-    cityId: 'mx-gdl',
-    coverImage: 'https://images.unsplash.com/photo-1494976388531-d1058494cdd8',
-    status: 'published',
-    color: 'Blanco',
-    condition: 'Seminuevo',
-    horsepower: 140,
-    engine: 1.8,
-    cylinders: 4,
-    doors: 4,
-    description:
-      'Toyota Corolla LE 2020, sedán confiable y económico. Excelente rendimiento de combustible y mantenimiento reciente.',
-    features: [
-      'Frenos ABS',
-      'Airbags',
-      'Aire acondicionado',
-      'Dirección eléctrica',
-      'Radio AM/FM',
-      'USB',
-    ],
-    gallery: [
-      'https://images.unsplash.com/photo-1494976388531-d1058494cdd8',
-      'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800',
-      'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800',
-    ],
-    sellerProfile: {
-      displayName: 'Autos Confiables Occidente',
-      rating: 4.6,
-      verified: true,
-      responseTime: 'Menos de 2 horas',
-      activeListings: 8,
-    },
-    location: { city: 'Guadalajara', state: 'Jalisco' },
-  },
-  {
-    id: 'vh-003',
-    title: 'Ford Ranger XLT 2022',
-    brand: 'Ford',
-    model: 'Ranger',
-    year: 2022,
-    price: 615000,
-    type: 'Pickup',
-    transmission: 'Automática',
-    fuel: 'Diésel',
-    mileageKm: 28100,
-    cityId: 'mx-mty',
-    coverImage: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70',
-    status: 'published',
-    color: 'Gris',
-    condition: 'Seminuevo',
-    horsepower: 200,
-    engine: 2.0,
-    cylinders: 4,
-    doors: 4,
-    description:
-      'Ford Ranger XLT 2022, pickup robusta y potente. Ideal para trabajo y aventura. Impecable estado.',
-    features: [
-      'Tracción 4x4',
-      'Caja de carga',
-      'Control de tracción',
-      'Pantalla 8"',
-      'Sistema SYNC',
-      'Asistente de pendiente',
-    ],
-    gallery: [
-      'https://images.unsplash.com/photo-1503376780353-7e6692767b70',
-      'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800',
-      'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800',
-    ],
-    sellerProfile: {
-      displayName: 'Pickups del Norte',
-      rating: 4.9,
-      verified: true,
-      responseTime: 'Menos de 1 hora',
-      activeListings: 6,
-    },
-    location: { city: 'Monterrey', state: 'Nuevo León' },
-  },
-  {
-    id: 'vh-004',
-    title: 'Kia Rio Hatchback 2019',
-    brand: 'Kia',
-    model: 'Rio',
-    year: 2019,
-    price: 229000,
-    type: 'Hatchback',
-    transmission: 'Manual',
-    fuel: 'Gasolina',
-    mileageKm: 73500,
-    cityId: 'mx-pue',
-    coverImage: 'https://images.unsplash.com/photo-1511919884226-fd3cad34687c',
-    status: 'published',
-    color: 'Azul',
-    condition: 'Seminuevo',
-    horsepower: 120,
-    engine: 1.6,
-    cylinders: 4,
-    doors: 5,
-    description:
-      'Kia Rio Hatchback 2019, compacto y eficiente. Perfecto para la ciudad con excelente rendimiento de combustible.',
-    features: [
-      'Bluetooth',
-      'Aire acondicionado',
-      'Dirección eléctrica',
-      'Vidrios eléctricos',
-      'Cierre centralizado',
-      'Airbags',
-    ],
-    gallery: [
-      'https://images.unsplash.com/photo-1511919884226-fd3cad34687c',
-      'https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800',
-      'https://images.unsplash.com/photo-1556189250-72ba954cfc2b?w=800',
-    ],
-    sellerProfile: {
-      displayName: 'Seminuevos La Roca',
-      rating: 4.4,
-      verified: true,
-      responseTime: 'Menos de 2 horas',
-      activeListings: 4,
-    },
-    location: { city: 'Puebla', state: 'Puebla' },
-  },
-  {
-    id: 'vh-005',
-    title: 'Volkswagen Jetta Comfortline 2023',
-    brand: 'Volkswagen',
-    model: 'Jetta',
-    year: 2023,
-    price: 529000,
-    type: 'Sedán',
-    transmission: 'Automática',
-    fuel: 'Gasolina',
-    mileageKm: 12900,
-    cityId: 'mx-cdmx',
-    coverImage: 'https://images.unsplash.com/photo-1502877338535-766e1452684a',
-    status: 'published',
-    color: 'Negro',
-    condition: 'Nuevo',
-    horsepower: 150,
-    engine: 1.4,
-    cylinders: 4,
-    doors: 4,
-    description:
-      'Volkswagen Jetta Comfortline 2023, sedán elegante y tecnológico. Excelente desempeño y confort. Único dueño.',
-    features: [
-      'Pantalla 8"',
-      'Apple CarPlay',
-      'Android Auto',
-      'Asientos calefactables',
-      'Control crucero adaptativo',
-      'Sensores de estacionamiento',
-    ],
-    gallery: [
-      'https://images.unsplash.com/photo-1502877338535-766e1452684a',
-      'https://images.unsplash.com/photo-1536599018102-9f803c140fc1?w=800',
-      'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800',
-    ],
-    sellerProfile: {
-      displayName: 'Auto Select Norte',
-      rating: 4.7,
-      verified: true,
-      responseTime: 'Menos de 2 horas',
-      activeListings: 4,
-    },
-    location: { city: 'Ciudad de México', state: 'CDMX' },
-  },
-  {
-    id: 'vh-007',
-    title: 'Honda CR-V Touring 2022',
-    brand: 'Honda',
-    model: 'CR-V',
-    year: 2022,
-    price: 598000,
-    type: 'SUV',
-    transmission: 'Automática',
-    fuel: 'Gasolina',
-    mileageKm: 24600,
-    cityId: 'mx-gdl',
-    coverImage: 'https://images.unsplash.com/photo-1553440569-bcc63803a83d',
-    status: 'published',
-    color: 'Gris',
-    condition: 'Seminuevo',
-    horsepower: 190,
-    engine: 1.5,
-    cylinders: 4,
-    doors: 5,
-    description:
-      'Honda CR-V Touring 2022, SUV familiar con amplio espacio y tecnología de punta. Excelente para viajes largos.',
-    features: [
-      'Asientos de piel',
-      'Techo panorámico',
-      'Cámara 360°',
-      'Navegación',
-      'Control crucero adaptativo',
-      'Asistente de carril',
-    ],
-    gallery: [
-      'https://images.unsplash.com/photo-1553440569-bcc63803a83d',
-      'https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=800',
-      'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=800',
-    ],
-    sellerProfile: {
-      displayName: 'Auto Select Norte',
-      rating: 4.7,
-      verified: true,
-      responseTime: 'Menos de 2 horas',
-      activeListings: 4,
-    },
-    location: { city: 'Guadalajara', state: 'Jalisco' },
-  },
-]);
+  { immediate: true }
+);
 
 const thumbnailImages = computed(
   () => vehicle.value?.gallery || [vehicle.value?.coverImage]
 );
-const vehicleBadge = computed(() => vehicle.value?.condition || 'Certificado');
+const vehicleBadge = computed(() => {
+  if (isRental.value) return 'Disponible para renta';
+  return vehicle.value?.condition || 'Certificado';
+});
 const vehicleInfoItems = computed(() => [
   { label: 'Marca', value: vehicle.value?.brand },
   { label: 'Modelo', value: vehicle.value?.model },
   { label: 'Año', value: vehicle.value?.year },
   {
     label: 'Kilometraje',
-    value: vehicle.value?.mileageKm
-      ? formatNumber(vehicle.value.mileageKm) + ' km'
-      : '—',
+    value:
+      vehicle.value?.mileageKm || vehicle.value?.specs?.kilometraje
+        ? formatNumber(
+            vehicle.value.mileageKm || vehicle.value?.specs?.kilometraje
+          ) + ' km'
+        : '—',
   },
-  { label: 'Transmisión', value: vehicle.value?.transmission },
-  { label: 'Combustible', value: vehicle.value?.fuel },
-  { label: 'Color', value: vehicle.value?.color },
-  { label: 'Puertas', value: vehicle.value?.doors || '4' },
+  {
+    label: 'Transmisión',
+    value: vehicle.value?.transmission || vehicle.value?.specs?.transmisión,
+  },
+  {
+    label: 'Combustible',
+    value: vehicle.value?.fuel || vehicle.value?.specs?.combustible,
+  },
+  {
+    label: 'Color',
+    value: vehicle.value?.color || vehicle.value?.specs?.color,
+  },
+  {
+    label: 'Puertas',
+    value: vehicle.value?.doors || vehicle.value?.specs?.puertas || '4',
+  },
+  {
+    label: 'Asientos',
+    value: vehicle.value?.seats || vehicle.value?.specs?.asientos || '5',
+  },
 ]);
 const vehicleFeatures = computed(
   () => vehicle.value?.features || defaultFeatures
@@ -729,7 +850,9 @@ const vehicleLocation = computed(() => {
   return `${getCityName(vehicle.value?.cityId)}, ${getStateFromCity(vehicle.value?.cityId)}`;
 });
 const sellerName = computed(
-  () => vehicle.value?.sellerProfile?.displayName || 'AutoSphere Certified'
+  () =>
+    vehicle.value?.sellerProfile?.displayName ||
+    (isRental.value ? 'AutoSphere Rentals' : 'AutoSphere Certified')
 );
 const sellerRating = computed(
   () => vehicle.value?.sellerProfile?.rating || 4.8
@@ -738,7 +861,7 @@ const sellerVerified = computed(
   () => vehicle.value?.sellerProfile?.verified !== false
 );
 const monthlyPayment = computed(() => {
-  if (!vehicle.value?.price) return null;
+  if (!vehicle.value?.price || isRental.value) return null;
   const rate = 0.12 / 12;
   const months = 48;
   const payment =
@@ -772,20 +895,79 @@ const toggleFavorite = () => {
 };
 const contactSeller = () => {
   alert(
-    `Contactando a ${sellerName.value}...\nTeléfono: 800-123-4567\nEmail: ventas@autosphere.com`
+    `Contactando a ${sellerName.value}...\nTeléfono: 800-123-4567\nEmail: ${isRental.value ? 'rentas@autosphere.com' : 'ventas@autosphere.com'}`
   );
 };
 const scheduleTestDrive = () => {
-  router.push(`/citas?vehicle=${vehicle.value?.id}`);
+  if (isRental.value) {
+    alert('Redirigiendo a calendario de rentas...');
+    router.push(`/rentas?vehicle=${vehicle.value?.id}`);
+  } else {
+    router.push(`/citas?vehicle=${vehicle.value?.id}`);
+  }
 };
-//const goToHome = () => {
-//  router.push('/');
-//};
-//const goToCatalog = () => {
-//  router.push('/vehiculos');
-//};
+// const goToHome = () => {
+//   router.push('/');
+// };
+// const goToCatalog = () => {
+//   router.push('/vehiculos');
+// };
+
 const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price);
 const formatNumber = (num) => new Intl.NumberFormat('es-MX').format(num);
+
+// NUEVOS MÉTODOS
+const calculateMonthlyPayment = (months, annualRate) => {
+  if (!vehicle.value?.price) return 0;
+  const principal = vehicle.value.price;
+  const monthlyRate = annualRate / 12;
+  if (monthlyRate === 0) return principal / months;
+  const payment =
+    (principal * monthlyRate * Math.pow(1 + monthlyRate, months)) /
+    (Math.pow(1 + monthlyRate, months) - 1);
+  return Math.round(payment);
+};
+
+const requestQuote = () => {
+  alert(
+    'Gracias por tu interés. Un asesor se pondrá en contacto contigo en breve.'
+  );
+};
+
+const openMaps = () => {
+  const address = encodeURIComponent(
+    vehicle.value?.location?.addressLabel ||
+      `Av. Ejemplo #123, ${vehicleLocation.value}`
+  );
+  window.open(`https://www.google.com/maps/search/${address}`, '_blank');
+};
+
+const formatDate = (dateStr) => {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('es-MX', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+};
+
+const submitReview = () => {
+  if (!newReview.value.name.trim() || !newReview.value.comment.trim()) {
+    alert('Por favor completa tu nombre y comentario.');
+    return;
+  }
+  const newId = reviews.value.length + 1;
+  reviews.value.unshift({
+    id: newId,
+    name: newReview.value.name,
+    rating: newReview.value.rating,
+    date: new Date().toISOString().split('T')[0],
+    comment: newReview.value.comment,
+  });
+  newReview.value = { name: '', rating: 5, comment: '' };
+  alert('Reseña publicada. ¡Gracias por compartir tu experiencia!');
+};
 
 onMounted(() => {
   currentImageIndex.value = 0;

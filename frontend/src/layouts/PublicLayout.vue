@@ -2,7 +2,12 @@
   <div class="public-layout">
     <PublicAppBar />
 
-    <v-main class="main-content">
+    <!-- 
+      🔑 CLAVE: Vuetify agrega automáticamente padding-top igual a la altura
+      del v-app-bar. Con scroll-behavior="smooth" y style se anula ese padding
+      para que TODAS las vistas arranquen desde y:0 sin tocar cada una.
+    -->
+    <v-main class="main-content" :style="{ paddingTop: '0 !important' }">
       <div class="page-shell">
         <router-view />
       </div>
@@ -16,9 +21,7 @@
             <h3>AutoSphere</h3>
             <ul>
               <li><a @click.prevent="goToHome">Inicio</a></li>
-              <li>
-                <router-link to="/sobre-nosotros">Sobre nosotros</router-link>
-              </li>
+              <li><router-link to="/nosotros">Sobre nosotros</router-link></li>
               <li><router-link to="/faq">Preguntas frecuentes</router-link></li>
               <li><router-link to="/contacto">Contacto</router-link></li>
             </ul>
@@ -28,22 +31,20 @@
             <h3>Para ti</h3>
             <ul>
               <li>
-                <router-link to="/catalogo">Comprar vehículo</router-link>
+                <router-link to="/vehiculos">Comprar vehículo</router-link>
               </li>
               <li><router-link to="/vender">Vender vehículo</router-link></li>
               <li>
                 <router-link to="/financiamiento">Financiamiento</router-link>
               </li>
               <li><router-link to="/seguros">Seguros</router-link></li>
+              <li><router-link to="/garantias">Garantías</router-link></li>
             </ul>
           </div>
 
           <div class="footer-col">
             <h3>Soporte</h3>
             <ul>
-              <li>
-                <router-link to="/centro-ayuda">Centro de ayuda</router-link>
-              </li>
               <li>
                 <router-link to="/terminos">Términos de servicio</router-link>
               </li>
@@ -52,7 +53,6 @@
                   >Política de privacidad</router-link
                 >
               </li>
-              <li><router-link to="/garantias">Garantías</router-link></li>
             </ul>
           </div>
 
@@ -123,7 +123,10 @@
             >
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path
-                  d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.527 1.098 3.574l-1.095 3.5 3.596-1.016c1.022.552 2.172.844 3.348.844 3.18 0 5.767-2.586 5.768-5.766.001-3.18-2.585-5.766-5.767-5.766zm2.974 8.343c-.128.306-.518.548-.846.606-.277.049-.559.074-.833.074-.233 0-.483-.025-.744-.074-.394-.074-.794-.17-1.15-.304-.285-.106-.546-.241-.782-.4-.182-.123-.345-.27-.488-.437-.138-.159-.258-.337-.357-.532-.248-.49-.346-1.014-.281-1.528.024-.198.084-.391.179-.568.146-.271.376-.491.643-.65.125-.074.266-.13.414-.165.11-.026.222.005.302.084.216.211.373.473.462.762.03.096.015.199-.03.291-.067.137-.151.267-.235.401-.062.099-.129.2-.178.304-.032.068-.029.145.008.211.097.171.239.324.408.432.217.139.466.234.725.274.134.02.271.011.401-.025.104-.029.199-.081.282-.151.183-.155.349-.331.486-.532.132-.194.224-.411.273-.641.02-.097.014-.197-.02-.291-.037-.103-.094-.2-.166-.285-.086-.102-.186-.189-.298-.258-.112-.069-.237-.117-.367-.142-.198-.038-.4-.014-.588.07-.095.043-.184.101-.261.169-.077.068-.141.148-.191.237-.038.069-.063.144-.072.222-.009.079.001.158.026.234.024.076.061.148.109.213.048.065.105.121.17.166.064.045.135.078.209.098.074.02.15.024.225.012.075-.012.148-.039.216-.078.068-.039.129-.09.179-.15.05-.06.089-.129.115-.202.027-.073.04-.15.039-.227-.001-.077-.016-.153-.043-.224-.028-.071-.07-.136-.123-.191-.053-.055-.116-.1-.185-.132-.069-.032-.144-.05-.219-.053-.075-.003-.15.009-.221.037-.07.028-.133.07-.186.122-.053.052-.094.114-.121.182-.027.068-.04.14-.038.212.002.072.018.142.046.207.028.065.068.123.116.171.048.048.104.086.165.112.061.026.127.04.194.04.067 0 .133-.014.194-.04.061-.026.115-.064.163-.112.048-.048.086-.106.113-.171.027-.065.041-.135.038-.207z"
+                  d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"
+                />
+                <path
+                  d="M12 0C5.373 0 0 5.373 0 12c0 2.125.558 4.12 1.529 5.849L.057 23.55a.75.75 0 00.916.913l5.701-1.472A11.955 11.955 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.89 0-3.663-.523-5.176-1.432l-.371-.22-3.384.874.893-3.383-.236-.381A9.96 9.96 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"
                 />
               </svg>
             </a>
@@ -150,6 +153,18 @@ const goToHome = () => {
 </script>
 
 <style scoped>
+/* 
+  🔑 Forzar que Vuetify NO agregue padding-top automático al v-main.
+  Esto aplica a TODAS las vistas hijas sin tocar ninguna de ellas.
+*/
+:deep(.v-main) {
+  padding-top: 0 !important;
+}
+
+:deep(.v-main__wrap) {
+  padding-top: 0 !important;
+}
+
 /* ============================================
    FOOTER GLOBAL STYLES
    ============================================ */
@@ -291,6 +306,10 @@ const goToHome = () => {
   .social-icons {
     justify-content: center;
   }
+
+  .footer-bottom {
+    padding: 20px 0;
+  }
 }
 
 @media (max-width: 480px) {
@@ -308,49 +327,6 @@ const goToHome = () => {
 
   .footer-col ul li a {
     text-align: center;
-  }
-
-  .social-icons {
-    justify-content: center;
-  }
-}
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-@media (max-width: 768px) {
-  .public-layout {
-    --layout-top-offset: 190px;
-  }
-
-  .footer {
-    padding: 40px 20px 0;
-  }
-
-  .footer-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 32px;
-  }
-
-  .footer-bottom {
-    padding: 20px 0;
-  }
-}
-
-@media (max-width: 480px) {
-  .footer-grid {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-
-  .footer-col {
-    text-align: center;
-  }
-
-  .footer-col ul {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
 
   .social-icons {

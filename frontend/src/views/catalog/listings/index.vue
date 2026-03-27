@@ -1,16 +1,66 @@
 <template>
   <div class="listados">
+    <br />
+    <br />
+    <br />
+
     <!-- MAIN CONTENT WITH SIDEBAR FILTERS -->
     <div class="main-layout">
-      <!-- SIDEBAR FILTERS - IZQUIERDA -->
+      <!-- SIDEBAR FILTERS -->
       <aside class="filters-sidebar">
+        <div class="mode-toggle-wrapper">
+          <div class="mode-toggle">
+            <button
+              class="mode-btn"
+              :class="{ active: listingMode === 'venta' }"
+              @click="switchMode('venta')"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+              Comprar
+            </button>
+            <button
+              class="mode-btn"
+              :class="{ active: listingMode === 'renta' }"
+              @click="switchMode('renta')"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.2"
+              >
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+              </svg>
+              Rentar
+            </button>
+            <div
+              class="mode-indicator"
+              :class="listingMode === 'renta' ? 'right' : 'left'"
+            ></div>
+          </div>
+        </div>
         <h3 class="filters-title">Filtros</h3>
         <button class="clear-filters" @click="clearAllFilters">
           Limpiar todo
         </button>
 
-        <!-- FILTRO POR PRECIO -->
-        <div class="filter-section">
+        <!-- FILTRO PRECIO (VENTA) -->
+        <div v-if="listingMode === 'venta'" class="filter-section">
           <div class="filter-header" @click="toggleSection('price')">
             <h4>Precio</h4>
             <span class="toggle-icon">{{
@@ -45,7 +95,121 @@
           </div>
         </div>
 
-        <!-- FILTRO POR AÑO -->
+        <!-- FILTRO PRECIO POR DÍA (RENTA) -->
+        <div v-if="listingMode === 'renta'" class="filter-section">
+          <div class="filter-header" @click="toggleSection('rentPrice')">
+            <h4>Precio por día</h4>
+            <span class="toggle-icon">{{
+              expandedSections.rentPrice ? '−' : '+'
+            }}</span>
+          </div>
+          <div v-show="expandedSections.rentPrice" class="filter-content">
+            <div class="filter-option">
+              <label>
+                <input
+                  v-model="priceOrder"
+                  type="radio"
+                  name="rentPriceOrder"
+                  value="lowToHigh"
+                  @change="handlePriceChange"
+                />
+                <span>Menor a mayor</span>
+              </label>
+            </div>
+            <div class="filter-option">
+              <label>
+                <input
+                  v-model="priceOrder"
+                  type="radio"
+                  name="rentPriceOrder"
+                  value="highToLow"
+                  @change="handlePriceChange"
+                />
+                <span>Mayor a menor</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- FILTRO DISPONIBILIDAD (RENTA) -->
+        <div v-if="listingMode === 'renta'" class="filter-section">
+          <div class="filter-header" @click="toggleSection('availability')">
+            <h4>Disponibilidad</h4>
+            <span class="toggle-icon">{{
+              expandedSections.availability ? '−' : '+'
+            }}</span>
+          </div>
+          <div v-show="expandedSections.availability" class="filter-content">
+            <div class="date-range-filter">
+              <label class="date-label">Desde</label>
+              <input
+                v-model="availableFrom"
+                type="date"
+                class="date-input"
+                :min="today"
+              />
+              <label class="date-label">Hasta</label>
+              <input
+                v-model="availableTo"
+                type="date"
+                class="date-input"
+                :min="availableFrom || today"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- FILTRO DEPÓSITO (RENTA) -->
+        <div v-if="listingMode === 'renta'" class="filter-section">
+          <div class="filter-header" @click="toggleSection('deposit')">
+            <h4>Depósito máximo</h4>
+            <span class="toggle-icon">{{
+              expandedSections.deposit ? '−' : '+'
+            }}</span>
+          </div>
+          <div v-show="expandedSections.deposit" class="filter-content">
+            <div
+              v-for="dep in depositRanges"
+              :key="dep.value"
+              class="filter-option"
+            >
+              <label>
+                <input
+                  v-model="maxDeposit"
+                  type="radio"
+                  name="depositRange"
+                  :value="dep.value"
+                />
+                <span>{{ dep.label }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- FILTRO KM INCLUIDOS (RENTA) -->
+        <div v-if="listingMode === 'renta'" class="filter-section">
+          <div class="filter-header" @click="toggleSection('kmIncluded')">
+            <h4>Km incluidos / día</h4>
+            <span class="toggle-icon">{{
+              expandedSections.kmIncluded ? '−' : '+'
+            }}</span>
+          </div>
+          <div v-show="expandedSections.kmIncluded" class="filter-content">
+            <div v-for="km in kmOptions" :key="km.value" class="filter-option">
+              <label>
+                <input
+                  v-model="minKmIncluded"
+                  type="radio"
+                  name="kmIncluded"
+                  :value="km.value"
+                />
+                <span>{{ km.label }}</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- FILTRO AÑO -->
         <div class="filter-section">
           <div class="filter-header" @click="toggleSection('year')">
             <h4>Año</h4>
@@ -81,7 +245,7 @@
           </div>
         </div>
 
-        <!-- FILTRO POR MARCA -->
+        <!-- FILTRO MARCA -->
         <div class="filter-section">
           <div class="filter-header" @click="toggleSection('brand')">
             <h4>Marca</h4>
@@ -119,7 +283,7 @@
           </div>
         </div>
 
-        <!-- FILTRO POR TIPO DE VEHÍCULO -->
+        <!-- FILTRO TIPO -->
         <div class="filter-section">
           <div class="filter-header" @click="toggleSection('type')">
             <h4>Tipo de Vehículo</h4>
@@ -137,7 +301,7 @@
           </div>
         </div>
 
-        <!-- FILTRO POR CIUDAD -->
+        <!-- FILTRO CIUDAD -->
         <div class="filter-section">
           <div class="filter-header" @click="toggleSection('city')">
             <h4>Ciudad</h4>
@@ -156,22 +320,44 @@
         </div>
       </aside>
 
-      <!-- CONTENT - DERECHA -->
+      <!-- CONTENT -->
       <section class="content">
         <div class="content-header">
-          <h2 class="subtitle">
-            Lista de autos ({{ filteredVehicles.length }} vehículos)
-          </h2>
-
-          <!-- SORTING DROPDOWN -->
+          <div>
+            <h2 class="subtitle">
+              {{
+                listingMode === 'venta' ? 'Autos en venta' : 'Autos en renta'
+              }}
+              <span class="count-badge">{{ filteredVehicles.length }}</span>
+            </h2>
+            <p class="mode-description">
+              {{
+                listingMode === 'venta'
+                  ? 'Encuentra el auto perfecto para comprar'
+                  : 'Renta por día, semana o mes con todo incluido'
+              }}
+            </p>
+          </div>
           <select
             v-model="sortMethod"
             class="mobile-sort"
             @change="handleSortChange"
           >
             <option value="">Ordenar por</option>
-            <option value="price">Precio: menor a mayor</option>
-            <option value="price-desc">Precio: mayor a menor</option>
+            <option value="price">
+              {{
+                listingMode === 'renta'
+                  ? 'Precio/día: menor a mayor'
+                  : 'Precio: menor a mayor'
+              }}
+            </option>
+            <option value="price-desc">
+              {{
+                listingMode === 'renta'
+                  ? 'Precio/día: mayor a menor'
+                  : 'Precio: mayor a menor'
+              }}
+            </option>
             <option value="year">Año: más reciente</option>
             <option value="year-asc">Año: más antiguo</option>
           </select>
@@ -192,8 +378,8 @@
           </button>
         </div>
 
-        <!-- CARS GRID CON IMÁGENES OPTIMIZADAS -->
-        <div class="cars-grid">
+        <!-- ── GRID VENTA ── -->
+        <div v-if="listingMode === 'venta'" class="cars-grid">
           <div
             v-for="vehicle in filteredVehicles"
             :key="vehicle.id"
@@ -201,6 +387,7 @@
             @click="goToVehicleDetail(vehicle.id)"
           >
             <div class="image-container">
+              <div class="listing-type-badge sale-badge">En Venta</div>
               <img
                 :src="getOptimizedImageUrl(vehicle.coverImage)"
                 :alt="vehicle.title"
@@ -214,18 +401,212 @@
                 <div class="placeholder-shimmer"></div>
               </div>
             </div>
-            <h3>{{ vehicle.title }}</h3>
-            <span class="status">${{ formatPrice(vehicle.price) }} MXN</span>
-            <p>{{ getCityName(vehicle.cityId) }} · {{ vehicle.year }}</p>
-            <div class="vehicle-details">
-              <span class="detail-badge">{{ vehicle.type }}</span>
-              <span class="detail-badge">{{ vehicle.transmission }}</span>
+            <div class="card-body">
+              <h3>{{ vehicle.title }}</h3>
+              <div class="price-row">
+                <span class="sale-price"
+                  >${{ formatPrice(vehicle.price) }}</span
+                >
+                <span class="price-label">MXN</span>
+              </div>
+              <p class="card-meta">
+                <svg
+                  width="12"
+                  height="12"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                >
+                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                  <circle cx="12" cy="10" r="3" />
+                </svg>
+                {{ getCityName(vehicle.cityId) }} · {{ vehicle.year }}
+              </p>
+              <div class="vehicle-details">
+                <span class="detail-badge">{{ vehicle.type }}</span>
+                <span class="detail-badge">{{ vehicle.transmission }}</span>
+                <span class="detail-badge"
+                  >{{ formatMileage(vehicle.mileageKm) }} km</span
+                >
+              </div>
             </div>
+          </div>
+
+          <div v-if="filteredVehicles.length === 0" class="no-results">
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#94a3b8"
+              stroke-width="1.5"
+            >
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
+            <p>No se encontraron vehículos con los filtros seleccionados</p>
           </div>
         </div>
 
-        <div v-if="filteredVehicles.length === 0" class="no-results">
-          <p>No se encontraron vehículos con los filtros seleccionados</p>
+        <!-- ── GRID RENTA ── -->
+        <div v-if="listingMode === 'renta'" class="cars-grid">
+          <div
+            v-for="vehicle in filteredVehicles"
+            :key="vehicle.id"
+            class="car-card rent-card"
+            @click="goToVehicleDetail(vehicle.id)"
+          >
+            <!-- IMAGEN CON BADGES -->
+            <div class="image-container">
+              <div class="listing-type-badge rent-badge">En Renta</div>
+              <div
+                class="availability-chip"
+                :class="vehicle.available ? 'avail-yes' : 'avail-no'"
+              >
+                <span class="avail-dot"></span>
+                {{ vehicle.available ? 'Disponible' : 'No disponible' }}
+              </div>
+              <img
+                :src="getOptimizedImageUrl(vehicle.coverImage)"
+                :alt="vehicle.title"
+                width="400"
+                height="200"
+                :class="{ 'image-loaded': imagesLoaded[vehicle.id] }"
+                @error="handleImageError"
+                @load="(e) => handleImageLoad(e, vehicle.id)"
+              />
+              <div v-if="!imagesLoaded[vehicle.id]" class="image-placeholder">
+                <div class="placeholder-shimmer"></div>
+              </div>
+            </div>
+
+            <!-- CUERPO RENTA -->
+            <div class="card-body">
+              <h3>{{ vehicle.title }}</h3>
+
+              <!-- PRECIOS DÍA / SEMANA / MES -->
+              <div class="rent-prices">
+                <div class="rent-price-item primary-price">
+                  <span class="rp-value"
+                    >${{ formatPrice(vehicle.pricePerDay) }}</span
+                  >
+                  <span class="rp-unit">/día</span>
+                </div>
+                <div class="rp-separator"></div>
+                <div class="rent-price-item">
+                  <span class="rp-value sm"
+                    >${{ formatPrice(vehicle.pricePerWeek) }}</span
+                  >
+                  <span class="rp-unit">/sem</span>
+                </div>
+                <div class="rp-separator"></div>
+                <div class="rent-price-item">
+                  <span class="rp-value sm"
+                    >${{ formatPrice(vehicle.pricePerMonth) }}</span
+                  >
+                  <span class="rp-unit">/mes</span>
+                </div>
+              </div>
+
+              <!-- INFO GRID RENTA -->
+              <div class="rent-info-grid">
+                <div class="rent-info-item">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                  <span
+                    >Disponible desde
+                    <strong>{{
+                      formatDate(vehicle.availableFrom)
+                    }}</strong></span
+                  >
+                </div>
+                <div class="rent-info-item">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                  >
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                  </svg>
+                  <span
+                    >Depósito
+                    <strong
+                      >${{ formatPrice(vehicle.depositAmount) }} MXN</strong
+                    ></span
+                  >
+                </div>
+                <div class="rent-info-item">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  <span
+                    ><strong>{{ vehicle.kmIncludedPerDay }} km</strong>
+                    incluidos/día</span
+                  >
+                </div>
+                <div class="rent-info-item">
+                  <svg
+                    width="13"
+                    height="13"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.2"
+                  >
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                    <circle cx="12" cy="10" r="3" />
+                  </svg>
+                  <span>{{ getCityName(vehicle.cityId) }}</span>
+                </div>
+              </div>
+
+              <div class="vehicle-details">
+                <span class="detail-badge">{{ vehicle.type }}</span>
+                <span class="detail-badge">{{ vehicle.transmission }}</span>
+                <span class="detail-badge">{{ vehicle.year }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="filteredVehicles.length === 0" class="no-results">
+            <svg
+              width="48"
+              height="48"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#94a3b8"
+              stroke-width="1.5"
+            >
+              <rect x="3" y="4" width="18" height="18" rx="2" />
+              <line x1="16" y1="2" x2="16" y2="6" />
+              <line x1="8" y1="2" x2="8" y2="6" />
+              <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            <p>No se encontraron autos en renta con esos filtros</p>
+          </div>
         </div>
       </section>
     </div>
@@ -236,30 +617,38 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
+// IMPORTAR DATOS DESDE JSON
+import salesData from '../../../mocks/catalog/listings.json';
+import rentalsData from '../../../mocks/catalog/rentals.json';
+
 const router = useRouter();
 
-// Estado para controlar la carga de imágenes
-const imagesLoaded = ref({});
+// ─── MODE ──────────────────────────────────────────────────────────────────────
+const listingMode = ref('venta'); // 'venta' | 'renta'
 
-// Función para optimizar URLs de imágenes
-const getOptimizedImageUrl = (url) => {
-  if (!url) return 'https://placehold.co/400x200/2d3748/ffffff?text=Sin+imagen';
-  if (url.includes('unsplash.com')) {
-    return `${url}?w=400&h=200&fit=crop&auto=format&q=80`;
-  }
-  return url;
+const switchMode = (mode) => {
+  listingMode.value = mode;
+  clearAllFilters();
 };
 
+// ─── IMAGE HANDLING ────────────────────────────────────────────────────────────
+const imagesLoaded = ref({});
+
+const getOptimizedImageUrl = (url) => {
+  if (!url) return 'https://placehold.co/400x200/2d3748/ffffff?text=Sin+imagen';
+  if (url.includes('unsplash.com'))
+    return `${url}?w=400&h=200&fit=crop&auto=format&q=80`;
+  return url;
+};
 const handleImageLoad = (event, vehicleId) => {
   imagesLoaded.value[vehicleId] = true;
 };
-
 const handleImageError = (event) => {
   event.target.src =
     'https://placehold.co/400x200/2d3748/ffffff?text=Error+de+carga';
 };
 
-// Mapeo de IDs de ciudades a nombres
+// ─── HELPERS ───────────────────────────────────────────────────────────────────
 const cityNames = {
   'mx-cdmx': 'Ciudad de México',
   'mx-gdl': 'Guadalajara',
@@ -267,29 +656,19 @@ const cityNames = {
   'mx-pue': 'Puebla',
   'mx-mer': 'Mérida',
 };
-
-const getCityName = (cityId) => {
-  return cityNames[cityId] || cityId;
+const getCityName = (cityId) => cityNames[cityId] || cityId;
+const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price);
+const formatMileage = (km) => new Intl.NumberFormat('es-MX').format(km);
+const formatDate = (dateStr) => {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr + 'T00:00:00');
+  return d.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
 };
+const today = new Date().toISOString().split('T')[0];
 
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('es-MX').format(price);
-};
-
-// Search
+// ─── FILTER STATE ──────────────────────────────────────────────────────────────
 const search = ref('');
 const brandSearch = ref('');
-
-// Filter sections expand/collapse
-const expandedSections = ref({
-  price: true,
-  year: true,
-  brand: true,
-  type: false,
-  city: false,
-});
-
-// Filter states
 const priceOrder = ref('lowToHigh');
 const yearOrder = ref('newToOld');
 const selectedBrands = ref([]);
@@ -297,253 +676,131 @@ const selectedTypes = ref([]);
 const selectedCities = ref([]);
 const sortMethod = ref('');
 
-// MOCKUP DATA - Base de datos de vehículos
-const vehiclesData = ref({
-  meta: {
-    total: 7,
-    page: 1,
-    pageSize: 12,
-  },
-  items: [
-    {
-      id: 'vh-002',
-      title: 'Toyota Corolla LE 2020',
-      brand: 'Toyota',
-      model: 'Corolla',
-      year: 2020,
-      price: 289000,
-      type: 'Sedán',
-      transmission: 'Automática',
-      fuel: 'Gasolina',
-      mileageKm: 61200,
-      cityId: 'mx-gdl',
-      sellerId: 'u-seller-001',
-      coverImage:
-        'https://images.unsplash.com/photo-1494976388531-d1058494cdd8',
-      status: 'published',
-      color: 'Blanco',
-    },
-    {
-      id: 'vh-003',
-      title: 'Ford Ranger XLT 2022',
-      brand: 'Ford',
-      model: 'Ranger',
-      year: 2022,
-      price: 615000,
-      type: 'Pickup',
-      transmission: 'Automática',
-      fuel: 'Diésel',
-      mileageKm: 28100,
-      cityId: 'mx-mty',
-      sellerId: 'u-seller-002',
-      coverImage:
-        'https://images.unsplash.com/photo-1503376780353-7e6692767b70',
-      status: 'published',
-      color: 'Gris',
-    },
-    {
-      id: 'vh-004',
-      title: 'Kia Rio Hatchback 2019',
-      brand: 'Kia',
-      model: 'Rio',
-      year: 2019,
-      price: 229000,
-      type: 'Hatchback',
-      transmission: 'Manual',
-      fuel: 'Gasolina',
-      mileageKm: 73500,
-      cityId: 'mx-pue',
-      sellerId: 'u-seller-002',
-      coverImage:
-        'https://images.unsplash.com/photo-1511919884226-fd3cad34687c',
-      status: 'published',
-      color: 'Azul',
-    },
-    {
-      id: 'vh-005',
-      title: 'Volkswagen Jetta Comfortline 2023',
-      brand: 'Volkswagen',
-      model: 'Jetta',
-      year: 2023,
-      price: 529000,
-      type: 'Sedán',
-      transmission: 'Automática',
-      fuel: 'Gasolina',
-      mileageKm: 12900,
-      cityId: 'mx-cdmx',
-      sellerId: 'u-seller-001',
-      coverImage:
-        'https://images.unsplash.com/photo-1502877338535-766e1452684a',
-      status: 'published',
-      color: 'Negro',
-    },
-    {
-      id: 'vh-006',
-      title: 'Nissan NP300 2021',
-      brand: 'Nissan',
-      model: 'NP300',
-      year: 2021,
-      price: 395000,
-      type: 'Pickup',
-      transmission: 'Manual',
-      fuel: 'Diésel',
-      mileageKm: 50300,
-      cityId: 'mx-mer',
-      sellerId: 'u-seller-002',
-      coverImage:
-        'https://images.unsplash.com/photo-1504215680853-026ed2a45def',
-      status: 'draft',
-      color: 'Plata',
-    },
-    {
-      id: 'vh-007',
-      title: 'Honda CR-V Touring 2022',
-      brand: 'Honda',
-      model: 'CR-V',
-      year: 2022,
-      price: 598000,
-      type: 'SUV',
-      transmission: 'Automática',
-      fuel: 'Gasolina',
-      mileageKm: 24600,
-      cityId: 'mx-gdl',
-      sellerId: 'u-seller-001',
-      coverImage: 'https://images.unsplash.com/photo-1553440569-bcc63803a83d',
-      status: 'published',
-      color: 'Gris',
-    },
-    {
-      id: 'vh-008',
-      title: 'Chevrolet Onix LT 2021',
-      brand: 'Chevrolet',
-      model: 'Onix',
-      year: 2021,
-      price: 255000,
-      type: 'Sedán',
-      transmission: 'Manual',
-      fuel: 'Gasolina',
-      mileageKm: 38750,
-      cityId: 'mx-pue',
-      sellerId: 'u-seller-002',
-      coverImage:
-        'https://images.unsplash.com/photo-1489824904134-891ab64532f1',
-      status: 'archived',
-      color: 'Blanco',
-    },
-  ],
+// Renta-specific
+const availableFrom = ref('');
+const availableTo = ref('');
+const maxDeposit = ref('');
+const minKmIncluded = ref('');
+
+const depositRanges = [
+  { value: '5000', label: 'Hasta $5,000' },
+  { value: '10000', label: 'Hasta $10,000' },
+  { value: '20000', label: 'Hasta $20,000' },
+  { value: '', label: 'Sin límite' },
+];
+const kmOptions = [
+  { value: '100', label: 'Al menos 100 km' },
+  { value: '200', label: 'Al menos 200 km' },
+  { value: '300', label: 'Al menos 300 km' },
+  { value: '', label: 'Sin mínimo' },
+];
+
+const expandedSections = ref({
+  price: true,
+  rentPrice: true,
+  availability: true,
+  deposit: false,
+  kmIncluded: false,
+  year: true,
+  brand: true,
+  type: false,
+  city: false,
 });
 
-// Solo mostrar vehículos publicados
+// ─── DATOS DESDE JSON ─────────────────────────────────────────────────────────
+// Usar los datos importados en lugar de hardcodeados
+const vehiclesData = ref(salesData);
+const rentalsDataRef = ref(rentalsData);
+
+// ─── ACTIVE LIST ───────────────────────────────────────────────────────────────
 const vehicles = computed(() => {
-  return vehiclesData.value.items.filter((v) => v.status === 'published');
+  const source =
+    listingMode.value === 'venta'
+      ? vehiclesData.value.items
+      : rentalsDataRef.value.items;
+  return source.filter((v) => v.status === 'published');
 });
 
-// Pre-cargar imágenes en memoria
 onMounted(() => {
-  vehicles.value.forEach((vehicle) => {
+  vehicles.value.forEach((v) => {
     const img = new Image();
-    img.src = getOptimizedImageUrl(vehicle.coverImage);
+    img.src = getOptimizedImageUrl(v.coverImage);
   });
 });
 
-// Get unique brands
-const uniqueBrands = computed(() => {
-  return [...new Set(vehicles.value.map((v) => v.brand))].sort();
-});
-
-// Get unique types
-const uniqueTypes = computed(() => {
-  return [...new Set(vehicles.value.map((v) => v.type))].sort();
-});
-
-// Get unique cities
-const uniqueCities = computed(() => {
-  return [...new Set(vehicles.value.map((v) => getCityName(v.cityId)))].sort();
-});
-
-// Filter brands based on search
+// ─── COMPUTED FILTER OPTIONS ───────────────────────────────────────────────────
+const uniqueBrands = computed(() =>
+  [...new Set(vehicles.value.map((v) => v.brand))].sort()
+);
+const uniqueTypes = computed(() =>
+  [...new Set(vehicles.value.map((v) => v.type))].sort()
+);
+const uniqueCities = computed(() =>
+  [...new Set(vehicles.value.map((v) => getCityName(v.cityId)))].sort()
+);
 const filteredBrands = computed(() => {
   if (!brandSearch.value) return uniqueBrands.value;
-  return uniqueBrands.value.filter((brand) =>
-    brand.toLowerCase().includes(brandSearch.value.toLowerCase())
+  return uniqueBrands.value.filter((b) =>
+    b.toLowerCase().includes(brandSearch.value.toLowerCase())
   );
 });
+const getBrandCount = (brand) =>
+  vehicles.value.filter((v) => v.brand === brand).length;
+const getTypeCount = (type) =>
+  vehicles.value.filter((v) => v.type === type).length;
 
-// Get count of vehicles per brand
-const getBrandCount = (brand) => {
-  return vehicles.value.filter((v) => v.brand === brand).length;
-};
-
-// Get count of vehicles per type
-const getTypeCount = (type) => {
-  return vehicles.value.filter((v) => v.type === type).length;
-};
-
-// Handlers to sync radio buttons with select
+// ─── SORT SYNC ─────────────────────────────────────────────────────────────────
 const handlePriceChange = () => {
-  if (priceOrder.value === 'lowToHigh') {
-    sortMethod.value = 'price';
-  } else if (priceOrder.value === 'highToLow') {
-    sortMethod.value = 'price-desc';
-  }
+  sortMethod.value = priceOrder.value === 'lowToHigh' ? 'price' : 'price-desc';
 };
-
 const handleYearChange = () => {
-  if (yearOrder.value === 'newToOld') {
-    sortMethod.value = 'year';
-  } else if (yearOrder.value === 'oldToNew') {
-    sortMethod.value = 'year-asc';
-  }
+  sortMethod.value = yearOrder.value === 'newToOld' ? 'year' : 'year-asc';
 };
-
 const handleSortChange = () => {
-  if (sortMethod.value === 'price') {
-    priceOrder.value = 'lowToHigh';
-  } else if (sortMethod.value === 'price-desc') {
-    priceOrder.value = 'highToLow';
-  } else if (sortMethod.value === 'year') {
-    yearOrder.value = 'newToOld';
-  } else if (sortMethod.value === 'year-asc') {
-    yearOrder.value = 'oldToNew';
-  } else {
+  if (sortMethod.value === 'price') priceOrder.value = 'lowToHigh';
+  else if (sortMethod.value === 'price-desc') priceOrder.value = 'highToLow';
+  else if (sortMethod.value === 'year') yearOrder.value = 'newToOld';
+  else if (sortMethod.value === 'year-asc') yearOrder.value = 'oldToNew';
+  else {
     priceOrder.value = 'lowToHigh';
     yearOrder.value = 'newToOld';
   }
 };
 
-// Check if any filters are active
-const hasActiveFilters = computed(() => {
-  return (
+// ─── ACTIVE FILTERS ────────────────────────────────────────────────────────────
+const hasActiveFilters = computed(
+  () =>
     selectedBrands.value.length > 0 ||
     selectedTypes.value.length > 0 ||
     selectedCities.value.length > 0 ||
     search.value ||
     priceOrder.value !== 'lowToHigh' ||
-    yearOrder.value !== 'newToOld'
-  );
-});
-
-// Get active filters for display
+    yearOrder.value !== 'newToOld' ||
+    availableFrom.value ||
+    availableTo.value ||
+    maxDeposit.value ||
+    minKmIncluded.value
+);
 const activeFilters = computed(() => {
-  const filters = [];
-  if (search.value) filters.push(`Búsqueda: ${search.value}`);
+  const f = [];
+  if (search.value) f.push(`Búsqueda: ${search.value}`);
   if (selectedBrands.value.length)
-    filters.push(`${selectedBrands.value.length} marcas seleccionadas`);
-  if (selectedTypes.value.length)
-    filters.push(`${selectedTypes.value.length} tipos seleccionados`);
+    f.push(`${selectedBrands.value.length} marcas`);
+  if (selectedTypes.value.length) f.push(`${selectedTypes.value.length} tipos`);
   if (selectedCities.value.length)
-    filters.push(`${selectedCities.value.length} ciudades`);
-  if (priceOrder.value === 'highToLow') filters.push('Precio: mayor a menor');
-  if (yearOrder.value === 'oldToNew') filters.push('Año: más antiguo');
-  return filters;
+    f.push(`${selectedCities.value.length} ciudades`);
+  if (priceOrder.value === 'highToLow') f.push('Precio: mayor a menor');
+  if (yearOrder.value === 'oldToNew') f.push('Año: más antiguo');
+  if (availableFrom.value) f.push(`Desde: ${formatDate(availableFrom.value)}`);
+  if (availableTo.value) f.push(`Hasta: ${formatDate(availableTo.value)}`);
+  if (maxDeposit.value) f.push(`Depósito ≤ $${formatPrice(maxDeposit.value)}`);
+  if (minKmIncluded.value) f.push(`Km/día ≥ ${minKmIncluded.value}`);
+  return f;
 });
 
-// Toggle filter sections
 const toggleSection = (section) => {
   expandedSections.value[section] = !expandedSections.value[section];
 };
-
-// Clear all filters
 const clearAllFilters = () => {
   search.value = '';
   brandSearch.value = '';
@@ -553,9 +810,11 @@ const clearAllFilters = () => {
   selectedTypes.value = [];
   selectedCities.value = [];
   sortMethod.value = '';
+  availableFrom.value = '';
+  availableTo.value = '';
+  maxDeposit.value = '';
+  minKmIncluded.value = '';
 };
-
-// Remove specific filter
 const removeFilter = (filter) => {
   if (filter.includes('Búsqueda')) search.value = '';
   if (filter.includes('marcas')) selectedBrands.value = [];
@@ -569,59 +828,70 @@ const removeFilter = (filter) => {
     yearOrder.value = 'newToOld';
     sortMethod.value = '';
   }
+  if (filter.includes('Desde')) availableFrom.value = '';
+  if (filter.includes('Hasta')) availableTo.value = '';
+  if (filter.includes('Depósito')) maxDeposit.value = '';
+  if (filter.includes('Km')) minKmIncluded.value = '';
 };
 
-// FUNCIÓN PRINCIPAL: Navegar al detalle del vehículo
-// Asegúrate que el nombre de la ruta coincida con el definido en router
-const goToVehicleDetail = (vehicleId) => {
-  console.log('Navegando a detalle del vehículo:', vehicleId);
-  router.push({
-    name: 'public-listing-detail', // Asegúrate que esta ruta exista en tu router
-    params: { id: vehicleId },
-  });
-};
-
-// Filtered vehicles
+// ─── FILTERED VEHICLES ─────────────────────────────────────────────────────────
 const filteredVehicles = computed(() => {
   let result = vehicles.value;
 
-  // Search by title
   if (search.value) {
     result = result.filter((v) =>
       v.title.toLowerCase().includes(search.value.toLowerCase())
     );
   }
-
-  // Filter by selected brands
-  if (selectedBrands.value.length > 0) {
+  if (selectedBrands.value.length > 0)
     result = result.filter((v) => selectedBrands.value.includes(v.brand));
-  }
-
-  // Filter by selected types
-  if (selectedTypes.value.length > 0) {
+  if (selectedTypes.value.length > 0)
     result = result.filter((v) => selectedTypes.value.includes(v.type));
-  }
-
-  // Filter by selected cities
-  if (selectedCities.value.length > 0) {
+  if (selectedCities.value.length > 0)
     result = result.filter((v) =>
       selectedCities.value.includes(getCityName(v.cityId))
     );
-  }
 
-  // Apply sorting
-  if (sortMethod.value === 'price') {
-    result = [...result].sort((a, b) => a.price - b.price);
-  } else if (sortMethod.value === 'price-desc') {
-    result = [...result].sort((a, b) => b.price - a.price);
-  } else if (sortMethod.value === 'year') {
-    result = [...result].sort((a, b) => b.year - a.year);
-  } else if (sortMethod.value === 'year-asc') {
-    result = [...result].sort((a, b) => a.year - b.year);
+  if (listingMode.value === 'renta') {
+    if (availableFrom.value)
+      result = result.filter((v) => v.availableTo >= availableFrom.value);
+    if (availableTo.value)
+      result = result.filter((v) => v.availableFrom <= availableTo.value);
+    if (maxDeposit.value)
+      result = result.filter(
+        (v) => v.depositAmount <= parseInt(maxDeposit.value)
+      );
+    if (minKmIncluded.value)
+      result = result.filter(
+        (v) => v.kmIncludedPerDay >= parseInt(minKmIncluded.value)
+      );
+    if (sortMethod.value === 'price')
+      result = [...result].sort((a, b) => a.pricePerDay - b.pricePerDay);
+    else if (sortMethod.value === 'price-desc')
+      result = [...result].sort((a, b) => b.pricePerDay - a.pricePerDay);
+    else if (sortMethod.value === 'year')
+      result = [...result].sort((a, b) => b.year - a.year);
+    else if (sortMethod.value === 'year-asc')
+      result = [...result].sort((a, b) => a.year - b.year);
+  } else {
+    if (sortMethod.value === 'price')
+      result = [...result].sort((a, b) => a.price - b.price);
+    else if (sortMethod.value === 'price-desc')
+      result = [...result].sort((a, b) => b.price - a.price);
+    else if (sortMethod.value === 'year')
+      result = [...result].sort((a, b) => b.year - a.year);
+    else if (sortMethod.value === 'year-asc')
+      result = [...result].sort((a, b) => a.year - b.year);
   }
 
   return result;
 });
+
+// ─── NAVIGATION ────────────────────────────────────────────────────────────────
+const goToVehicleDetail = (vehicleId) => {
+  console.log('Navegando a detalle:', vehicleId, '| modo:', listingMode.value);
+  router.push(`/listados/${vehicleId}`);
+};
 </script>
 
 <style scoped src="./styles.css"></style>

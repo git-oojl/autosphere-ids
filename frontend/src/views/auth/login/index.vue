@@ -229,7 +229,8 @@
       <div class="card-footer">
         <p class="footer-text">
           ¿No tienes una cuenta?
-          <router-link :to="{ name: 'auth-register' }" class="footer-link">
+          <!-- CORREGIDO: Usar ruta directa en lugar de nombre de ruta -->
+          <router-link to="/registro" class="footer-link">
             Regístrate
           </router-link>
         </p>
@@ -240,6 +241,9 @@
 
 <script setup>
 import { ref, reactive } from 'vue';
+// import { useRouter } from 'vue-router';
+
+// const router = useRouter();
 
 // Estado reactivo del formulario
 const formData = reactive({
@@ -259,13 +263,11 @@ const togglePasswordVisibility = () => {
 // Manejar focus de inputs
 const handleFocus = (field) => {
   console.log(`Campo ${field} enfocado`);
-  // Aquí puedes agregar lógica adicional si necesitas
 };
 
 // Manejar blur de inputs
 const handleBlur = (field) => {
   console.log(`Campo ${field} desenfocado`);
-  // Aquí puedes agregar validaciones adicionales
 };
 
 // Manejar envío del formulario
@@ -279,21 +281,11 @@ const handleLogin = async () => {
       rememberMe: rememberMe.value,
     });
 
-    // Simulación de petición API (reemplaza con tu lógica real)
+    // Simulación de petición API
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // Aquí va tu lógica de autenticación
-    // Por ejemplo:
-    // const response = await fetch('/api/login', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({
-    //     email: formData.email,
-    //     password: formData.password,
-    //     rememberMe: rememberMe.value
-    //   })
-    // })
-
+    // Redirigir según el rol (ejemplo)
+    // router.push('/dashboard')
     console.log('Login exitoso');
   } catch (error) {
     console.error('Error en el login:', error);
@@ -305,14 +297,8 @@ const handleLogin = async () => {
 // Manejar recuperación de contraseña
 const handleForgotPassword = () => {
   console.log('Recuperar contraseña');
-  // Navegar a la página de recuperación o abrir modal
+  // router.push('/recuperar-password')
 };
-
-// Manejar registro
-// const handleRegister = () => {
-console.log('Ir a registro');
-// Navegar a la página de registro
-// };
 </script>
 
 <style scoped src="./styles.css"></style>
