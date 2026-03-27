@@ -1,55 +1,69 @@
 <template>
   <div class="container">
-    <!-- NAVBAR -->
-    <nav class="navbar">
-      <h1>AutoSphere</h1>
-      <ul>
-        <li>Home</li>
-        <li>Services</li>
-        <li>Contact</li>
-        <li>About Us</li>
-        <li class="login">Login</li>
-      </ul>
-    </nav>
-
     <!-- FORM MODAL -->
     <div class="modal">
       <div class="modal-header">
         <h2>Nueva cita</h2>
-        <span class="close">×</span>
+        <span class="close" @click="closeModal">×</span>
       </div>
 
-      <form class="form">
+      <form class="form" @submit.prevent="saveAppointment">
         <label>Nombre del cliente:</label>
-        <input type="text" placeholder="Juan Perez Martinez" />
+        <input
+          type="text"
+          v-model="formData.nombreCliente"
+          placeholder="Juan Perez Martinez"
+          required
+        />
 
         <label>Correo:</label>
-        <input type="email" placeholder="juanperez@hotmail.com" />
+        <input
+          type="email"
+          v-model="formData.correo"
+          placeholder="juanperez@hotmail.com"
+          required
+        />
 
         <label>Teléfono:</label>
-        <input type="text" placeholder="664 215 4758" />
+        <input
+          type="text"
+          v-model="formData.telefono"
+          placeholder="664 215 4758"
+          required
+        />
 
         <label>Vehículo:</label>
-        <input type="text" placeholder="Seleccionar..." />
+        <input
+          type="text"
+          v-model="formData.vehiculo"
+          placeholder="Seleccionar..."
+          required
+        />
 
         <div class="row">
           <div>
             <label>Fecha:</label>
-            <input type="text" placeholder="dd/mm/aa" />
+            <input type="date" v-model="formData.fecha" required />
           </div>
 
           <div>
             <label>Hora:</label>
-            <input type="text" placeholder="--:--" />
+            <input type="time" v-model="formData.hora" required />
           </div>
         </div>
 
         <label>Comentarios:</label>
-        <input type="text" placeholder="Información adicional..." />
+        <input
+          type="text"
+          v-model="formData.comentarios"
+          placeholder="Información adicional..."
+        />
 
         <div class="buttons">
-          <button type="button" class="cancel">Cancelar cita</button>
-          <button type="button" class="save">Guardar cita</button>
+          <button type="button" class="cancel" @click="closeModal">
+            Cancelar cita
+          </button>
+          <button type="submit" class="save">Guardar cita</button>
         </div>
       </form>
     </div>
@@ -57,7 +71,45 @@
 </template>
 
 <script>
-// Aquí irá lógica después
+export default {
+  name: 'CreateAppointment',
+  data() {
+    return {
+      formData: {
+        nombreCliente: '',
+        correo: '',
+        telefono: '',
+        vehiculo: '',
+        fecha: '',
+        hora: '',
+        comentarios: '',
+      },
+    };
+  },
+  methods: {
+    closeModal() {
+      this.$emit('close');
+      this.resetForm();
+    },
+    resetForm() {
+      this.formData = {
+        nombreCliente: '',
+        correo: '',
+        telefono: '',
+        vehiculo: '',
+        fecha: '',
+        hora: '',
+        comentarios: '',
+      };
+    },
+    saveAppointment() {
+      console.log('Cita guardada:', this.formData);
+      alert('Cita guardada exitosamente');
+      this.$emit('save', this.formData);
+      this.closeModal();
+    },
+  },
+};
 </script>
 
 <style src="./styles.css"></style>

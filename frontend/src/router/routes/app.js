@@ -88,6 +88,13 @@ export default [
         meta: { requiresAuth: true, roles: ['seller'] },
       },
       {
+        path: 'vendedor/citas/crear',
+        name: 'seller-create-appointment',
+        component: () =>
+          import('../../views/appointments/Crear-cita/index.vue'),
+        meta: { requiresAuth: true, roles: ['seller'] },
+      },
+      {
         path: 'arrendador',
         name: 'lessor-rentals',
         component: () => import('../../views/lessor/rentals/index.vue'),
