@@ -60,21 +60,21 @@
         </button>
 
         <!-- FILTRO PRECIO (VENTA) -->
-        <div class="filter-section" v-if="listingMode === 'venta'">
+        <div v-if="listingMode === 'venta'" class="filter-section">
           <div class="filter-header" @click="toggleSection('price')">
             <h4>Precio</h4>
             <span class="toggle-icon">{{
               expandedSections.price ? '−' : '+'
             }}</span>
           </div>
-          <div class="filter-content" v-show="expandedSections.price">
+          <div v-show="expandedSections.price" class="filter-content">
             <div class="filter-option">
               <label>
                 <input
+                  v-model="priceOrder"
                   type="radio"
                   name="priceOrder"
                   value="lowToHigh"
-                  v-model="priceOrder"
                   @change="handlePriceChange"
                 />
                 <span>Menor a mayor</span>
@@ -83,10 +83,10 @@
             <div class="filter-option">
               <label>
                 <input
+                  v-model="priceOrder"
                   type="radio"
                   name="priceOrder"
                   value="highToLow"
-                  v-model="priceOrder"
                   @change="handlePriceChange"
                 />
                 <span>Mayor a menor</span>
@@ -96,21 +96,21 @@
         </div>
 
         <!-- FILTRO PRECIO POR DÍA (RENTA) -->
-        <div class="filter-section" v-if="listingMode === 'renta'">
+        <div v-if="listingMode === 'renta'" class="filter-section">
           <div class="filter-header" @click="toggleSection('rentPrice')">
             <h4>Precio por día</h4>
             <span class="toggle-icon">{{
               expandedSections.rentPrice ? '−' : '+'
             }}</span>
           </div>
-          <div class="filter-content" v-show="expandedSections.rentPrice">
+          <div v-show="expandedSections.rentPrice" class="filter-content">
             <div class="filter-option">
               <label>
                 <input
+                  v-model="priceOrder"
                   type="radio"
                   name="rentPriceOrder"
                   value="lowToHigh"
-                  v-model="priceOrder"
                   @change="handlePriceChange"
                 />
                 <span>Menor a mayor</span>
@@ -119,10 +119,10 @@
             <div class="filter-option">
               <label>
                 <input
+                  v-model="priceOrder"
                   type="radio"
                   name="rentPriceOrder"
                   value="highToLow"
-                  v-model="priceOrder"
                   @change="handlePriceChange"
                 />
                 <span>Mayor a menor</span>
@@ -132,26 +132,26 @@
         </div>
 
         <!-- FILTRO DISPONIBILIDAD (RENTA) -->
-        <div class="filter-section" v-if="listingMode === 'renta'">
+        <div v-if="listingMode === 'renta'" class="filter-section">
           <div class="filter-header" @click="toggleSection('availability')">
             <h4>Disponibilidad</h4>
             <span class="toggle-icon">{{
               expandedSections.availability ? '−' : '+'
             }}</span>
           </div>
-          <div class="filter-content" v-show="expandedSections.availability">
+          <div v-show="expandedSections.availability" class="filter-content">
             <div class="date-range-filter">
               <label class="date-label">Desde</label>
               <input
-                type="date"
                 v-model="availableFrom"
+                type="date"
                 class="date-input"
                 :min="today"
               />
               <label class="date-label">Hasta</label>
               <input
-                type="date"
                 v-model="availableTo"
+                type="date"
                 class="date-input"
                 :min="availableFrom || today"
               />
@@ -160,25 +160,25 @@
         </div>
 
         <!-- FILTRO DEPÓSITO (RENTA) -->
-        <div class="filter-section" v-if="listingMode === 'renta'">
+        <div v-if="listingMode === 'renta'" class="filter-section">
           <div class="filter-header" @click="toggleSection('deposit')">
             <h4>Depósito máximo</h4>
             <span class="toggle-icon">{{
               expandedSections.deposit ? '−' : '+'
             }}</span>
           </div>
-          <div class="filter-content" v-show="expandedSections.deposit">
+          <div v-show="expandedSections.deposit" class="filter-content">
             <div
-              class="filter-option"
               v-for="dep in depositRanges"
               :key="dep.value"
+              class="filter-option"
             >
               <label>
                 <input
+                  v-model="maxDeposit"
                   type="radio"
                   name="depositRange"
                   :value="dep.value"
-                  v-model="maxDeposit"
                 />
                 <span>{{ dep.label }}</span>
               </label>
@@ -187,21 +187,21 @@
         </div>
 
         <!-- FILTRO KM INCLUIDOS (RENTA) -->
-        <div class="filter-section" v-if="listingMode === 'renta'">
+        <div v-if="listingMode === 'renta'" class="filter-section">
           <div class="filter-header" @click="toggleSection('kmIncluded')">
             <h4>Km incluidos / día</h4>
             <span class="toggle-icon">{{
               expandedSections.kmIncluded ? '−' : '+'
             }}</span>
           </div>
-          <div class="filter-content" v-show="expandedSections.kmIncluded">
-            <div class="filter-option" v-for="km in kmOptions" :key="km.value">
+          <div v-show="expandedSections.kmIncluded" class="filter-content">
+            <div v-for="km in kmOptions" :key="km.value" class="filter-option">
               <label>
                 <input
+                  v-model="minKmIncluded"
                   type="radio"
                   name="kmIncluded"
                   :value="km.value"
-                  v-model="minKmIncluded"
                 />
                 <span>{{ km.label }}</span>
               </label>
@@ -217,14 +217,14 @@
               expandedSections.year ? '−' : '+'
             }}</span>
           </div>
-          <div class="filter-content" v-show="expandedSections.year">
+          <div v-show="expandedSections.year" class="filter-content">
             <div class="filter-option">
               <label>
                 <input
+                  v-model="yearOrder"
                   type="radio"
                   name="yearOrder"
                   value="newToOld"
-                  v-model="yearOrder"
                   @change="handleYearChange"
                 />
                 <span>Más reciente primero</span>
@@ -233,10 +233,10 @@
             <div class="filter-option">
               <label>
                 <input
+                  v-model="yearOrder"
                   type="radio"
                   name="yearOrder"
                   value="oldToNew"
-                  v-model="yearOrder"
                   @change="handleYearChange"
                 />
                 <span>Más antiguo primero</span>
@@ -253,7 +253,7 @@
               expandedSections.brand ? '−' : '+'
             }}</span>
           </div>
-          <div class="filter-content" v-show="expandedSections.brand">
+          <div v-show="expandedSections.brand" class="filter-content">
             <div class="filter-search">
               <input
                 v-model="brandSearch"
@@ -264,15 +264,15 @@
             </div>
             <div class="brand-list">
               <div
-                class="filter-option"
                 v-for="brandOption in filteredBrands"
                 :key="brandOption"
+                class="filter-option"
               >
                 <label>
                   <input
+                    v-model="selectedBrands"
                     type="checkbox"
                     :value="brandOption"
-                    v-model="selectedBrands"
                   />
                   <span
                     >{{ brandOption }} ({{ getBrandCount(brandOption) }})</span
@@ -291,10 +291,10 @@
               expandedSections.type ? '−' : '+'
             }}</span>
           </div>
-          <div class="filter-content" v-show="expandedSections.type">
-            <div class="filter-option" v-for="type in uniqueTypes" :key="type">
+          <div v-show="expandedSections.type" class="filter-content">
+            <div v-for="type in uniqueTypes" :key="type" class="filter-option">
               <label>
-                <input type="checkbox" :value="type" v-model="selectedTypes" />
+                <input v-model="selectedTypes" type="checkbox" :value="type" />
                 <span>{{ type }} ({{ getTypeCount(type) }})</span>
               </label>
             </div>
@@ -309,10 +309,10 @@
               expandedSections.city ? '−' : '+'
             }}</span>
           </div>
-          <div class="filter-content" v-show="expandedSections.city">
-            <div class="filter-option" v-for="city in uniqueCities" :key="city">
+          <div v-show="expandedSections.city" class="filter-content">
+            <div v-for="city in uniqueCities" :key="city" class="filter-option">
               <label>
-                <input type="checkbox" :value="city" v-model="selectedCities" />
+                <input v-model="selectedCities" type="checkbox" :value="city" />
                 <span>{{ city }}</span>
               </label>
             </div>
@@ -364,11 +364,11 @@
         </div>
 
         <!-- ACTIVE FILTERS -->
-        <div class="active-filters" v-if="hasActiveFilters">
+        <div v-if="hasActiveFilters" class="active-filters">
           <span
-            class="active-filter"
             v-for="filter in activeFilters"
             :key="filter"
+            class="active-filter"
           >
             {{ filter }}
             <button @click="removeFilter(filter)">×</button>
@@ -379,11 +379,11 @@
         </div>
 
         <!-- ── GRID VENTA ── -->
-        <div class="cars-grid" v-if="listingMode === 'venta'">
+        <div v-if="listingMode === 'venta'" class="cars-grid">
           <div
-            class="car-card"
             v-for="vehicle in filteredVehicles"
             :key="vehicle.id"
+            class="car-card"
             @click="goToVehicleDetail(vehicle.id)"
           >
             <div class="image-container">
@@ -393,11 +393,11 @@
                 :alt="vehicle.title"
                 width="400"
                 height="200"
+                :class="{ 'image-loaded': imagesLoaded[vehicle.id] }"
                 @error="handleImageError"
                 @load="(e) => handleImageLoad(e, vehicle.id)"
-                :class="{ 'image-loaded': imagesLoaded[vehicle.id] }"
               />
-              <div class="image-placeholder" v-if="!imagesLoaded[vehicle.id]">
+              <div v-if="!imagesLoaded[vehicle.id]" class="image-placeholder">
                 <div class="placeholder-shimmer"></div>
               </div>
             </div>
@@ -450,11 +450,11 @@
         </div>
 
         <!-- ── GRID RENTA ── -->
-        <div class="cars-grid" v-if="listingMode === 'renta'">
+        <div v-if="listingMode === 'renta'" class="cars-grid">
           <div
-            class="car-card rent-card"
             v-for="vehicle in filteredVehicles"
             :key="vehicle.id"
+            class="car-card rent-card"
             @click="goToVehicleDetail(vehicle.id)"
           >
             <!-- IMAGEN CON BADGES -->
@@ -472,11 +472,11 @@
                 :alt="vehicle.title"
                 width="400"
                 height="200"
+                :class="{ 'image-loaded': imagesLoaded[vehicle.id] }"
                 @error="handleImageError"
                 @load="(e) => handleImageLoad(e, vehicle.id)"
-                :class="{ 'image-loaded': imagesLoaded[vehicle.id] }"
               />
-              <div class="image-placeholder" v-if="!imagesLoaded[vehicle.id]">
+              <div v-if="!imagesLoaded[vehicle.id]" class="image-placeholder">
                 <div class="placeholder-shimmer"></div>
               </div>
             </div>

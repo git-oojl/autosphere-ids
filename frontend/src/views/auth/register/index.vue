@@ -498,10 +498,10 @@ const handleRegister = async () => {
 };
 
 // Mostrar términos y condiciones
-const showTerms = (e) => {
-  e.preventDefault();
-  router.push('/terminos');
-};
+// const showTerms = (e) => {
+// //   e.preventDefault();
+router.push('/terminos');
+// };
 </script>
 
 <style scoped src="./styles.css"></style>

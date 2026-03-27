@@ -1,5 +1,5 @@
 <template>
-  <div class="vehicle-detail-page" v-if="vehicle">
+  <div v-if="vehicle" class="vehicle-detail-page">
     <!-- HERO SECTION -->
     <br />
     <br />
@@ -36,7 +36,7 @@
         </button>
 
         <!-- Image Dots -->
-        <div class="image-dots" v-if="thumbnailImages.length > 1">
+        <div v-if="thumbnailImages.length > 1" class="image-dots">
           <span
             v-for="(_, i) in thumbnailImages"
             :key="i"
@@ -81,7 +81,7 @@
       </div>
 
       <!-- Thumbnails -->
-      <div class="thumbnails-row" v-if="thumbnailImages.length > 1">
+      <div v-if="thumbnailImages.length > 1" class="thumbnails-row">
         <div
           v-for="(img, i) in thumbnailImages"
           :key="i"
@@ -111,7 +111,7 @@
               }}
               <span class="price-currency">MXN</span>
             </h2>
-            <p class="price-financing" v-if="!isRental && monthlyPayment">
+            <p v-if="!isRental && monthlyPayment" class="price-financing">
               Desde ${{ formatPrice(monthlyPayment) }}/mes con financiamiento*
             </p>
             <div v-if="isRental" class="rental-price-options">
@@ -228,7 +228,7 @@
       </div>
 
       <!-- PLANES DE PAGO (solo para venta) -->
-      <div class="payment-plans-card" v-if="!isRental">
+      <div v-if="!isRental" class="payment-plans-card">
         <h3 class="section-title">
           <svg
             viewBox="0 0 24 24"
@@ -298,7 +298,7 @@
       </div>
 
       <!-- INFO DE RENTA (solo para renta) -->
-      <div class="rental-info-card" v-if="isRental && vehicle.rentalSpecs">
+      <div v-if="isRental && vehicle.rentalSpecs" class="rental-info-card">
         <h3 class="section-title">
           <svg
             viewBox="0 0 24 24"
@@ -346,8 +346,8 @@
             </span>
           </div>
           <div
-            class="rental-detail-item full-width"
             v-if="vehicle.rentalSpecs.availableFrom"
+            class="rental-detail-item full-width"
           >
             <span class="detail-label">Período de disponibilidad</span>
             <span class="detail-value"
@@ -424,9 +424,9 @@
           </h3>
           <div class="info-grid">
             <div
-              class="info-item"
               v-for="item in vehicleInfoItems"
               :key="item.label"
+              class="info-item"
             >
               <p class="info-label">{{ item.label }}</p>
               <p class="info-value">{{ item.value || '—' }}</p>
@@ -467,9 +467,9 @@
           </h3>
           <div class="features-grid">
             <div
-              class="feature-item"
               v-for="feature in vehicleFeatures"
               :key="feature"
+              class="feature-item"
             >
               <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -510,7 +510,7 @@
             <div class="seller-info">
               <div class="seller-header">
                 <h4>{{ sellerName }}</h4>
-                <div class="verified-badge" v-if="sellerVerified">
+                <div v-if="sellerVerified" class="verified-badge">
                   <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -612,21 +612,11 @@
                   <span class="reviewer-name">{{ review.name }}</span>
                   <div class="stars stars-sm">
                     <svg
-                      v-for="i in 5"
-                      :key="i"
+                      v-for="star in getReviewStars(review.rating)"
+                      :key="star.key"
                       viewBox="0 0 24 24"
-                      fill="currentColor"
-                      v-if="i <= review.rating"
-                    >
-                      <path
-                        d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.07 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"
-                      />
-                    </svg>
-                    <svg
-                      v-else
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
+                      :fill="star.filled ? 'currentColor' : 'none'"
+                      :stroke="star.filled ? 'none' : 'currentColor'"
                     >
                       <path
                         d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.07 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"
@@ -645,9 +635,9 @@
             <h4>Deja tu reseña</h4>
             <div class="review-form">
               <input
+                v-model="newReview.name"
                 type="text"
                 placeholder="Tu nombre"
-                v-model="newReview.name"
                 class="form-input"
               />
               <div class="rating-input">
@@ -658,8 +648,8 @@
                     :key="i"
                     viewBox="0 0 24 24"
                     fill="currentColor"
-                    @click="newReview.rating = i"
                     :class="{ active: i <= newReview.rating }"
+                    @click="newReview.rating = i"
                   >
                     <path
                       d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 22 12 18.07 5.82 22 7 14.14 2 9.27l6.91-1.01L12 2z"
@@ -668,9 +658,9 @@
                 </div>
               </div>
               <textarea
+                v-model="newReview.comment"
                 placeholder="Escribe tu comentario..."
                 rows="3"
-                v-model="newReview.comment"
                 class="form-input"
               ></textarea>
               <button class="btn-secondary" @click="submitReview">
@@ -685,11 +675,17 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();
 const router = useRouter();
+
+const getReviewStars = (rating) =>
+  Array.from({ length: 5 }, (_, index) => ({
+    key: index + 1,
+    filled: index < rating,
+  }));
 
 // IMPORTAR DATOS DESDE JSON
 import salesDetails from '../../../mocks/catalog/listing-details.json';
@@ -790,19 +786,18 @@ const vehicle = computed(() => {
   const id = route.params.id;
   if (!id) return null;
 
-  let found = null;
-  if (isRental.value) {
-    found = rentalDetails[id];
-  } else {
-    found = salesDetails[id];
-  }
-
-  if (!found) {
-    router.push('/vehiculos');
-    return null;
-  }
-  return found;
+  return isRental.value ? rentalDetails[id] || null : salesDetails[id] || null;
 });
+
+watch(
+  () => route.params.id,
+  () => {
+    if (!vehicle.value) {
+      router.replace('/vehiculos');
+    }
+  },
+  { immediate: true }
+);
 
 const thumbnailImages = computed(
   () => vehicle.value?.gallery || [vehicle.value?.coverImage]
@@ -911,12 +906,13 @@ const scheduleTestDrive = () => {
     router.push(`/citas?vehicle=${vehicle.value?.id}`);
   }
 };
-const goToHome = () => {
-  router.push('/');
-};
-const goToCatalog = () => {
-  router.push('/vehiculos');
-};
+// const goToHome = () => {
+//   router.push('/');
+// };
+// const goToCatalog = () => {
+//   router.push('/vehiculos');
+// };
+
 const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price);
 const formatNumber = (num) => new Intl.NumberFormat('es-MX').format(num);
 

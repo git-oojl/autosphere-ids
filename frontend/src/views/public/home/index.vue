@@ -1,7 +1,7 @@
 <template>
   <div class="home-page">
     <!-- HERO SECTION — arranca desde y:0, el navbar flota encima con position:fixed -->
-    <section class="hero" id="hero">
+    <section id="hero" class="hero">
       <div class="hero-content">
         <h1 class="hero-title">
           Cars for sale with good prices<br />and the best quality
@@ -38,8 +38,8 @@
             <div class="search-group">
               <label>ZIP Code</label>
               <input
-                type="text"
                 v-model="searchFilters.zipCode"
+                type="text"
                 placeholder="ZIP Code"
               />
             </div>
@@ -95,9 +95,9 @@
         </div>
 
         <button
+          v-if="cars.length > perPage"
           class="carousel-next"
           @click="nextPage"
-          v-if="cars.length > perPage"
         >
           <svg
             viewBox="0 0 24 24"
