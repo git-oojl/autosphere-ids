@@ -114,7 +114,7 @@ function goSearch() {
 }
 
 .navbar {
-  background: white;
+  background: #0f1e2c;
   padding: 15px 40px;
   border-radius: 50px;
   display: flex;
@@ -127,7 +127,7 @@ function goSearch() {
 .logo {
   font-weight: bold;
   font-size: 20px;
-  color: #333;
+  color: #ffffff;
   cursor: pointer;
 }
 
@@ -142,7 +142,7 @@ function goSearch() {
   letter-spacing: normal;
   font-weight: 500;
   font-size: 16px;
-  color: #666;
+  color: #ffffff;
 }
 
 .nav-active {

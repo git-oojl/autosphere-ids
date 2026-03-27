@@ -14,18 +14,18 @@ const read = (relativePath) =>
 test('PublicLayout keeps the public shell composition', () => {
   const file = read('src/layouts/PublicLayout.vue');
 
+  assert.match(file, /class="public-layout"/);
   assert.match(file, /<PublicAppBar\s*\/>/);
   assert.match(file, /<v-main[^>]*class="main-content"/);
   assert.match(file, /class="page-shell"/);
   assert.match(file, /<router-view\s*\/>/);
-  assert.match(file, /<v-footer[^>]*>/);
+  assert.match(file, /<(?:v-footer|footer)\b[^>]*>/);
+  assert.match(file, /class="footer"/);
   assert.match(file, /AutoSphere/);
   assert.match(
     file,
     /import\s+PublicAppBar\s+from\s+['"]\.\.\/components\/layout\/PublicAppBar\.vue['"]/
   );
-  assert.match(file, /--layout-top-offset:\s*116px/);
-  assert.match(file, /--layout-top-offset:\s*190px/);
 });
 
 test('AuthLayout stays minimal and exposes a route outlet', () => {

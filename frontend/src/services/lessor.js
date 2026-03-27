@@ -9,8 +9,13 @@ export async function getRentals(filters = {}) {
   const query = filters.q || filters.query || '';
 
   const items = rentalsData.items.filter((item) => {
-    const matchesStatus = statuses.length === 0 || statuses.includes(item.status);
-    const matchesQuery = !query || [item.vehicleLabel, item.clientName, item.id].some((value) => includesText(value, query));
+    const matchesStatus =
+      statuses.length === 0 || statuses.includes(item.status);
+    const matchesQuery =
+      !query ||
+      [item.vehicleLabel, item.clientName, item.id].some((value) =>
+        includesText(value, query)
+      );
 
     return matchesStatus && matchesQuery;
   });

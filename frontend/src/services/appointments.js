@@ -13,7 +13,9 @@ const userMap = users.reduce((acc, user) => {
 }, {});
 
 function baseAppointments() {
-  return appointmentsData.items.map((item) => appointmentDetailsMap[item.id] || item);
+  return appointmentsData.items.map(
+    (item) => appointmentDetailsMap[item.id] || item
+  );
 }
 
 function enrichAppointment(appointment) {
@@ -38,20 +40,33 @@ function filterAppointments(items, filters = {}) {
   const query = filters.q || filters.query || '';
 
   return items.filter((appointment) => {
-    const matchesStatus = statuses.length === 0 || statuses.includes(appointment.status);
-    const matchesBuyer = !filters.buyerId || appointment.buyerId === filters.buyerId;
-    const matchesSeller = !filters.sellerId || appointment.sellerId === filters.sellerId;
-    const matchesListing = !filters.listingId || appointment.listingId === filters.listingId;
+    const matchesStatus =
+      statuses.length === 0 || statuses.includes(appointment.status);
+    const matchesBuyer =
+      !filters.buyerId || appointment.buyerId === filters.buyerId;
+    const matchesSeller =
+      !filters.sellerId || appointment.sellerId === filters.sellerId;
+    const matchesListing =
+      !filters.listingId || appointment.listingId === filters.listingId;
     const matchesDate = !filters.date || appointment.date === filters.date;
-    const matchesQuery = !query || [
-      appointment.id,
-      appointment.listingTitle,
-      appointment.buyerName,
-      appointment.sellerName,
-      appointment.locationLabel,
-    ].some((value) => includesText(value, query));
+    const matchesQuery =
+      !query ||
+      [
+        appointment.id,
+        appointment.listingTitle,
+        appointment.buyerName,
+        appointment.sellerName,
+        appointment.locationLabel,
+      ].some((value) => includesText(value, query));
 
-    return matchesStatus && matchesBuyer && matchesSeller && matchesListing && matchesDate && matchesQuery;
+    return (
+      matchesStatus &&
+      matchesBuyer &&
+      matchesSeller &&
+      matchesListing &&
+      matchesDate &&
+      matchesQuery
+    );
   });
 }
 
@@ -68,12 +83,16 @@ export async function getAppointmentSlots(listingId, options = {}) {
     return resolveMock(slots);
   }
 
-  return resolveMock(slots.find((entry) => entry.date === options.date) || null);
+  return resolveMock(
+    slots.find((entry) => entry.date === options.date) || null
+  );
 }
 
 export async function getAppointments(filters = {}) {
   // TODO: replace with GET /api/appointments.
-  const items = filterAppointments(baseAppointments(), filters).map(enrichAppointment);
+  const items = filterAppointments(baseAppointments(), filters).map(
+    enrichAppointment
+  );
   return resolveMock(sortItems(items, filters.sort || 'date_asc'));
 }
 
@@ -82,11 +101,17 @@ export async function getAppointmentById(id) {
   return resolveMock(enrichAppointment(appointmentDetailsMap[id] || null));
 }
 
-export async function getBuyerAppointments(buyerId = 'u-buyer-001', filters = {}) {
+export async function getBuyerAppointments(
+  buyerId = 'u-buyer-001',
+  filters = {}
+) {
   return getAppointments({ ...filters, buyerId });
 }
 
-export async function getSellerAppointments(sellerId = 'u-seller-001', filters = {}) {
+export async function getSellerAppointments(
+  sellerId = 'u-seller-001',
+  filters = {}
+) {
   return getAppointments({ ...filters, sellerId });
 }
 
@@ -96,27 +121,32 @@ export async function createAppointment(payload = {}) {
   const buyer = userMap[payload.buyerId || 'u-buyer-001'] || null;
   const seller = userMap[payload.sellerId || listing?.sellerId] || null;
 
-  return resolveMock(enrichAppointment({
-    id: payload.id || 'ap-mock-new',
-    listingId: payload.listingId || null,
-    buyerId: buyer?.id || null,
-    sellerId: seller?.id || null,
-    status: payload.status || 'pending',
-    date: payload.date || null,
-    time: payload.time || null,
-    locationLabel: payload.locationLabel || listing?.location?.addressLabel || 'Ubicación pendiente',
-    notes: payload.notes || '',
-    listingTitle: listing?.title || 'Publicación pendiente',
-    buyerName: buyer?.name || 'Comprador pendiente',
-    sellerName: seller?.name || 'Vendedor pendiente',
-    timeline: [
-      {
-        label: 'Solicitud creada',
-        timestamp: new Date().toISOString(),
-        status: 'done',
-      },
-    ],
-  }));
+  return resolveMock(
+    enrichAppointment({
+      id: payload.id || 'ap-mock-new',
+      listingId: payload.listingId || null,
+      buyerId: buyer?.id || null,
+      sellerId: seller?.id || null,
+      status: payload.status || 'pending',
+      date: payload.date || null,
+      time: payload.time || null,
+      locationLabel:
+        payload.locationLabel ||
+        listing?.location?.addressLabel ||
+        'Ubicación pendiente',
+      notes: payload.notes || '',
+      listingTitle: listing?.title || 'Publicación pendiente',
+      buyerName: buyer?.name || 'Comprador pendiente',
+      sellerName: seller?.name || 'Vendedor pendiente',
+      timeline: [
+        {
+          label: 'Solicitud creada',
+          timestamp: new Date().toISOString(),
+          status: 'done',
+        },
+      ],
+    })
+  );
 }
 
 export async function confirmAppointment(id) {
@@ -126,10 +156,12 @@ export async function confirmAppointment(id) {
     return resolveMock(null);
   }
 
-  return resolveMock(enrichAppointment({
-    ...appointment,
-    status: 'confirmed',
-  }));
+  return resolveMock(
+    enrichAppointment({
+      ...appointment,
+      status: 'confirmed',
+    })
+  );
 }
 
 export async function rescheduleAppointment(id, payload = {}) {
@@ -139,13 +171,15 @@ export async function rescheduleAppointment(id, payload = {}) {
     return resolveMock(null);
   }
 
-  return resolveMock(enrichAppointment({
-    ...appointment,
-    status: 'rescheduled',
-    date: payload.date || appointment.date,
-    time: payload.time || appointment.time,
-    notes: payload.notes || appointment.notes,
-  }));
+  return resolveMock(
+    enrichAppointment({
+      ...appointment,
+      status: 'rescheduled',
+      date: payload.date || appointment.date,
+      time: payload.time || appointment.time,
+      notes: payload.notes || appointment.notes,
+    })
+  );
 }
 
 export async function cancelAppointment(id, payload = {}) {
@@ -155,9 +189,11 @@ export async function cancelAppointment(id, payload = {}) {
     return resolveMock(null);
   }
 
-  return resolveMock(enrichAppointment({
-    ...appointment,
-    status: 'cancelled',
-    cancellationReason: payload.reason || null,
-  }));
+  return resolveMock(
+    enrichAppointment({
+      ...appointment,
+      status: 'cancelled',
+      cancellationReason: payload.reason || null,
+    })
+  );
 }

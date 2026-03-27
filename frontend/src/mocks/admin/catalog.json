@@ -1,15 +1,6 @@
 {
-  "featuredBrands": [
-    "Mazda",
-    "Toyota",
-    "Volkswagen"
-  ],
-  "statusOptions": [
-    "draft",
-    "published",
-    "archived",
-    "flagged"
-  ],
+  "featuredBrands": ["Mazda", "Toyota", "Volkswagen"],
+  "statusOptions": ["draft", "published", "archived", "flagged"],
   "moderationQueues": {
     "pending": 3,
     "flagged": 2,

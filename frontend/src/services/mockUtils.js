@@ -1,10 +1,14 @@
 export function normalizeText(value = '') {
-  return String(value ?? '').trim().toLowerCase();
+  return String(value ?? '')
+    .trim()
+    .toLowerCase();
 }
 
 export function toArray(value) {
   if (Array.isArray(value)) {
-    return value.filter((item) => item !== undefined && item !== null && item !== '');
+    return value.filter(
+      (item) => item !== undefined && item !== null && item !== ''
+    );
   }
 
   if (value === undefined || value === null || value === '') {
@@ -52,8 +56,10 @@ export function sortItems(items = [], sort = 'relevance') {
     year_asc: (a, b) => (a.year ?? 0) - (b.year ?? 0),
     mileage_asc: (a, b) => (a.mileageKm ?? 0) - (b.mileageKm ?? 0),
     mileage_desc: (a, b) => (b.mileageKm ?? 0) - (a.mileageKm ?? 0),
-    date_desc: (a, b) => String(b.date ?? '').localeCompare(String(a.date ?? '')),
-    date_asc: (a, b) => String(a.date ?? '').localeCompare(String(b.date ?? '')),
+    date_desc: (a, b) =>
+      String(b.date ?? '').localeCompare(String(a.date ?? '')),
+    date_asc: (a, b) =>
+      String(a.date ?? '').localeCompare(String(b.date ?? '')),
   };
 
   const comparator = comparators[sort];

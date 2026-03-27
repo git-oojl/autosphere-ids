@@ -14,7 +14,12 @@ export async function getSavedVehicles(filters = {}) {
   // TODO: replace with GET /api/buyer/saved-vehicles.
   const query = filters.q || filters.query || '';
   const filtered = savedVehiclesData.items.filter((item) => {
-    return !query || [item.title, item.brand, item.model, item.location?.city].some((value) => includesText(value, query));
+    return (
+      !query ||
+      [item.title, item.brand, item.model, item.location?.city].some((value) =>
+        includesText(value, query)
+      )
+    );
   });
 
   return resolveMock({
@@ -24,7 +29,9 @@ export async function getSavedVehicles(filters = {}) {
 
 export async function getSavedVehicleById(id) {
   // TODO: replace with GET /api/buyer/saved-vehicles/:id.
-  return resolveMock(savedVehiclesData.items.find((item) => item.id === id) || null);
+  return resolveMock(
+    savedVehiclesData.items.find((item) => item.id === id) || null
+  );
 }
 
 export async function getSearchHistory() {
@@ -34,7 +41,9 @@ export async function getSearchHistory() {
 
 export async function getUpcomingAppointments(buyerId = 'u-buyer-001') {
   const items = await getBuyerAppointments(buyerId);
-  const filtered = items.filter((item) => ['pending', 'confirmed', 'rescheduled'].includes(item.status));
+  const filtered = items.filter((item) =>
+    ['pending', 'confirmed', 'rescheduled'].includes(item.status)
+  );
   return resolveMock(sortItems(filtered, 'date_asc'));
 }
 

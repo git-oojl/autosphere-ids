@@ -4,16 +4,27 @@ import dashboardData from '../mocks/seller/dashboard.json';
 import listingsData from '../mocks/seller/listings.json';
 import listingDetails from '../mocks/catalog/listing-details.json';
 import { resolveMock } from './mockResponse.js';
-import { includesText, paginateItems, sortItems, toArray } from './mockUtils.js';
+import {
+  includesText,
+  paginateItems,
+  sortItems,
+  toArray,
+} from './mockUtils.js';
 
 function filterListings(items, filters = {}) {
   const statuses = toArray(filters.status || filters.statuses);
   const query = filters.q || filters.query || '';
 
   return items.filter((item) => {
-    const matchesStatus = statuses.length === 0 || statuses.includes(item.status);
-    const matchesSeller = !filters.sellerId || item.sellerId === filters.sellerId;
-    const matchesQuery = !query || [item.title, item.brand, item.model, item.id].some((value) => includesText(value, query));
+    const matchesStatus =
+      statuses.length === 0 || statuses.includes(item.status);
+    const matchesSeller =
+      !filters.sellerId || item.sellerId === filters.sellerId;
+    const matchesQuery =
+      !query ||
+      [item.title, item.brand, item.model, item.id].some((value) =>
+        includesText(value, query)
+      );
 
     return matchesStatus && matchesSeller && matchesQuery;
   });
@@ -24,9 +35,15 @@ function filterAppointments(items, filters = {}) {
   const query = filters.q || filters.query || '';
 
   return items.filter((item) => {
-    const matchesStatus = statuses.length === 0 || statuses.includes(item.status);
-    const matchesSeller = !filters.sellerId || item.sellerId === filters.sellerId;
-    const matchesQuery = !query || [item.listingTitle, item.buyerName, item.locationLabel, item.id].some((value) => includesText(value, query));
+    const matchesStatus =
+      statuses.length === 0 || statuses.includes(item.status);
+    const matchesSeller =
+      !filters.sellerId || item.sellerId === filters.sellerId;
+    const matchesQuery =
+      !query ||
+      [item.listingTitle, item.buyerName, item.locationLabel, item.id].some(
+        (value) => includesText(value, query)
+      );
 
     return matchesStatus && matchesSeller && matchesQuery;
   });
@@ -41,7 +58,11 @@ export async function getSellerListings(filters = {}) {
   // TODO: replace with GET /api/seller/listings.
   const filtered = filterListings(listingsData.items, filters);
   const sorted = sortItems(filtered, filters.sort || 'relevance');
-  const paginated = paginateItems(sorted, filters.page ?? 1, filters.pageSize ?? 12);
+  const paginated = paginateItems(
+    sorted,
+    filters.page ?? 1,
+    filters.pageSize ?? 12
+  );
 
   return resolveMock({
     meta: paginated.meta,
@@ -51,7 +72,11 @@ export async function getSellerListings(filters = {}) {
 
 export async function getSellerListingById(id) {
   // TODO: replace with GET /api/seller/listings/:id.
-  return resolveMock(listingDetails[id] || listingsData.items.find((item) => item.id === id) || null);
+  return resolveMock(
+    listingDetails[id] ||
+      listingsData.items.find((item) => item.id === id) ||
+      null
+  );
 }
 
 export async function getListingFormOptions() {
@@ -67,7 +92,9 @@ export async function getSellerAppointments(filters = {}) {
 
 export async function getSellerAppointmentById(id) {
   // TODO: replace with GET /api/seller/appointments/:id.
-  return resolveMock(appointmentsData.items.find((item) => item.id === id) || null);
+  return resolveMock(
+    appointmentsData.items.find((item) => item.id === id) || null
+  );
 }
 
 export async function createListing(payload = {}) {
@@ -81,7 +108,10 @@ export async function createListing(payload = {}) {
 
 export async function updateListing(id, payload = {}) {
   // TODO: replace with PATCH /api/seller/listings/:id.
-  const current = listingDetails[id] || listingsData.items.find((item) => item.id === id) || null;
+  const current =
+    listingDetails[id] ||
+    listingsData.items.find((item) => item.id === id) ||
+    null;
 
   return resolveMock(current ? { ...current, ...payload } : null);
 }
