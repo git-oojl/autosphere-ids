@@ -1,22 +1,7 @@
 <template>
   <div class="home-page">
-    <!-- NAVBAR -->
-    <nav class="navbar" :class="{ scrolled: isScrolled }">
-      <div class="navbar-container">
-        <div class="logo">AutoSphere</div>
-        <ul class="nav-menu">
-          <li><a href="#hero">Home</a></li>
-          <li><a href="#cars">Services</a></li>
-          <li><a href="#contact">Contact</a></li>
-          <li><a href="#about">About Us</a></li>
-          <li><a class="login-link" @click="goToLogin">Login</a></li>
-        </ul>
-      </div>
-    </nav>
-
-    <!-- HERO SECTION -->
-    <section id="hero" class="hero">
-      <div class="hero-overlay"></div>
+    <!-- HERO SECTION — arranca desde y:0, el navbar flota encima con position:fixed -->
+    <section class="hero" id="hero">
       <div class="hero-content">
         <h1 class="hero-title">
           Cars for sale with good prices<br />and the best quality
@@ -53,8 +38,8 @@
             <div class="search-group">
               <label>ZIP Code</label>
               <input
-                v-model="searchFilters.zipCode"
                 type="text"
+                v-model="searchFilters.zipCode"
                 placeholder="ZIP Code"
               />
             </div>
@@ -110,9 +95,9 @@
         </div>
 
         <button
-          v-if="cars.length > perPage"
           class="carousel-next"
           @click="nextPage"
+          v-if="cars.length > perPage"
         >
           <svg
             viewBox="0 0 24 24"
@@ -169,12 +154,10 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
-
-const isScrolled = ref(false);
 
 const searchFilters = ref({
   make: '',
@@ -262,14 +245,9 @@ const nextPage = () => {
   currentPage.value = (currentPage.value + 1) % totalPages;
 };
 
-const goToLogin = () => {
-  router.push('/login');
-};
-
 const handleSearch = () => {
-  console.log('Búsqueda:', searchFilters.value);
   router.push({
-    name: 'Catalog',
+    name: 'public-catalog',
     query: searchFilters.value,
   });
 };
@@ -291,18 +269,6 @@ const viewDetail = (carId) => {
 const contactSeller = (carId) => {
   console.log('Contactar vendedor:', carId);
 };
-
-const handleScroll = () => {
-  isScrolled.value = window.scrollY > 20;
-};
-
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll);
-});
-
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
-});
 </script>
 
 <style scoped src="./styles.css"></style>

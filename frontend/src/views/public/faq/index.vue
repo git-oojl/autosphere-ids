@@ -3,6 +3,9 @@
     <!-- HERO HEADER -->
     <section class="faq-hero">
       <div class="hero-content">
+        <br />
+        <br />
+        <br />
         <p class="eyebrow">CENTRO DE AYUDA</p>
         <h1>Preguntas Frecuentes</h1>
         <p class="hero-subtitle">

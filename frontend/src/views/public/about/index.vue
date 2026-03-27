@@ -3,6 +3,9 @@
     <!-- HERO SECTION -->
     <section class="about-hero">
       <div class="hero-content">
+        <br />
+        <br />
+        <br />
         <p class="eyebrow">Conoce AutoSphere</p>
         <h1>Sobre nosotros</h1>
         <p class="hero-subtitle">

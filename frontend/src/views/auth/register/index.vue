@@ -354,144 +354,6 @@
           <p v-if="passwordError" class="error-message">{{ passwordError }}</p>
         </div>
 
-        <!-- Role Selection -->
-        <div class="form-group">
-          <label class="form-label">
-            <span class="label-icon">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <circle
-                  cx="9"
-                  cy="7"
-                  r="4"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-                <path
-                  d="M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </span>
-            Tipo de cuenta:
-          </label>
-          <div class="role-selection">
-            <label
-              class="role-option"
-              :class="{ 'role-selected': formData.role === 'comprador' }"
-            >
-              <input
-                v-model="formData.role"
-                type="radio"
-                name="role"
-                value="comprador"
-                required
-              />
-              <div class="role-card">
-                <div class="role-icon">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M9 2L11 6L15 7L12 10L13 14L9 12L5 14L6 10L3 7L7 6L9 2Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </div>
-                <h3 class="role-title">Comprador</h3>
-                <p class="role-description">Explora y compra autos de lujo</p>
-              </div>
-            </label>
-
-            <label
-              class="role-option"
-              :class="{ 'role-selected': formData.role === 'vendedor' }"
-            >
-              <input
-                v-model="formData.role"
-                type="radio"
-                name="role"
-                value="vendedor"
-                required
-              />
-              <div class="role-card">
-                <div class="role-icon">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M12 2L2 7L12 12L22 7L12 2Z"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M2 17L12 22L22 17"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                    <path
-                      d="M2 12L12 17L22 12"
-                      stroke="currentColor"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
-                </div>
-                <h3 class="role-title">Vendedor</h3>
-                <p class="role-description">Publica y vende tus vehículos</p>
-              </div>
-            </label>
-          </div>
-        </div>
-
-        <!-- Terms and Conditions -->
-        <div class="form-options">
-          <label class="terms-checkbox">
-            <input v-model="acceptTerms" type="checkbox" required />
-            <span class="checkbox-custom"></span>
-            <span class="checkbox-label">
-              Acepto los
-              <a href="#" class="link-text" @click.prevent="showTerms"
-                >términos y condiciones</a
-              >
-            </span>
-          </label>
-        </div>
-
         <!-- Submit Button -->
         <button
           type="submit"
@@ -525,9 +387,9 @@
       <div class="card-footer">
         <p class="footer-text">
           ¿Ya tienes una cuenta?
-          <router-link to="/login" class="footer-link"
-            >Inicia sesión</router-link
-          >
+          <router-link to="/login" class="footer-link">
+            Inicia sesión
+          </router-link>
         </p>
       </div>
     </div>
@@ -548,7 +410,7 @@ const formData = reactive({
   phone: '',
   password: '',
   confirmPassword: '',
-  role: '', // 'comprador' o 'vendedor'
+  role: '',
 });
 
 const showPassword = ref(false);
@@ -617,32 +479,16 @@ const handleRegister = async () => {
       acceptTerms: acceptTerms.value,
     });
 
-    // Simulación de petición API (reemplaza con tu lógica real)
+    // Simulación de petición API
     await new Promise((resolve) => setTimeout(resolve, 2000));
-
-    // Aquí va tu lógica de registro
-    // Por ejemplo:
-    // const response = await fetch('/api/register', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({
-    //     fullName: formData.fullName,
-    //     email: formData.email,
-    //     phone: formData.phone,
-    //     password: formData.password,
-    //     role: formData.role
-    //   })
-    // })
 
     console.log('Registro exitoso');
 
     // Redirigir según el rol
     if (formData.role === 'vendedor') {
-      // Navegar al dashboard de vendedor
-      console.log('Redirigir a dashboard de vendedor');
+      router.push('/dashboard-vendedor');
     } else {
-      // Navegar al dashboard de comprador
-      console.log('Redirigir a dashboard de comprador');
+      router.push('/dashboard-comprador');
     }
   } catch (error) {
     console.error('Error en el registro:', error);
@@ -652,16 +498,10 @@ const handleRegister = async () => {
 };
 
 // Mostrar términos y condiciones
-const showTerms = () => {
-  console.log('Mostrar términos y condiciones');
-  // Aquí puedes abrir un modal o navegar a una página de términos
-  // router.push('/terms')
+const showTerms = (e) => {
+  e.preventDefault();
+  router.push('/terminos');
 };
-
-// Ir a página de login (ya no se usa porque usamos router-link, pero por si acaso)
-// const goToLogin = () => {
-router.push('/login');
-// };
 </script>
 
 <style scoped src="./styles.css"></style>

@@ -1,0 +1,437 @@
+{
+  "rt-001": {
+    "id": "rt-001",
+    "title": "Nissan Versa 2022",
+    "brand": "Nissan",
+    "model": "Versa",
+    "year": 2022,
+    "type": "Sedán",
+    "transmission": "Automática",
+    "fuel": "Gasolina",
+    "cityId": "mx-cdmx",
+    "coverImage": "https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+    "status": "published",
+    "color": "Blanco",
+    "description": "Nissan Versa 2022 en excelente estado, ideal para la ciudad. Rendimiento excepcional de combustible y gran espacio interior. Perfecto para rentas diarias, semanales o mensuales.",
+    "vinMasked": "***RT001MX",
+    "doors": 4,
+    "seats": 5,
+    "engine": "1.6L",
+    "traction": "Delantera",
+    "location": {
+      "city": "Ciudad de México",
+      "state": "CDMX",
+      "addressLabel": "Sucursal Ciudad de México Centro",
+      "lat": 19.4326,
+      "lng": -99.1332
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8",
+      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?2",
+      "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?3"
+    ],
+    "sellerProfile": {
+      "id": "u-seller-rent-001",
+      "displayName": "Rentas Premium CDMX",
+      "rating": 4.6,
+      "verified": true,
+      "responseTime": "Menos de 1 hora",
+      "activeListings": 8
+    },
+    "rentalSpecs": {
+      "pricePerDay": 750,
+      "pricePerWeek": 4500,
+      "pricePerMonth": 14000,
+      "depositAmount": 5000,
+      "kmIncludedPerDay": 200,
+      "extraKmCost": 3,
+      "availableFrom": "2026-03-27",
+      "availableTo": "2026-12-31",
+      "available": true,
+      "requirements": [
+        "Licencia vigente",
+        "Tarjeta de crédito",
+        "Identificación oficial"
+      ],
+      "includedItems": [
+        "Seguro básico",
+        "Kilometraje incluido",
+        "Asistencia vial 24/7",
+        "Entrega en sucursal"
+      ]
+    },
+    "specs": {
+      "transmisión": "Automática",
+      "combustible": "Gasolina",
+      "kilometraje": 18500,
+      "color": "Blanco",
+      "año": 2022,
+      "tipo": "Sedán",
+      "puertas": 4,
+      "asientos": 5
+    }
+  },
+  "rt-002": {
+    "id": "rt-002",
+    "title": "Toyota RAV4 2023",
+    "brand": "Toyota",
+    "model": "RAV4",
+    "year": 2023,
+    "type": "SUV",
+    "transmission": "Automática",
+    "fuel": "Gasolina",
+    "cityId": "mx-gdl",
+    "coverImage": "https://images.unsplash.com/photo-1553440569-bcc63803a83d",
+    "status": "published",
+    "color": "Gris",
+    "description": "Toyota RAV4 2023, SUV espaciosa y confiable. Perfecta para viajes familiares o escapadas de fin de semana. Equipada con las últimas tecnologías de seguridad.",
+    "vinMasked": "***RT002MX",
+    "doors": 5,
+    "seats": 5,
+    "engine": "2.5L",
+    "traction": "4x2",
+    "location": {
+      "city": "Guadalajara",
+      "state": "Jalisco",
+      "addressLabel": "Sucursal Guadalajara Centro",
+      "lat": 20.6597,
+      "lng": -103.3496
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1553440569-bcc63803a83d",
+      "https://images.unsplash.com/photo-1553440569-bcc63803a83d?2",
+      "https://images.unsplash.com/photo-1553440569-bcc63803a83d?3"
+    ],
+    "sellerProfile": {
+      "id": "u-seller-rent-002",
+      "displayName": "Rentas Guadalajara",
+      "rating": 4.8,
+      "verified": true,
+      "responseTime": "Menos de 2 horas",
+      "activeListings": 5
+    },
+    "rentalSpecs": {
+      "pricePerDay": 1200,
+      "pricePerWeek": 7500,
+      "pricePerMonth": 24000,
+      "depositAmount": 10000,
+      "kmIncludedPerDay": 300,
+      "extraKmCost": 4,
+      "availableFrom": "2026-04-01",
+      "availableTo": "2026-12-31",
+      "available": true,
+      "requirements": [
+        "Licencia vigente",
+        "Tarjeta de crédito",
+        "Identificación oficial",
+        "Edad mínima 25 años"
+      ],
+      "includedItems": [
+        "Seguro amplio",
+        "Kilometraje incluido",
+        "Asistencia vial 24/7",
+        "GPS incluido",
+        "Entrega a domicilio"
+      ]
+    },
+    "specs": {
+      "transmisión": "Automática",
+      "combustible": "Gasolina",
+      "kilometraje": 12500,
+      "color": "Gris",
+      "año": 2023,
+      "tipo": "SUV",
+      "puertas": 5,
+      "asientos": 5
+    }
+  },
+  "rt-003": {
+    "id": "rt-003",
+    "title": "Volkswagen Golf 2021",
+    "brand": "Volkswagen",
+    "model": "Golf",
+    "year": 2021,
+    "type": "Hatchback",
+    "transmission": "Manual",
+    "fuel": "Gasolina",
+    "cityId": "mx-mty",
+    "coverImage": "https://images.unsplash.com/photo-1502877338535-766e1452684a",
+    "status": "published",
+    "color": "Azul",
+    "description": "Volkswagen Golf 2021, hatchback deportivo y ágil. Excelente manejo en ciudad y carretera. Ideal para quienes buscan estilo y rendimiento.",
+    "vinMasked": "***RT003MX",
+    "doors": 5,
+    "seats": 5,
+    "engine": "1.4L Turbo",
+    "traction": "Delantera",
+    "location": {
+      "city": "Monterrey",
+      "state": "Nuevo León",
+      "addressLabel": "Sucursal Monterrey Centro",
+      "lat": 25.6866,
+      "lng": -100.3161
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1502877338535-766e1452684a",
+      "https://images.unsplash.com/photo-1502877338535-766e1452684a?2",
+      "https://images.unsplash.com/photo-1502877338535-766e1452684a?3"
+    ],
+    "sellerProfile": {
+      "id": "u-seller-rent-003",
+      "displayName": "Rentas MTY",
+      "rating": 4.5,
+      "verified": true,
+      "responseTime": "Menos de 3 horas",
+      "activeListings": 3
+    },
+    "rentalSpecs": {
+      "pricePerDay": 900,
+      "pricePerWeek": 5600,
+      "pricePerMonth": 18000,
+      "depositAmount": 8000,
+      "kmIncludedPerDay": 150,
+      "extraKmCost": 5,
+      "availableFrom": "2026-03-28",
+      "availableTo": "2026-10-30",
+      "available": true,
+      "requirements": [
+        "Licencia vigente",
+        "Tarjeta de crédito",
+        "Identificación oficial"
+      ],
+      "includedItems": [
+        "Seguro básico",
+        "Kilometraje incluido",
+        "Asistencia vial 24/7"
+      ]
+    },
+    "specs": {
+      "transmisión": "Manual",
+      "combustible": "Gasolina",
+      "kilometraje": 32500,
+      "color": "Azul",
+      "año": 2021,
+      "tipo": "Hatchback",
+      "puertas": 5,
+      "asientos": 5
+    }
+  },
+  "rt-004": {
+    "id": "rt-004",
+    "title": "Ford Mustang GT 2022",
+    "brand": "Ford",
+    "model": "Mustang",
+    "year": 2022,
+    "type": "Deportivo",
+    "transmission": "Automática",
+    "fuel": "Gasolina",
+    "cityId": "mx-cdmx",
+    "coverImage": "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
+    "status": "published",
+    "color": "Rojo",
+    "description": "Ford Mustang GT 2022, el ícono americano. Potencia V8, sonido inconfundible y diseño que no pasa desapercibido. Perfecto para ocasiones especiales.",
+    "vinMasked": "***RT004MX",
+    "doors": 2,
+    "seats": 4,
+    "engine": "5.0L V8",
+    "traction": "Trasera",
+    "location": {
+      "city": "Ciudad de México",
+      "state": "CDMX",
+      "addressLabel": "Sucursal Ciudad de México Centro",
+      "lat": 19.4326,
+      "lng": -99.1332
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70",
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?2",
+      "https://images.unsplash.com/photo-1503376780353-7e6692767b70?3"
+    ],
+    "sellerProfile": {
+      "id": "u-seller-rent-001",
+      "displayName": "Rentas Premium CDMX",
+      "rating": 4.9,
+      "verified": true,
+      "responseTime": "Menos de 1 hora",
+      "activeListings": 8
+    },
+    "rentalSpecs": {
+      "pricePerDay": 2500,
+      "pricePerWeek": 15000,
+      "pricePerMonth": 48000,
+      "depositAmount": 20000,
+      "kmIncludedPerDay": 250,
+      "extraKmCost": 10,
+      "availableFrom": "2026-05-01",
+      "availableTo": "2026-12-31",
+      "available": false,
+      "requirements": [
+        "Licencia vigente",
+        "Tarjeta de crédito",
+        "Identificación oficial",
+        "Edad mínima 30 años",
+        "Comprobante de domicilio"
+      ],
+      "includedItems": [
+        "Seguro premium",
+        "Kilometraje incluido",
+        "Asistencia vial 24/7",
+        "Entrega a domicilio",
+        "Seguro de cobertura amplia"
+      ]
+    },
+    "specs": {
+      "transmisión": "Automática",
+      "combustible": "Gasolina",
+      "kilometraje": 8900,
+      "color": "Rojo",
+      "año": 2022,
+      "tipo": "Deportivo",
+      "puertas": 2,
+      "asientos": 4
+    }
+  },
+  "rt-005": {
+    "id": "rt-005",
+    "title": "Honda HR-V 2023",
+    "brand": "Honda",
+    "model": "HR-V",
+    "year": 2023,
+    "type": "SUV",
+    "transmission": "Automática",
+    "fuel": "Gasolina",
+    "cityId": "mx-pue",
+    "coverImage": "https://images.unsplash.com/photo-1511919884226-fd3cad34687c",
+    "status": "published",
+    "color": "Negro",
+    "description": "Honda HR-V 2023, SUV compacta con diseño moderno y tecnología avanzada. Ideal para la ciudad con gran versatilidad de espacio.",
+    "vinMasked": "***RT005MX",
+    "doors": 5,
+    "seats": 5,
+    "engine": "1.8L",
+    "traction": "Delantera",
+    "location": {
+      "city": "Puebla",
+      "state": "Puebla",
+      "addressLabel": "Sucursal Puebla Centro",
+      "lat": 19.0414,
+      "lng": -98.2063
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1511919884226-fd3cad34687c",
+      "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?2",
+      "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?3"
+    ],
+    "sellerProfile": {
+      "id": "u-seller-rent-004",
+      "displayName": "Rentas Puebla",
+      "rating": 4.4,
+      "verified": true,
+      "responseTime": "Menos de 2 horas",
+      "activeListings": 6
+    },
+    "rentalSpecs": {
+      "pricePerDay": 1050,
+      "pricePerWeek": 6500,
+      "pricePerMonth": 21000,
+      "depositAmount": 7500,
+      "kmIncludedPerDay": 200,
+      "extraKmCost": 4,
+      "availableFrom": "2026-03-26",
+      "availableTo": "2026-11-30",
+      "available": true,
+      "requirements": [
+        "Licencia vigente",
+        "Tarjeta de crédito",
+        "Identificación oficial"
+      ],
+      "includedItems": [
+        "Seguro básico",
+        "Kilometraje incluido",
+        "Asistencia vial 24/7",
+        "GPS incluido"
+      ]
+    },
+    "specs": {
+      "transmisión": "Automática",
+      "combustible": "Gasolina",
+      "kilometraje": 15800,
+      "color": "Negro",
+      "año": 2023,
+      "tipo": "SUV",
+      "puertas": 5,
+      "asientos": 5
+    }
+  },
+  "rt-006": {
+    "id": "rt-006",
+    "title": "Chevrolet Equinox 2022",
+    "brand": "Chevrolet",
+    "model": "Equinox",
+    "year": 2022,
+    "type": "SUV",
+    "transmission": "Automática",
+    "fuel": "Gasolina",
+    "cityId": "mx-mer",
+    "coverImage": "https://images.unsplash.com/photo-1489824904134-891ab64532f1",
+    "status": "published",
+    "color": "Plata",
+    "description": "Chevrolet Equinox 2022, SUV mediana con gran espacio interior y excelente relación precio-calidad. Ideal para familias o viajes largos.",
+    "vinMasked": "***RT006MX",
+    "doors": 5,
+    "seats": 5,
+    "engine": "1.5L Turbo",
+    "traction": "Delantera",
+    "location": {
+      "city": "Mérida",
+      "state": "Yucatán",
+      "addressLabel": "Sucursal Mérida Centro",
+      "lat": 20.9674,
+      "lng": -89.5926
+    },
+    "gallery": [
+      "https://images.unsplash.com/photo-1489824904134-891ab64532f1",
+      "https://images.unsplash.com/photo-1489824904134-891ab64532f1?2",
+      "https://images.unsplash.com/photo-1489824904134-891ab64532f1?3"
+    ],
+    "sellerProfile": {
+      "id": "u-seller-rent-005",
+      "displayName": "Rentas Yucatán",
+      "rating": 4.7,
+      "verified": true,
+      "responseTime": "Menos de 2 horas",
+      "activeListings": 4
+    },
+    "rentalSpecs": {
+      "pricePerDay": 980,
+      "pricePerWeek": 6000,
+      "pricePerMonth": 19500,
+      "depositAmount": 9000,
+      "kmIncludedPerDay": 180,
+      "extraKmCost": 5,
+      "availableFrom": "2026-04-10",
+      "availableTo": "2026-12-31",
+      "available": true,
+      "requirements": [
+        "Licencia vigente",
+        "Tarjeta de crédito",
+        "Identificación oficial"
+      ],
+      "includedItems": [
+        "Seguro básico",
+        "Kilometraje incluido",
+        "Asistencia vial 24/7"
+      ]
+    },
+    "specs": {
+      "transmisión": "Automática",
+      "combustible": "Gasolina",
+      "kilometraje": 22400,
+      "color": "Plata",
+      "año": 2022,
+      "tipo": "SUV",
+      "puertas": 5,
+      "asientos": 5
+    }
+  }
+}
