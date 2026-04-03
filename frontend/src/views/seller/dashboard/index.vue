@@ -640,7 +640,9 @@ const manageListings = (ListingId) => {
   });
 };
 
-const createListing = () => alert('Redirigiendo a Crear Anuncio...');
+const createListing = () => {
+  router.push({ name: 'seller-create-listing' });
+};
 
 const createAppointment = () => {
   router.push({ name: 'seller-create-appointment' });
