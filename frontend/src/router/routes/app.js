@@ -59,8 +59,8 @@ export default [
       {
         path: 'vendedor/publicaciones/nuevo',
         name: 'seller-create-listing',
-        component: () => import('../../views/seller/create-listing/index.vue'),
-        meta: { requiresAuth: true, roles: ['seller'] },
+        component: () =>
+          import('../../views/appointments/crear-anuncio/index.vue'),
       },
       {
         path: 'vendedor/publicaciones/:id',
@@ -85,6 +85,13 @@ export default [
         name: 'seller-appointment-detail',
         component: () =>
           import('../../views/seller/appointment-detail/index.vue'),
+        meta: { requiresAuth: true, roles: ['seller'] },
+      },
+      {
+        path: 'vendedor/citas/crear',
+        name: 'seller-create-appointment',
+        component: () =>
+          import('../../views/appointments/Crear-cita/index.vue'),
         meta: { requiresAuth: true, roles: ['seller'] },
       },
       {

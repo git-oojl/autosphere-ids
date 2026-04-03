@@ -640,9 +640,13 @@ const manageListings = (ListingId) => {
   });
 };
 
-const createListing = () => alert('Redirigiendo a Crear Anuncio...');
+const createListing = () => {
+  router.push({ name: 'seller-create-listing' });
+};
 
-const createAppointment = () => alert('Redirigiendo a Crear Cita...');
+const createAppointment = () => {
+  router.push({ name: 'seller-create-appointment' });
+};
 const viewAllAppointments = () => alert('Redirigiendo a Citas...');
 const viewAppointment = (id) => alert(`Ver detalles de cita #${id}`);
 const editListing = (id) => alert(`Editar anuncio #${id}`);
