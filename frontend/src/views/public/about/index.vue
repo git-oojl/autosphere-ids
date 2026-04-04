@@ -237,10 +237,11 @@
                 />
               </svg>
             </div>
-            <h3>Carlos Rivera</h3>
-            <p class="team-role">CTO</p>
+            <h3>Jennifer Estrada</h3>
+            <p class="team-role">Diseñadora</p>
             <p>
-              Arquitecto de software especializado en plataformas escalables.
+              Diseñadora de estilo con un enfoque en interfaces intuitivas y
+              atractivas.
             </p>
           </div>
           <div class="team-card">

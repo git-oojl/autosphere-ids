@@ -48,7 +48,6 @@
               :class="{ active: selectedCategory === category.id }"
               @click="selectCategory(category.id)"
             >
-              <div class="category-icon" v-html="category.icon"></div>
               <span>{{ category.name }}</span>
               <span class="category-count">{{ category.count }}</span>
             </button>

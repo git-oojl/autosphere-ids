@@ -26,6 +26,11 @@ export default [
         component: () => import('../../views/public/faq/index.vue'),
       },
       {
+        path: 'terminos-condiciones',
+        name: 'public-terms',
+        component: () => import('../../views/public/terms/index.vue'),
+      },
+      {
         path: 'vehiculos',
         name: 'public-catalog',
         alias: ['/listados'],

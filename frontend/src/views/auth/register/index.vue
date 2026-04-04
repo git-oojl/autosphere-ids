@@ -500,7 +500,7 @@ const handleRegister = async () => {
 // Mostrar términos y condiciones
 // const showTerms = (e) => {
 // //   e.preventDefault();
-router.push('/terminos');
+router.push('/registro');
 // };
 </script>
 

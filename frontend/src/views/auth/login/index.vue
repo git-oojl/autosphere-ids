@@ -4,6 +4,7 @@
     <div class="background-overlay"></div>
 
     <!-- Decorative Elements -->
+
     <div class="decorative-line decorative-line-top"></div>
     <div class="decorative-line decorative-line-bottom"></div>
 
@@ -196,7 +197,9 @@
             class="forgot-password"
             @click.prevent="handleForgotPassword"
           >
-            ¿Olvidaste tu contraseña?
+            <router-link to="/recuperar-contrasena" class="footer-link">
+              ¿Olvidaste tu contraseña?
+            </router-link>
           </a>
         </div>
 
@@ -241,9 +244,8 @@
 
 <script setup>
 import { ref, reactive } from 'vue';
-// import { useRouter } from 'vue-router';
-
-// const router = useRouter();
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 // Estado reactivo del formulario
 const formData = reactive({
@@ -297,7 +299,7 @@ const handleLogin = async () => {
 // Manejar recuperación de contraseña
 const handleForgotPassword = () => {
   console.log('Recuperar contraseña');
-  // router.push('/recuperar-password')
+  router.push('../../views/auth/forgot-password/index.vue');
 };
 </script>
 
