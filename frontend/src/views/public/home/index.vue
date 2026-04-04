@@ -15,24 +15,26 @@
               <label>Make</label>
               <select v-model="searchFilters.make">
                 <option value="">Select Make</option>
-                <option>BMW</option>
-                <option>Honda</option>
-                <option>Volkswagen</option>
-                <option>Toyota</option>
-                <option>Ford</option>
-                <option>Mazda</option>
-                <option>Nissan</option>
+                <option
+                  v-for="brand in uniqueBrands"
+                  :key="brand"
+                  :value="brand"
+                >
+                  {{ brand }}
+                </option>
               </select>
             </div>
             <div class="search-group">
               <label>Model</label>
               <select v-model="searchFilters.model">
                 <option value="">Select Model</option>
-                <option>Serie 3</option>
-                <option>Civic Type R</option>
-                <option>Golf GTI</option>
-                <option>Camry</option>
-                <option>CX-5</option>
+                <option
+                  v-for="model in uniqueModels"
+                  :key="model"
+                  :value="model"
+                >
+                  {{ model }}
+                </option>
               </select>
             </div>
             <div class="search-group">
@@ -73,13 +75,17 @@
             @click="viewCarDetail(car.id)"
           >
             <div class="car-image">
-              <img :src="car.img" :alt="car.model" loading="lazy" />
-              <div class="car-badge">{{ car.condition }}</div>
+              <img
+                :src="getOptimizedImageUrl(car.coverImage)"
+                :alt="car.model"
+                loading="lazy"
+              />
+              <div class="car-badge">{{ car.condition || 'CERTIFIED' }}</div>
             </div>
             <div class="car-content">
               <div class="car-header">
-                <span class="car-model">{{ car.model }}</span>
-                <span class="car-price">{{ car.price }}</span>
+                <span class="car-model">{{ getCarTitle(car) }}</span>
+                <span class="car-price">${{ formatPrice(car.price) }}</span>
               </div>
               <div class="car-year">{{ car.year }}</div>
               <div class="car-actions">
@@ -95,7 +101,7 @@
         </div>
 
         <button
-          v-if="cars.length > perPage"
+          v-if="filteredCars.length > perPage"
           class="carousel-next"
           @click="nextPage"
         >
@@ -157,57 +163,23 @@
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
+// IMPORTAR DATOS DESDE JSON
+// Ajusta la ruta según la ubicación real de tu archivo listings.json
+import listingsData from '../../../mocks/catalog/listings.json';
+
 const router = useRouter();
 
+// ESTADO
 const searchFilters = ref({
   make: '',
   model: '',
   zipCode: '',
 });
 
-const cars = ref([
-  {
-    id: 1,
-    year: '2018',
-    model: 'BMW Serie 3 (E46)',
-    price: '$100,500',
-    condition: 'CERTIFIED',
-    img: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=800&h=600&fit=crop',
-  },
-  {
-    id: 2,
-    year: '2021',
-    model: 'Honda Civic Type R',
-    price: '$90,000',
-    condition: 'CERTIFIED',
-    img: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?w=800&h=600&fit=crop',
-  },
-  {
-    id: 3,
-    year: '2024',
-    model: 'Volkswagen Golf GTI',
-    price: '$80,000',
-    condition: 'USED',
-    img: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=800&h=600&fit=crop',
-  },
-  {
-    id: 4,
-    year: '2020',
-    model: 'Toyota Camry SE',
-    price: '$75,000',
-    condition: 'USED',
-    img: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800&h=600&fit=crop',
-  },
-  {
-    id: 6,
-    year: '2013',
-    model: 'Audi A4 Quattro',
-    price: '$130,000',
-    condition: 'USED',
-    img: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=800&h=600&fit=crop',
-  },
-]);
+const currentPage = ref(0);
+const perPage = 3;
 
+// RESEÑAS (se mantienen igual)
 const reviews = ref([
   {
     id: 1,
@@ -232,17 +204,68 @@ const reviews = ref([
   },
 ]);
 
-const currentPage = ref(0);
-const perPage = 3;
-
-const displayedCars = computed(() => {
-  const start = currentPage.value * perPage;
-  return cars.value.slice(start, start + perPage);
+// OBTENER VEHÍCULOS DEL MOCK (solo los publicados)
+const allVehicles = computed(() => {
+  const items = listingsData.items || [];
+  // Filtrar solo los que tienen status 'published'
+  return items.filter((vehicle) => vehicle.status === 'published');
 });
 
+// Obtener marcas únicas para el filtro
+const uniqueBrands = computed(() => {
+  const brands = allVehicles.value.map((v) => v.brand);
+  return [...new Set(brands)].sort();
+});
+
+// Obtener modelos únicos para el filtro
+const uniqueModels = computed(() => {
+  const models = allVehicles.value.map((v) => v.model);
+  return [...new Set(models)].sort();
+});
+
+// Filtrar vehículos según los filtros de búsqueda
+const filteredCars = computed(() => {
+  let result = [...allVehicles.value];
+
+  if (searchFilters.value.make) {
+    result = result.filter((v) => v.brand === searchFilters.value.make);
+  }
+  if (searchFilters.value.model) {
+    result = result.filter((v) => v.model === searchFilters.value.model);
+  }
+
+  return result;
+});
+
+// Vehículos mostrados en la página actual (paginación)
+const displayedCars = computed(() => {
+  const start = currentPage.value * perPage;
+  return filteredCars.value.slice(start, start + perPage);
+});
+
+// HELPERS
+const formatPrice = (price) => {
+  return new Intl.NumberFormat('es-MX').format(price);
+};
+
+const getOptimizedImageUrl = (url) => {
+  if (!url) return 'https://placehold.co/800x600/2d5179/ffffff?text=AutoSphere';
+  if (url.includes('unsplash.com'))
+    return `${url}?w=800&h=600&fit=crop&auto=format&q=80`;
+  return url;
+};
+
+// Obtener título del vehículo (marca + modelo)
+const getCarTitle = (car) => {
+  return `${car.brand} ${car.model} ${car.year}`;
+};
+
+// MÉTODOS
 const nextPage = () => {
-  const totalPages = Math.ceil(cars.value.length / perPage);
-  currentPage.value = (currentPage.value + 1) % totalPages;
+  const totalPages = Math.ceil(filteredCars.value.length / perPage);
+  if (totalPages > 0) {
+    currentPage.value = (currentPage.value + 1) % totalPages;
+  }
 };
 
 const handleSearch = () => {
@@ -268,6 +291,7 @@ const viewDetail = (carId) => {
 
 const contactSeller = (carId) => {
   console.log('Contactar vendedor:', carId);
+  alert(`Contactando al vendedor del vehículo ${carId}`);
 };
 </script>
 

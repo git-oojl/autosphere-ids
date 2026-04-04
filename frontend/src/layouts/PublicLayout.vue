@@ -34,9 +34,6 @@
                 <router-link to="/vehiculos">Comprar vehículo</router-link>
               </li>
               <li><router-link to="/vender">Vender vehículo</router-link></li>
-              <li>
-                <router-link to="/financiamiento">Financiamiento</router-link>
-              </li>
               <li><router-link to="/seguros">Seguros</router-link></li>
               <li><router-link to="/garantias">Garantías</router-link></li>
             </ul>
@@ -46,7 +43,9 @@
             <h3>Soporte</h3>
             <ul>
               <li>
-                <router-link to="/terminos">Términos de servicio</router-link>
+                <router-link to="/terminos-condiciones"
+                  >Términos de servicio</router-link
+                >
               </li>
               <li>
                 <router-link to="/privacidad"
