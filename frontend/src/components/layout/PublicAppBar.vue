@@ -9,6 +9,7 @@
       <nav class="navbar">
         <div class="logo" @click="goHome">AutoSphere</div>
 
+        <!-- Menú de navegación principal (siempre visible) -->
         <div class="nav-links">
           <v-btn
             variant="text"
@@ -35,7 +36,7 @@
             active-class="nav-active"
             :to="{ name: 'public-about' }"
           >
-            Sobre
+            Nosotros
           </v-btn>
 
           <v-btn
@@ -47,15 +48,7 @@
             Contacto
           </v-btn>
 
-          <v-btn
-            variant="text"
-            class="nav-btn"
-            active-class="nav-active"
-            :to="{ name: 'public-faq' }"
-          >
-            FAQ
-          </v-btn>
-
+          <!-- Botón "Publicar vehículo" (solo usuarios autenticados NO admin) -->
           <v-btn
             v-if="auth.isAuthenticated && !auth.isAdmin"
             variant="text"
@@ -66,6 +59,7 @@
             Publicar vehículo
           </v-btn>
 
+          <!-- Enlace a Admin (solo admin) -->
           <v-btn
             v-if="auth.isAdmin"
             variant="text"
@@ -78,6 +72,7 @@
         </div>
 
         <div class="search-container">
+          <!-- Buscador -->
           <div class="search-box">
             <v-text-field
               v-model="q"
@@ -91,13 +86,14 @@
             />
           </div>
 
+          <!-- Icono de usuario con menú desplegable -->
           <v-menu
             v-if="auth.isAuthenticated"
             offset-y
             transition="slide-y-transition"
             :close-on-content-click="false"
           >
-            <template #activator="{ props }">
+            <template v-slot:activator="{ props }">
               <v-btn
                 icon
                 class="user-icon user-logged"
@@ -126,65 +122,92 @@
               <v-divider />
 
               <v-list density="compact">
+                <!--
+                  TODAS las rutas apuntan al layout PÚBLICO
+                  (mismo layout que Inicio, Vehículos, etc.)
+                  El DashboardLayout ya no inyecta sidebar propio.
+                -->
+
+                <!-- Dashboard unificado -->
+                <v-list-item
+                  v-if="!auth.isAdmin"
+                  :to="{ name: 'seller-appointments' }"
+                  class="menu-item"
+                >
+                  <template v-slot:prepend>
+                    <v-icon>mdi-account</v-icon>
+                  </template>
+                  <v-list-item-title>Vendedor</v-list-item-title>
+                </v-list-item>
+
+                <v-list-item
+                  v-if="!auth.isAdmin"
+                  :to="{ name: 'user-rentals' }"
+                  class="menu-item"
+                >
+                  <template v-slot:prepend>
+                    <v-icon>mdi-account</v-icon>
+                  </template>
+                  <v-list-item-title>Arrendador</v-list-item-title>
+                </v-list-item>
+
                 <v-list-item
                   v-if="!auth.isAdmin"
                   :to="{ name: 'buyer-dashboard' }"
                   class="menu-item"
                 >
-                  <template #prepend>
+                  <template v-slot:prepend>
+                    <v-icon>mdi-account</v-icon>
+                  </template>
+                  <v-list-item-title>Comprador</v-list-item-title>
+                </v-list-item>
+
+                <v-list-item
+                  v-if="!auth.isAdmin"
+                  :to="{ name: 'user-dashboard' }"
+                  class="menu-item"
+                >
+                  <template v-slot:prepend>
                     <v-icon>mdi-view-dashboard</v-icon>
                   </template>
                   <v-list-item-title>Dashboard</v-list-item-title>
                 </v-list-item>
 
+                <!-- Mis citas -->
                 <v-list-item
                   v-if="!auth.isAdmin"
-                  :to="{ name: 'buyer-appointments' }"
+                  :to="{ name: 'user-appointments' }"
                   class="menu-item"
                 >
-                  <template #prepend>
+                  <template v-slot:prepend>
                     <v-icon>mdi-calendar</v-icon>
                   </template>
                   <v-list-item-title>Mis citas</v-list-item-title>
                 </v-list-item>
 
+                <!-- Mis publicaciones -->
                 <v-list-item
                   v-if="!auth.isAdmin"
-                  :to="{ name: 'seller-listings' }"
+                  :to="{ name: 'user-listings' }"
                   class="menu-item"
                 >
-                  <template #prepend>
+                  <template v-slot:prepend>
                     <v-icon>mdi-car</v-icon>
                   </template>
                   <v-list-item-title>Mis publicaciones</v-list-item-title>
                 </v-list-item>
 
-                <v-list-item
-                  v-if="!auth.isAdmin"
-                  :to="{ name: 'lessor-rentals' }"
-                  class="menu-item"
-                >
-                  <template #prepend>
-                    <v-icon>mdi-key</v-icon>
-                  </template>
-                  <v-list-item-title>Mis rentas</v-list-item-title>
-                </v-list-item>
-
-                <v-list-item
-                  :to="{ name: 'account-profile' }"
-                  class="menu-item"
-                >
-                  <template #prepend>
+                <!-- Mi perfil -->
+                <v-list-item :to="{ name: 'user-profile' }" class="menu-item">
+                  <template v-slot:prepend>
                     <v-icon>mdi-account-settings</v-icon>
                   </template>
                   <v-list-item-title>Mi perfil</v-list-item-title>
                 </v-list-item>
 
-                <v-list-item
-                  :to="{ name: 'account-security' }"
-                  class="menu-item"
-                >
-                  <template #prepend>
+                <!-- Seguridad -->
+                <v-list-item :to="{ name: 'user-security' }" class="menu-item">
+                  <template v-slot:prepend>
                     <v-icon>mdi-shield-lock</v-icon>
                   </template>
                   <v-list-item-title>Seguridad</v-list-item-title>
@@ -192,11 +215,12 @@
 
                 <v-divider />
 
+                <!-- Cerrar sesión -->
                 <v-list-item
-                  class="menu-item logout-item"
                   @click="handleLogout"
+                  class="menu-item logout-item"
                 >
-                  <template #prepend>
+                  <template v-slot:prepend>
                     <v-icon color="error">mdi-logout</v-icon>
                   </template>
                   <v-list-item-title class="text-error"
@@ -207,12 +231,13 @@
             </v-card>
           </v-menu>
 
+          <!-- Icono de login (invitado) -->
           <v-btn
             v-else
             icon
             class="user-icon"
             :to="{ name: 'auth-login' }"
-            aria-label="Iniciar sesión"
+            aria-label="login"
           >
             <v-icon>mdi-account</v-icon>
           </v-btn>
