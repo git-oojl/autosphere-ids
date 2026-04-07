@@ -176,7 +176,7 @@
                 <!-- Mis citas -->
                 <v-list-item
                   v-if="!auth.isAdmin"
-                  :to="{ name: 'user-appointments' }"
+                  :to="{ name: 'my-appointments' }"
                   class="menu-item"
                 >
                   <template #prepend>
@@ -184,7 +184,6 @@
                   </template>
                   <v-list-item-title>Mis citas</v-list-item-title>
                 </v-list-item>
-
                 <!-- Mis publicaciones -->
                 <v-list-item
                   v-if="!auth.isAdmin"
