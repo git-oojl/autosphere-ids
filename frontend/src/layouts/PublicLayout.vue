@@ -31,14 +31,15 @@
             <h3>Para ti</h3>
             <ul>
               <li>
-                <router-link to="/vehiculos">Comprar vehículo</router-link>
+                <router-link to="/vehiculos"
+                  >Comprar o rentar vehículo</router-link
+                >
               </li>
-              <li><router-link to="/vender">Vender vehículo</router-link></li>
               <li>
-                <router-link to="/financiamiento">Financiamiento</router-link>
+                <router-link to="/cuenta/nuevo-anuncio"
+                  >Nuevo anuncio</router-link
+                >
               </li>
-              <li><router-link to="/seguros">Seguros</router-link></li>
-              <li><router-link to="/garantias">Garantías</router-link></li>
             </ul>
           </div>
 
@@ -46,7 +47,9 @@
             <h3>Soporte</h3>
             <ul>
               <li>
-                <router-link to="/terminos">Términos de servicio</router-link>
+                <router-link to="/terminos-condiciones"
+                  >Términos de servicio</router-link
+                >
               </li>
               <li>
                 <router-link to="/privacidad"

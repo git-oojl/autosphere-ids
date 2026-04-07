@@ -581,11 +581,18 @@
                 >Ver en Google Maps →</a
               >
             </div>
-            <div class="map-placeholder">
-              <img
-                src="https://placehold.co/600x300/e2e8f0/2d5179?text=Mapa+estático+de+ubicación"
-                alt="Mapa"
-              />
+            <div class="map-embed-wrapper">
+              <iframe
+                :src="googleMapsEmbedUrl"
+                class="map-embed"
+                width="100%"
+                height="300"
+                style="border: 0"
+                allowfullscreen
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade"
+                title="Ubicación del vehículo"
+              ></iframe>
             </div>
           </div>
         </div>
@@ -848,6 +855,18 @@ const vehicleLocation = computed(() => {
     return `${vehicle.value.location.city}, ${vehicle.value.location.state}`;
   }
   return `${getCityName(vehicle.value?.cityId)}, ${getStateFromCity(vehicle.value?.cityId)}`;
+});
+
+// URL dinámica para el embed de Google Maps.
+// Usa la dirección exacta si está disponible; si no, la ciudad del vehículo.
+// No requiere API key — usa el endpoint público de Google Maps embed.
+const googleMapsEmbedUrl = computed(() => {
+  const address = encodeURIComponent(
+    vehicle.value?.location?.addressLabel
+      ? `${vehicle.value.location.addressLabel}, ${vehicleLocation.value}, México`
+      : `${vehicleLocation.value}, México`
+  );
+  return `https://maps.google.com/maps?q=${address}&output=embed&hl=es&z=14`;
 });
 const sellerName = computed(
   () =>

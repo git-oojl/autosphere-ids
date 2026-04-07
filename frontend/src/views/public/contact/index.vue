@@ -78,37 +78,6 @@
             Enviar Email
           </button>
         </div>
-
-        <div class="method-card">
-          <div class="method-icon">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z"
-              />
-            </svg>
-          </div>
-          <h3>Chat en Vivo</h3>
-          <p class="method-value">Soporte Instantáneo</p>
-          <p class="method-hours">Disponible ahora</p>
-          <button class="method-btn primary" @click="openChat">
-            <svg
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path
-                d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z"
-              />
-            </svg>
-            Iniciar Chat
-          </button>
-        </div>
       </div>
     </section>
 
@@ -334,6 +303,14 @@
                 </svg>
                 WhatsApp
               </a>
+              <a href="#" class="social-link linkedin">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path
+                    d="M20.447 20.452H16.89V14.86c0-1.333-.024-3.048-1.859-3.048-1.861 0-2.144 1.45-2.144 2.948v5.692H9.298V9h3.415v1.561h.049c.476-.9 1.637-1.85 3.37-1.85 3.602 0 4.268 2.37 4.268 5.455v6.286zM5.337 7.433a1.98 1.98 0 11-.001-3.961 1.98 1.98 0 010 3.961zM6.814 20.452H3V9h3v11.452zM22.225 0H1C0 .998 0 2 .001 3v18c-.001 1 .999 2 2 2h21c1 .001 2-.999 2-2V3c0-1-.999-2-2-2z"
+                  />
+                </svg>
+                LinkedIn
+              </a>
             </div>
           </div>
         </div>
@@ -401,11 +378,6 @@ const callPhone = () => {
 
 const sendEmail = () => {
   window.location.href = 'mailto:soporte@autosphere.com';
-};
-
-const openChat = () => {
-  console.log('Abrir chat en vivo');
-  alert('Chat en vivo próximamente disponible');
 };
 </script>
 

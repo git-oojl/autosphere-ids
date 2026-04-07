@@ -1,42 +1,20 @@
-import { useAuthStore } from '../stores/auth.js';
-
-export function requiresAuth(to) {
-  return Boolean(to.meta?.requiresAuth);
-}
-
-export function requiresGuest(to) {
-  return Boolean(to.meta?.requiresGuest);
-}
-
-export function hasRequiredRole(to, authStore) {
-  const allowedRoles = to.meta?.roles || [];
-
-  if (allowedRoles.length === 0) {
-    return true;
-  }
-
-  return authStore.hasAnyRole(allowedRoles);
-}
+import { useAuthStore } from '../stores/auth';
 
 export function registerRouterGuards(router) {
-  router.beforeEach((to) => {
-    const authStore = useAuthStore();
+  router.beforeEach((to, from, next) => {
+    const auth = useAuthStore();
+    const requiresAuth = to.meta.requiresAuth;
+    const requiresAdmin = to.meta.requiresAdmin;
 
-    if (requiresGuest(to) && authStore.isAuthenticated) {
-      return { name: 'account-profile' };
+    // Si la ruta requiere autenticación y el usuario no está autenticado
+    if (requiresAuth && !auth.isAuthenticated) {
+      next('/login');
     }
-
-    if (requiresAuth(to) && !authStore.isAuthenticated) {
-      return {
-        name: 'auth-login',
-        query: { redirect: to.fullPath },
-      };
+    // Si la ruta requiere ser admin y el usuario no es admin
+    else if (requiresAdmin && !auth.isAdmin) {
+      next('/');
+    } else {
+      next();
     }
-
-    if (requiresAuth(to) && !hasRequiredRole(to, authStore)) {
-      return { name: 'utility-forbidden' };
-    }
-
-    return true;
   });
 }
