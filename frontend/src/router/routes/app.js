@@ -143,7 +143,8 @@ export default [
       {
         path: 'cuenta/nuevo-anuncio',
         name: 'create-listing',
-        component: () => import('../../views/vehicles/News/index.vue'),
+        component: () =>
+          import('../../views/vehicles/NewAdvertisement/index.vue'),
         meta: { requiresAuth: true },
       },
 

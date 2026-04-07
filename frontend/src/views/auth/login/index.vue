@@ -2,11 +2,9 @@
   <div class="login-container">
     <!-- Background Overlay -->
     <div class="background-overlay"></div>
+    <br /><br /><br /><br />
 
     <!-- Decorative Elements -->
-
-    <div class="decorative-line decorative-line-top"></div>
-    <div class="decorative-line decorative-line-bottom"></div>
 
     <!-- Login Card -->
     <div class="login-card">

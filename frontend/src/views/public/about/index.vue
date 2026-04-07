@@ -210,11 +210,11 @@
                 />
               </svg>
             </div>
-            <h3>Alejandro Méndez</h3>
-            <p class="team-role">CEO & Fundador</p>
+            <h3>Ana Barajas</h3>
+            <p class="team-role">Desarrolladora Frontend</p>
             <p>
-              Especialista en tecnología automotriz con más de 10 años de
-              experiencia.
+              Especialista en desarrollo frontend con experiencia en tecnologías
+              modernas y diseño de interfaces.
             </p>
           </div>
           <div class="team-card">
@@ -225,9 +225,23 @@
                 />
               </svg>
             </div>
-            <h3>Mariana Castillo</h3>
-            <p class="team-role">Directora de Operaciones</p>
-            <p>Experta en logística y experiencia del cliente.</p>
+            <h3>Victoria Castro</h3>
+            <p class="team-role">Desarrolladora Frontend</p>
+            <p>Experta en interfaz de usuario y experiencia del cliente.</p>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path
+                  d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"
+                />
+              </svg>
+            </div>
+            <h3>Mya Flores</h3>
+            <p class="team-role">Desarrolladora Frontend</p>
+            <p>
+              Enfocada en crear experiencias de usuario intuitivas y atractivas.
+            </p>
           </div>
           <div class="team-card">
             <div class="team-avatar">
@@ -238,10 +252,10 @@
               </svg>
             </div>
             <h3>Jennifer Estrada</h3>
-            <p class="team-role">Diseñadora</p>
+            <p class="team-role">Desarrolladora Frontend</p>
             <p>
-              Diseñadora de estilo con un enfoque en interfaces intuitivas y
-              atractivas.
+              Especialista con experiencia en tecnologías modernas y diseño de
+              interfaces.
             </p>
           </div>
           <div class="team-card">
@@ -252,9 +266,13 @@
                 />
               </svg>
             </div>
-            <h3>Laura Gómez</h3>
-            <p class="team-role">Directora de Marketing</p>
-            <p>Estratega digital especializada en branding automotriz.</p>
+            <h3>Jose Luis Ortiz</h3>
+            <p class="team-role">Desarrollador Backend</p>
+            <p>
+              Especialista en desarrollo backend con experiencia en tecnologías
+              modernas.
+            </p>
+            <div class="team-card"></div>
           </div>
         </div>
       </div>
@@ -269,7 +287,7 @@
           <router-link to="/registro" class="btn-primary"
             >Crear cuenta</router-link
           >
-          <router-link to="/catalogo" class="btn-secondary"
+          <router-link to="/vehiculos" class="btn-secondary"
             >Explorar vehículos</router-link
           >
         </div>

@@ -31,6 +31,11 @@ export default [
         component: () => import('../../views/public/terms/index.vue'),
       },
       {
+        path: 'privacidad',
+        name: 'public-privacy',
+        component: () => import('../../views/public/privacy/index.vue'),
+      },
+      {
         path: 'vehiculos',
         name: 'public-catalog',
         alias: ['/listados'],

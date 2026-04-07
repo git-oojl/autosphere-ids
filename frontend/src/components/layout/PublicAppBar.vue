@@ -93,7 +93,7 @@
             transition="slide-y-transition"
             :close-on-content-click="false"
           >
-            <template v-slot:activator="{ props }">
+            <template #activator="{ props }">
               <v-btn
                 icon
                 class="user-icon user-logged"
@@ -134,7 +134,7 @@
                   :to="{ name: 'seller-appointments' }"
                   class="menu-item"
                 >
-                  <template v-slot:prepend>
+                  <template #prepend>
                     <v-icon>mdi-account</v-icon>
                   </template>
                   <v-list-item-title>Vendedor</v-list-item-title>
@@ -145,7 +145,7 @@
                   :to="{ name: 'user-rentals' }"
                   class="menu-item"
                 >
-                  <template v-slot:prepend>
+                  <template #prepend>
                     <v-icon>mdi-account</v-icon>
                   </template>
                   <v-list-item-title>Arrendador</v-list-item-title>
@@ -156,7 +156,7 @@
                   :to="{ name: 'buyer-dashboard' }"
                   class="menu-item"
                 >
-                  <template v-slot:prepend>
+                  <template #prepend>
                     <v-icon>mdi-account</v-icon>
                   </template>
                   <v-list-item-title>Comprador</v-list-item-title>
@@ -167,7 +167,7 @@
                   :to="{ name: 'user-dashboard' }"
                   class="menu-item"
                 >
-                  <template v-slot:prepend>
+                  <template #prepend>
                     <v-icon>mdi-view-dashboard</v-icon>
                   </template>
                   <v-list-item-title>Dashboard</v-list-item-title>
@@ -179,7 +179,7 @@
                   :to="{ name: 'user-appointments' }"
                   class="menu-item"
                 >
-                  <template v-slot:prepend>
+                  <template #prepend>
                     <v-icon>mdi-calendar</v-icon>
                   </template>
                   <v-list-item-title>Mis citas</v-list-item-title>
@@ -191,7 +191,7 @@
                   :to="{ name: 'user-listings' }"
                   class="menu-item"
                 >
-                  <template v-slot:prepend>
+                  <template #prepend>
                     <v-icon>mdi-car</v-icon>
                   </template>
                   <v-list-item-title>Mis publicaciones</v-list-item-title>
@@ -199,7 +199,7 @@
 
                 <!-- Mi perfil -->
                 <v-list-item :to="{ name: 'user-profile' }" class="menu-item">
-                  <template v-slot:prepend>
+                  <template #prepend>
                     <v-icon>mdi-account-settings</v-icon>
                   </template>
                   <v-list-item-title>Mi perfil</v-list-item-title>
@@ -207,7 +207,7 @@
 
                 <!-- Seguridad -->
                 <v-list-item :to="{ name: 'user-security' }" class="menu-item">
-                  <template v-slot:prepend>
+                  <template #prepend>
                     <v-icon>mdi-shield-lock</v-icon>
                   </template>
                   <v-list-item-title>Seguridad</v-list-item-title>
@@ -217,10 +217,10 @@
 
                 <!-- Cerrar sesión -->
                 <v-list-item
-                  @click="handleLogout"
                   class="menu-item logout-item"
+                  @click="handleLogout"
                 >
-                  <template v-slot:prepend>
+                  <template #prepend>
                     <v-icon color="error">mdi-logout</v-icon>
                   </template>
                   <v-list-item-title class="text-error"

@@ -723,18 +723,46 @@ body {
   text-decoration: underline;
 }
 
-.map-placeholder {
-  flex: 2;
-  min-width: 250px;
+/* Reemplaza .map-placeholder */
+.map-embed-wrapper {
+  width: 100%;
   border-radius: 12px;
   overflow: hidden;
   border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(30, 58, 95, 0.08);
+  /* Altura fija — el iframe hereda este espacio */
+  height: 300px;
+  position: relative;
+  background: #f0f4f8;
 }
 
-.map-placeholder img {
-  width: 100%;
-  height: auto;
+.map-embed {
   display: block;
+  width: 100%;
+  height: 100%;
+  border: none;
+  /* Evita que el iframe se expanda más allá del wrapper */
+  min-height: 300px;
+}
+
+/* ── Responsive ─────────────────────────────── */
+@media (max-width: 768px) {
+  .map-embed-wrapper {
+    height: 240px;
+  }
+  .map-embed {
+    min-height: 240px;
+  }
+}
+
+@media (max-width: 480px) {
+  .map-embed-wrapper {
+    height: 200px;
+    border-radius: 8px;
+  }
+  .map-embed {
+    min-height: 200px;
+  }
 }
 
 /* ============================================
