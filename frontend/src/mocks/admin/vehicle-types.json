@@ -1,0 +1,76 @@
+{
+  "items": [
+    {
+      "id": "vt-001",
+      "name": "Sedán",
+      "description": "Vehículo de 4 puertas con baúl separado del habitáculo",
+      "icon": "🚗",
+      "active": true,
+      "count": 145
+    },
+    {
+      "id": "vt-002",
+      "name": "SUV",
+      "description": "Vehículo deportivo utilitario, con mayor altura y espacio",
+      "icon": "🚙",
+      "active": true,
+      "count": 98
+    },
+    {
+      "id": "vt-003",
+      "name": "Deportivo",
+      "description": "Vehículo de alto rendimiento, diseño aerodinámico",
+      "icon": "🏎️",
+      "active": true,
+      "count": 67
+    },
+    {
+      "id": "vt-004",
+      "name": "Hatchback",
+      "description": "Vehículo compacto de 5 puertas con portón trasero",
+      "icon": "🚘",
+      "active": true,
+      "count": 34
+    },
+    {
+      "id": "vt-005",
+      "name": "Pickup",
+      "description": "Camioneta con cabina y caja de carga abierta",
+      "icon": "🛻",
+      "active": true,
+      "count": 28
+    },
+    {
+      "id": "vt-006",
+      "name": "Convertible",
+      "description": "Vehículo descapotable con techo retráctil",
+      "icon": "🚖",
+      "active": true,
+      "count": 23
+    },
+    {
+      "id": "vt-007",
+      "name": "Coupé",
+      "description": "Vehículo de 2 puertas con línea deportiva",
+      "icon": "🏎️",
+      "active": true,
+      "count": 31
+    },
+    {
+      "id": "vt-008",
+      "name": "Minivan",
+      "description": "Vehículo familiar con capacidad para 7 u 8 pasajeros",
+      "icon": "🚐",
+      "active": true,
+      "count": 15
+    },
+    {
+      "id": "vt-009",
+      "name": "Wagon",
+      "description": "Vehículo tipo familiar con maletero extendido",
+      "icon": "🚗",
+      "active": true,
+      "count": 12
+    }
+  ]
+}

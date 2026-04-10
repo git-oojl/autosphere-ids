@@ -1,6 +1,6 @@
 <template>
   <div class="reports-page">
-    <br /><br /><br /><br />
+    <br /><br /><br /><br /><br />
 
     <!-- Page Header -->
     <div class="page-header">
@@ -148,6 +148,11 @@
           <option value="comportamiento">Comportamiento inapropiado</option>
           <option value="otro">Otros</option>
         </select>
+        <select v-model="targetTypeFilter" class="filter-select">
+          <option value="all">Todos los objetivos</option>
+          <option value="listing">Anuncios</option>
+          <option value="user">Usuarios</option>
+        </select>
         <button class="btn-secondary" @click="clearFilters">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
             <path
@@ -166,8 +171,8 @@
       <div class="table-header">
         <h3>Lista de Reportes y Denuncias</h3>
         <div class="table-info">
-          Mostrando {{ filteredReports.length }} de
-          {{ reports.length }} reportes
+          Mostrando {{ paginatedReports.length }} de
+          {{ filteredReports.length }} reportes
         </div>
       </div>
 
@@ -179,6 +184,7 @@
               <th>Reportado por</th>
               <th>Título / Motivo</th>
               <th>Tipo</th>
+              <th>Objetivo</th>
               <th>Severidad</th>
               <th>Fecha</th>
               <th>Estado</th>
@@ -186,8 +192,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="report in filteredReports" :key="report.id">
-              <td class="id-cell">#{{ report.id }}</td>
+            <tr v-for="report in paginatedReports" :key="report.id">
+              <td class="id-cell">{{ report.id }}</td>
               <td class="user-cell">
                 <div
                   class="user-avatar"
@@ -202,13 +208,19 @@
               </td>
               <td class="title-cell">
                 <div class="report-title">{{ report.title }}</div>
+                <div class="report-target">Contra: {{ report.targetName }}</div>
                 <div class="report-preview">
                   {{ truncateText(report.description, 60) }}
                 </div>
               </td>
               <td>
-                <span :class="['type-badge', getTypeClass(report.type)]">
+                <span :class="['type-badge', report.type]">
                   {{ getTypeText(report.type) }}
+                </span>
+              </td>
+              <td>
+                <span :class="['target-badge', report.targetType]">
+                  {{ report.targetType === 'listing' ? 'Anuncio' : 'Usuario' }}
                 </span>
               </td>
               <td>
@@ -287,7 +299,7 @@
               </td>
             </tr>
             <tr v-if="filteredReports.length === 0">
-              <td colspan="8" class="empty-state">
+              <td colspan="9" class="empty-state">
                 <div class="empty-icon">📭</div>
                 <p>No hay reportes que coincidan con los filtros</p>
                 <button class="btn-primary-small" @click="clearFilters">
@@ -340,64 +352,97 @@
     >
       <div class="modal-content large">
         <div class="modal-header">
-          <h2>Detalles del Reporte #{{ selectedReport?.id }}</h2>
+          <h2>Detalles del Reporte {{ selectedReport?.id }}</h2>
           <button class="modal-close" @click="closeDetailsModal">×</button>
         </div>
         <div v-if="selectedReport" class="modal-body">
+          <div class="details-summary">
+            <div class="summary-card">
+              <div class="summary-label">Estado actual</div>
+              <div class="summary-value">
+                <span :class="['status-badge', selectedReport.status]">
+                  {{ getStatusText(selectedReport.status) }}
+                </span>
+              </div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Severidad</div>
+              <div class="summary-value">
+                <span :class="['severity-badge', selectedReport.severity]">
+                  {{ getSeverityText(selectedReport.severity) }}
+                </span>
+              </div>
+            </div>
+            <div class="summary-card">
+              <div class="summary-label">Fecha de reporte</div>
+              <div class="summary-value">
+                {{ formatDate(selectedReport.createdAt) }}
+              </div>
+            </div>
+            <div v-if="selectedReport.resolvedAt" class="summary-card">
+              <div class="summary-label">Fecha de resolución</div>
+              <div class="summary-value">
+                {{ formatDate(selectedReport.resolvedAt) }}
+              </div>
+            </div>
+          </div>
+
           <div class="details-grid">
             <div class="details-section">
+              <h4>Información del Reportante</h4>
               <div class="detail-card">
-                <div class="detail-label">Reportado por</div>
+                <div class="detail-label">Nombre completo</div>
                 <div class="detail-value">
-                  <strong>{{ selectedReport.reporterName }}</strong>
-                  <span class="detail-email">{{
-                    selectedReport.reporterEmail
-                  }}</span>
+                  {{ selectedReport.reporterName }}
                 </div>
               </div>
               <div class="detail-card">
-                <div class="detail-label">Reportado contra</div>
+                <div class="detail-label">Email</div>
                 <div class="detail-value">
-                  <strong>{{ selectedReport.reportedName || 'N/A' }}</strong>
-                  <span class="detail-email">{{
-                    selectedReport.reportedEmail || ''
-                  }}</span>
+                  {{ selectedReport.reporterEmail }}
                 </div>
               </div>
               <div class="detail-card">
-                <div class="detail-label">Tipo de reporte</div>
+                <div class="detail-label">Teléfono</div>
                 <div class="detail-value">
-                  <span
-                    :class="['type-badge', getTypeClass(selectedReport.type)]"
-                  >
-                    {{ getTypeText(selectedReport.type) }}
-                  </span>
-                </div>
-              </div>
-              <div class="detail-card">
-                <div class="detail-label">Severidad</div>
-                <div class="detail-value">
-                  <span :class="['severity-badge', selectedReport.severity]">
-                    {{ getSeverityText(selectedReport.severity) }}
-                  </span>
-                </div>
-              </div>
-              <div class="detail-card">
-                <div class="detail-label">Estado actual</div>
-                <div class="detail-value">
-                  <span :class="['status-badge', selectedReport.status]">
-                    {{ getStatusText(selectedReport.status) }}
-                  </span>
-                </div>
-              </div>
-              <div class="detail-card">
-                <div class="detail-label">Fecha de reporte</div>
-                <div class="detail-value">
-                  {{ formatDate(selectedReport.createdAt) }}
+                  {{ selectedReport.reporterPhone || 'No especificado' }}
                 </div>
               </div>
             </div>
+
+            <div class="details-section">
+              <h4>Información del Reportado</h4>
+              <div class="detail-card">
+                <div class="detail-label">Nombre / Título</div>
+                <div class="detail-value">
+                  {{ selectedReport.reportedName }}
+                </div>
+              </div>
+              <div class="detail-card">
+                <div class="detail-label">Email</div>
+                <div class="detail-value">
+                  {{ selectedReport.reportedEmail }}
+                </div>
+              </div>
+              <div class="detail-card">
+                <div class="detail-label">Tipo de objetivo</div>
+                <div class="detail-value">
+                  <span :class="['target-badge', selectedReport.targetType]">
+                    {{
+                      selectedReport.targetType === 'listing'
+                        ? 'Anuncio'
+                        : 'Usuario'
+                    }}
+                  </span>
+                  <span class="detail-id"
+                    >ID: {{ selectedReport.targetId }}</span
+                  >
+                </div>
+              </div>
+            </div>
+
             <div class="details-section full-width">
+              <h4>Detalles del Reporte</h4>
               <div class="detail-card">
                 <div class="detail-label">Título</div>
                 <div class="detail-value">{{ selectedReport.title }}</div>
@@ -408,24 +453,42 @@
                   {{ selectedReport.description }}
                 </div>
               </div>
-              <div v-if="selectedReport.evidence" class="detail-card">
+              <div
+                v-if="
+                  selectedReport.evidence && selectedReport.evidence.length > 0
+                "
+                class="detail-card"
+              >
                 <div class="detail-label">Evidencia</div>
                 <div class="detail-value">
-                  <a
-                    :href="selectedReport.evidence"
-                    target="_blank"
-                    class="evidence-link"
-                  >
-                    Ver evidencia adjunta →
-                  </a>
+                  <div class="evidence-list">
+                    <a
+                      v-for="(evidence, idx) in selectedReport.evidence"
+                      :key="idx"
+                      :href="evidence"
+                      target="_blank"
+                      class="evidence-link"
+                    >
+                      📎 Ver evidencia {{ idx + 1 }}
+                    </a>
+                  </div>
                 </div>
               </div>
               <div v-if="selectedReport.adminNotes" class="detail-card">
                 <div class="detail-label">Notas del administrador</div>
-                <div class="detail-value">{{ selectedReport.adminNotes }}</div>
+                <div class="detail-value notes">
+                  {{ selectedReport.adminNotes }}
+                </div>
+              </div>
+              <div v-if="selectedReport.resolution" class="detail-card">
+                <div class="detail-label">Acción tomada</div>
+                <div class="detail-value">
+                  {{ getResolutionText(selectedReport.resolution) }}
+                </div>
               </div>
             </div>
           </div>
+
           <div class="modal-actions">
             <button class="btn-secondary" @click="closeDetailsModal">
               Cerrar
@@ -516,7 +579,7 @@
         <div class="modal-body">
           <div class="confirmation-icon warning">⚠️</div>
           <p class="confirmation-text">
-            ¿Eliminar el reporte <strong>#{{ selectedReport?.id }}</strong
+            ¿Eliminar el reporte <strong>{{ selectedReport?.id }}</strong
             >?
           </p>
           <p class="confirmation-subtext">
@@ -538,6 +601,9 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
+// IMPORTAR EL MOCK DESDE JSON
+import reportsMock from '../../../mocks/admin/reports.json';
+
 const router = useRouter();
 
 // Stats
@@ -548,115 +614,44 @@ const stats = ref({
   resolved: 0,
 });
 
-// Reports data
-const reports = ref([
-  {
-    id: 1,
-    reporterName: 'Ana García',
-    reporterEmail: 'ana.garcia@email.com',
-    reportedName: 'Carlos Méndez',
-    reportedEmail: 'carlos.mendez@email.com',
-    title: 'Vehículo no corresponde a las fotos',
-    description:
-      'El vehículo que me mostraron en la cita no coincidía con las fotos del anuncio. El kilometraje era mucho mayor y tenía golpes no visibles en las imágenes.',
-    type: 'vehiculo',
-    severity: 'high',
-    createdAt: '2024-03-20T10:30:00',
-    status: 'pending',
-    evidence: null,
-    adminNotes: null,
-  },
-  {
-    id: 2,
-    reporterName: 'Carlos Ruiz',
-    reporterEmail: 'carlos.ruiz@email.com',
-    reportedName: 'Laura Martínez',
-    reportedEmail: 'laura.martinez@email.com',
-    title: 'Vendedor no responde mensajes',
-    description:
-      'He enviado 5 mensajes en los últimos 3 días y el vendedor no ha respondido ninguno. El anuncio sigue activo pero no hay comunicación.',
-    type: 'vendedor',
-    severity: 'medium',
-    createdAt: '2024-03-19T15:20:00',
-    status: 'reviewing',
-    evidence: null,
-    adminNotes: 'Se contactó al vendedor vía email',
-  },
-  {
-    id: 3,
-    reporterName: 'María López',
-    reporterEmail: 'maria.lopez@email.com',
-    reportedName: 'Pedro Sánchez',
-    reportedEmail: 'pedro.sanchez@email.com',
-    title: 'Precio irreal - Posible estafa',
-    description:
-      'El vehículo está publicado a un precio muy por debajo del mercado (Porsche 911 en $500,000 MXN). Sospecho que es una estafa.',
-    type: 'fraude',
-    severity: 'high',
-    createdAt: '2024-03-18T09:15:00',
-    status: 'pending',
-    evidence: null,
-    adminNotes: null,
-  },
-  {
-    id: 4,
-    reporterName: 'Javier Fernández',
-    reporterEmail: 'javier.fernandez@email.com',
-    reportedName: 'Sofía Ramírez',
-    reportedEmail: 'sofia.ramirez@email.com',
-    title: 'Lenguaje inapropiado en conversación',
-    description:
-      'El vendedor utilizó lenguaje ofensivo cuando le pregunté sobre el estado del vehículo. Adjunto capturas de la conversación.',
-    type: 'comportamiento',
-    severity: 'medium',
-    createdAt: '2024-03-17T14:45:00',
-    status: 'resolved',
-    evidence: '/uploads/evidence-4.pdf',
-    adminNotes: 'Se envió advertencia al vendedor',
-  },
-  {
-    id: 5,
-    reporterName: 'Fernando Díaz',
-    reporterEmail: 'fernando.diaz@email.com',
-    reportedName: 'Mario González',
-    reportedEmail: 'mario.gonzalez@email.com',
-    title: 'Kilometraje manipulado',
-    description:
-      'El vehículo muestra 45,000 km en el anuncio pero en el historial de servicios aparece con 87,000 km.',
-    type: 'vehiculo',
-    severity: 'high',
-    createdAt: '2024-03-16T11:00:00',
-    status: 'reviewing',
-    evidence: '/uploads/evidence-5.pdf',
-    adminNotes: 'Se solicitó documentación adicional',
-  },
-  {
-    id: 6,
-    reporterName: 'Gabriela Torres',
-    reporterEmail: 'gabriela.torres@email.com',
-    reportedName: 'Ricardo Castro',
-    reportedEmail: 'ricardo.castro@email.com',
-    title: 'Publicación duplicada',
-    description:
-      'El mismo vehículo está publicado 3 veces con diferentes precios. Es confuso para los compradores.',
-    type: 'otro',
-    severity: 'low',
-    createdAt: '2024-03-15T16:30:00',
-    status: 'resolved',
-    evidence: null,
-    adminNotes: 'Se eliminaron publicaciones duplicadas',
-  },
-]);
+// REPORTS: Usar los datos importados del JSON
+const reports = ref(
+  reportsMock.items.map((item) => ({
+    id: item.id,
+    reporterId: item.reporterId,
+    reporterName: item.reporterName,
+    reporterEmail: item.reporterEmail,
+    reporterPhone: item.reporterPhone,
+    reportedId: item.reportedId,
+    reportedName: item.reportedName,
+    reportedEmail: item.reportedEmail,
+    targetType: item.targetType,
+    targetId: item.targetId,
+    targetName: item.targetName,
+    title: item.title,
+    description: item.description,
+    type: item.type,
+    severity: item.severity,
+    status: item.status,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+    resolvedAt: item.resolvedAt,
+    resolution: item.resolution,
+    adminNotes: item.adminNotes,
+    evidence: item.evidence,
+  }))
+);
 
 // Filters
 const searchTerm = ref('');
 const statusFilter = ref('all');
 const severityFilter = ref('all');
 const typeFilter = ref('all');
+const targetTypeFilter = ref('all');
 const currentPage = ref(1);
 const itemsPerPage = 10;
 
-// Modals
+// Modal states
 const showDetailsModal = ref(false);
 const showResolveModal = ref(false);
 const showDeleteModal = ref(false);
@@ -668,31 +663,50 @@ const resolveForm = ref({
 
 // Computed
 const filteredReports = computed(() => {
-  let filtered = reports.value;
+  let filtered = [...reports.value];
 
+  // Filter by search term
   if (searchTerm.value) {
     const term = searchTerm.value.toLowerCase();
     filtered = filtered.filter(
       (r) =>
         r.title.toLowerCase().includes(term) ||
         r.reporterName.toLowerCase().includes(term) ||
-        r.id.toString().includes(term)
+        r.id.toLowerCase().includes(term) ||
+        r.reportedName.toLowerCase().includes(term)
     );
   }
 
+  // Filter by status
   if (statusFilter.value !== 'all') {
     filtered = filtered.filter((r) => r.status === statusFilter.value);
   }
 
+  // Filter by severity
   if (severityFilter.value !== 'all') {
     filtered = filtered.filter((r) => r.severity === severityFilter.value);
   }
 
+  // Filter by type
   if (typeFilter.value !== 'all') {
     filtered = filtered.filter((r) => r.type === typeFilter.value);
   }
 
+  // Filter by target type
+  if (targetTypeFilter.value !== 'all') {
+    filtered = filtered.filter((r) => r.targetType === targetTypeFilter.value);
+  }
+
+  // Sort by date (newest first)
+  filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
   return filtered;
+});
+
+const paginatedReports = computed(() => {
+  const start = (currentPage.value - 1) * itemsPerPage;
+  const end = start + itemsPerPage;
+  return filteredReports.value.slice(start, end);
 });
 
 const totalPages = computed(() =>
@@ -733,6 +747,7 @@ const formatDate = (date) => {
 };
 
 const truncateText = (text, length) => {
+  if (!text) return '';
   if (text.length <= length) return text;
   return text.substring(0, length) + '...';
 };
@@ -766,15 +781,14 @@ const getTypeText = (type) => {
   return types[type] || type;
 };
 
-const getTypeClass = (type) => {
-  const classes = {
-    vehiculo: 'vehiculo',
-    vendedor: 'vendedor',
-    fraude: 'fraude',
-    comportamiento: 'comportamiento',
-    otro: 'otro',
+const getResolutionText = (resolution) => {
+  const resolutions = {
+    warning: '⚠️ Advertencia emitida',
+    suspension: '⛔ Suspensión aplicada',
+    ban: '🔒 Bloqueo permanente',
+    dismissed: '❌ Reporte infundado',
   };
-  return classes[type] || 'otro';
+  return resolutions[resolution] || resolution;
 };
 
 const getAvatarColor = (name) => {
@@ -790,19 +804,6 @@ const getAvatarColor = (name) => {
   return colors[index];
 };
 
-const setStatusFilter = (status) => {
-  statusFilter.value = status;
-  currentPage.value = 1;
-};
-
-const clearFilters = () => {
-  searchTerm.value = '';
-  statusFilter.value = 'all';
-  severityFilter.value = 'all';
-  typeFilter.value = 'all';
-  currentPage.value = 1;
-};
-
 const updateStats = () => {
   stats.value.total = reports.value.length;
   stats.value.pending = reports.value.filter(
@@ -814,6 +815,20 @@ const updateStats = () => {
   stats.value.resolved = reports.value.filter(
     (r) => r.status === 'resolved'
   ).length;
+};
+
+const setStatusFilter = (status) => {
+  statusFilter.value = status;
+  currentPage.value = 1;
+};
+
+const clearFilters = () => {
+  searchTerm.value = '';
+  statusFilter.value = 'all';
+  severityFilter.value = 'all';
+  typeFilter.value = 'all';
+  targetTypeFilter.value = 'all';
+  currentPage.value = 1;
 };
 
 const viewReport = (report) => {
@@ -830,8 +845,9 @@ const startReview = (report) => {
   const index = reports.value.findIndex((r) => r.id === report.id);
   if (index !== -1) {
     reports.value[index].status = 'reviewing';
+    reports.value[index].updatedAt = new Date().toISOString();
     reports.value[index].adminNotes = 'En revisión por el equipo de moderación';
-    alert(`Reporte #${report.id} marcado como "En revisión"`);
+    alert(`Reporte ${report.id} marcado como "En revisión"`);
     updateStats();
   }
 };
@@ -852,10 +868,12 @@ const confirmResolve = () => {
     );
     if (index !== -1) {
       reports.value[index].status = 'resolved';
+      reports.value[index].resolvedAt = new Date().toISOString();
+      reports.value[index].resolution = resolveForm.value.action;
       reports.value[index].adminNotes =
         resolveForm.value.notes ||
         `Resuelto - Acción: ${resolveForm.value.action || 'No especificada'}`;
-      alert(`Reporte #${selectedReport.value.id} resuelto`);
+      alert(`Reporte ${selectedReport.value.id} resuelto`);
     }
   }
   showResolveModal.value = false;
@@ -875,7 +893,7 @@ const confirmDelete = () => {
     );
     if (index !== -1) {
       reports.value.splice(index, 1);
-      alert(`Reporte #${selectedReport.value.id} eliminado`);
+      alert(`Reporte ${selectedReport.value.id} eliminado`);
     }
   }
   showDeleteModal.value = false;
@@ -884,7 +902,7 @@ const confirmDelete = () => {
 };
 
 const exportReports = () => {
-  const data = JSON.stringify(reports.value, null, 2);
+  const data = JSON.stringify(filteredReports.value, null, 2);
   const blob = new Blob([data], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');

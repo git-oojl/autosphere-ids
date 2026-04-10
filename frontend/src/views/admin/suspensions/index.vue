@@ -493,6 +493,9 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
+// IMPORTAR EL MOCK DESDE JSON
+import suspensionsMock from '../../../mocks/admin/suspensions.json';
+
 const router = useRouter();
 
 // Stats
@@ -503,92 +506,35 @@ const stats = ref({
   reinstatedThisMonth: 0,
 });
 
-// Suspensions data
-const suspensions = ref([
-  {
-    id: 1,
-    userId: 3,
-    userName: 'Roberto Gómez',
-    email: 'roberto.gomez@email.com',
-    reason: 'Spam en anuncios',
-    description:
-      'El usuario publicó múltiples anuncios duplicados y envió spam a otros usuarios',
-    suspensionDate: '2024-03-15',
-    duration: '30 días',
-    reinstatementDate: '2024-04-14',
-    status: 'active',
-  },
-  {
-    id: 2,
-    userId: 7,
-    userName: 'Lucía Fernández',
-    email: 'lucia.fernandez@email.com',
-    reason: 'Comportamiento inapropiado',
-    description: 'Lenguaje ofensivo en mensajes y comentarios',
-    suspensionDate: '2024-03-18',
-    duration: '15 días',
-    reinstatementDate: '2024-04-02',
-    status: 'active',
-  },
-  {
-    id: 3,
-    userId: 12,
-    userName: 'Miguel Ángel Ruiz',
-    email: 'miguel.ruiz@email.com',
-    reason: 'Fraude o estafa',
-    description: 'Intento de estafa en transacción de vehículo',
-    suspensionDate: '2024-02-10',
-    duration: 'Permanente',
-    reinstatementDate: null,
-    status: 'permanent',
-  },
-  {
-    id: 4,
-    userId: 5,
-    userName: 'Carmen Sánchez',
-    email: 'carmen.sanchez@email.com',
-    reason: 'Violación de términos',
-    description: 'Publicación de vehículos sin documentación',
-    suspensionDate: '2024-02-20',
-    duration: '30 días',
-    reinstatementDate: '2024-03-21',
-    status: 'expired',
-  },
-  {
-    id: 5,
-    userId: 9,
-    userName: 'Javier López',
-    email: 'javier.lopez@email.com',
-    reason: 'Múltiples reportes',
-    description: 'Recibió más de 10 reportes de diferentes usuarios',
-    suspensionDate: '2024-03-01',
-    duration: '7 días',
-    reinstatementDate: '2024-03-08',
-    status: 'expired',
-  },
-]);
+// SUSPENSIONES: Usar los datos importados del JSON en lugar de hardcodeados
+const suspensions = ref(
+  suspensionsMock.items.map((item) => ({
+    id: item.id,
+    userId: item.userId,
+    userName: item.userName,
+    email: item.userEmail,
+    reason: item.reason,
+    description: item.description,
+    suspensionDate: item.suspensionDate,
+    duration: item.duration,
+    reinstatementDate: item.reinstatementDate,
+    status: item.status,
+  }))
+);
 
-// Active users for suspension form
+// Active users for suspension form (también podrías importarlo desde otro mock)
 const activeUsers = ref([
-  { id: 1, name: 'Ana García', email: 'ana.garcia@email.com', role: 'buyer' },
   {
-    id: 2,
-    name: 'Carlos Méndez',
-    email: 'carlos.mendez@email.com',
-    role: 'seller',
-  },
-  { id: 4, name: 'María López', email: 'maria.lopez@email.com', role: 'buyer' },
-  {
-    id: 6,
-    name: 'Pedro Sánchez',
-    email: 'pedro.sanchez@email.com',
+    id: 'u-seller-010',
+    name: 'Usuario Nuevo',
+    email: 'nuevo@email.com',
     role: 'seller',
   },
   {
-    id: 8,
-    name: 'Laura Martínez',
-    email: 'laura.martinez@email.com',
-    role: 'landlord',
+    id: 'u-seller-011',
+    name: 'Otro Usuario',
+    email: 'otro@email.com',
+    role: 'buyer',
   },
 ]);
 
@@ -596,15 +542,15 @@ const activeUsers = ref([
 const searchTerm = ref('');
 const statusFilter = ref('all');
 const durationFilter = ref('all');
+const currentPage = ref(1);
 
-// Modals
+// Modal states (el resto del código se mantiene igual)
 const showSuspendModal = ref(false);
 const showReinstateModal = ref(false);
 const showDeleteModal = ref(false);
 const editingSuspension = ref(false);
 const selectedSuspension = ref(null);
 
-// Form data
 const suspendForm = ref({
   userId: '',
   reason: '',
@@ -621,7 +567,7 @@ const yearlyStats = ref({
   fraud: 5,
 });
 
-// Computed
+// Computed (igual que antes)
 const filteredSuspensions = computed(() => {
   let filtered = suspensions.value;
 
@@ -675,7 +621,7 @@ const updateStats = () => {
   }).length;
 };
 
-// Methods
+// Methods (todos los métodos se mantienen igual que antes)
 const goBack = () => {
   router.push('/admin');
 };
@@ -695,6 +641,7 @@ const getStatusText = (status) => {
     active: 'Activa',
     expired: 'Expirada',
     permanent: 'Permanente',
+    pending_review: 'Pendiente',
   };
   return statuses[status] || status;
 };
@@ -732,6 +679,7 @@ const clearFilters = () => {
   searchTerm.value = '';
   statusFilter.value = 'all';
   durationFilter.value = 'all';
+  currentPage.value = 1;
 };
 
 const openSuspendModal = () => {
@@ -791,7 +739,7 @@ const saveSuspension = () => {
   } else {
     // Create new suspension
     const newSuspension = {
-      id: Date.now(),
+      id: `sp-${Date.now()}`,
       userId: user.id,
       userName: user.name,
       email: user.email,
@@ -864,7 +812,6 @@ const closeSuspendModal = () => {
 };
 
 const toggleHistory = () => {
-  // Expandir historial - se puede implementar más adelante
   alert('Ver historial completo de suspensiones');
 };
 

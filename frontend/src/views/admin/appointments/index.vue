@@ -1,6 +1,6 @@
 <template>
   <div class="appointments-page">
-    <br /><br /><br /><br />
+    <br /><br /><br /><br /><br />
 
     <!-- Page Header -->
     <div class="page-header">
@@ -178,6 +178,7 @@
           <option value="confirmed">Confirmadas</option>
           <option value="completed">Completadas</option>
           <option value="cancelled">Canceladas</option>
+          <option value="rescheduled">Reagendadas</option>
         </select>
         <select v-model="typeFilter" class="filter-select">
           <option value="all">Todos los tipos</option>
@@ -235,25 +236,23 @@
               v-for="appointment in paginatedAppointments"
               :key="appointment.id"
             >
-              <td class="id-cell">#{{ appointment.id }}</td>
+              <td class="id-cell">{{ appointment.id }}</td>
               <td class="user-cell">
                 <div
                   class="user-avatar"
-                  :style="{
-                    background: getAvatarColor(appointment.clientName),
-                  }"
+                  :style="{ background: getAvatarColor(appointment.buyerName) }"
                 >
-                  {{ appointment.clientName.charAt(0) }}
+                  {{ appointment.buyerName.charAt(0) }}
                 </div>
                 <div>
-                  <div class="user-name">{{ appointment.clientName }}</div>
-                  <div class="user-phone">{{ appointment.clientPhone }}</div>
+                  <div class="user-name">{{ appointment.buyerName }}</div>
+                  <div class="user-phone">{{ appointment.buyerPhone }}</div>
                 </div>
               </td>
               <td>
-                <div class="vehicle-name">{{ appointment.vehicle }}</div>
+                <div class="vehicle-name">{{ appointment.listingTitle }}</div>
                 <div class="vehicle-price">
-                  ${{ formatPrice(appointment.vehiclePrice) }}
+                  ${{ formatPrice(appointment.listingPrice) }}
                 </div>
               </td>
               <td>
@@ -415,7 +414,7 @@
     >
       <div class="modal-content large">
         <div class="modal-header">
-          <h2>Detalles de la Cita #{{ selectedAppointment?.id }}</h2>
+          <h2>Detalles de la Cita {{ selectedAppointment?.id }}</h2>
           <button class="modal-close" @click="closeDetailsModal">×</button>
         </div>
         <div v-if="selectedAppointment" class="modal-body">
@@ -443,19 +442,19 @@
               <div class="detail-card">
                 <div class="detail-label">Nombre completo</div>
                 <div class="detail-value">
-                  {{ selectedAppointment.clientName }}
+                  {{ selectedAppointment.buyerName }}
                 </div>
               </div>
               <div class="detail-card">
                 <div class="detail-label">Teléfono</div>
                 <div class="detail-value">
-                  {{ selectedAppointment.clientPhone }}
+                  {{ selectedAppointment.buyerPhone }}
                 </div>
               </div>
               <div class="detail-card">
                 <div class="detail-label">Email</div>
                 <div class="detail-value">
-                  {{ selectedAppointment.clientEmail }}
+                  {{ selectedAppointment.buyerEmail }}
                 </div>
               </div>
             </div>
@@ -487,19 +486,13 @@
               <div class="detail-card">
                 <div class="detail-label">Vehículo</div>
                 <div class="detail-value">
-                  {{ selectedAppointment.vehicle }}
+                  {{ selectedAppointment.listingTitle }}
                 </div>
               </div>
               <div class="detail-card">
                 <div class="detail-label">Precio</div>
                 <div class="detail-value price">
-                  ${{ formatPrice(selectedAppointment.vehiclePrice) }}
-                </div>
-              </div>
-              <div class="detail-card">
-                <div class="detail-label">Año</div>
-                <div class="detail-value">
-                  {{ selectedAppointment.vehicleYear || 'N/A' }}
+                  ${{ formatPrice(selectedAppointment.listingPrice) }}
                 </div>
               </div>
             </div>
@@ -598,7 +591,7 @@
         <div class="modal-body">
           <div class="confirmation-icon warning">⚠️</div>
           <p class="confirmation-text">
-            ¿Cancelar la cita <strong>#{{ selectedAppointment?.id }}</strong
+            ¿Cancelar la cita <strong>{{ selectedAppointment?.id }}</strong
             >?
           </p>
           <p class="confirmation-subtext">
@@ -641,7 +634,7 @@
         <div class="modal-body">
           <div class="confirmation-icon warning">⚠️</div>
           <p class="confirmation-text">
-            ¿Eliminar la cita <strong>#{{ selectedAppointment?.id }}</strong
+            ¿Eliminar la cita <strong>{{ selectedAppointment?.id }}</strong
             >?
           </p>
           <p class="confirmation-subtext">
@@ -663,6 +656,9 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
+// IMPORTAR EL MOCK DESDE JSON
+import appointmentsMock from '../../../mocks/admin/appointments.json';
+
 const router = useRouter();
 
 // Stats
@@ -673,142 +669,31 @@ const stats = ref({
   completed: 0,
 });
 
-// Appointments data
-const appointments = ref([
-  {
-    id: 1,
-    clientName: 'Ana García',
-    clientPhone: '55 1234 5678',
-    clientEmail: 'ana.garcia@email.com',
-    sellerName: 'Carlos Méndez',
-    sellerPhone: '55 8765 4321',
-    sellerEmail: 'carlos.mendez@email.com',
-    vehicle: 'Porsche 911 Carrera 2022',
-    vehiclePrice: 2850000,
-    vehicleYear: 2022,
-    date: '2024-03-25',
-    time: '10:30',
-    type: 'test-drive',
-    location: 'Concesionaria',
-    address: 'Av. Reforma 123, CDMX',
-    notes: 'Cliente interesado en probar el vehículo en carretera',
-    status: 'confirmed',
-  },
-  {
-    id: 2,
-    clientName: 'Carlos Rodríguez',
-    clientPhone: '55 9876 5432',
-    clientEmail: 'carlos.rodriguez@email.com',
-    sellerName: 'Ana Ramírez',
-    sellerPhone: '55 1122 3344',
-    sellerEmail: 'ana.ramirez@email.com',
-    vehicle: 'BMW X5 M Competition 2023',
-    vehiclePrice: 1980000,
-    vehicleYear: 2023,
-    date: '2024-03-25',
-    time: '13:00',
-    type: 'negotiation',
-    location: 'Concesionaria',
-    address: 'Av. Insurgentes 456, CDMX',
-    notes: 'Negociación de precio y financiamiento',
-    status: 'pending',
-  },
-  {
-    id: 3,
-    clientName: 'María López',
-    clientPhone: '33 1234 5678',
-    clientEmail: 'maria.lopez@email.com',
-    sellerName: 'Luis Fernández',
-    sellerPhone: '33 8765 4321',
-    sellerEmail: 'luis.fernandez@email.com',
-    vehicle: 'Mercedes-Benz Clase S 2024',
-    vehiclePrice: 3250000,
-    vehicleYear: 2024,
-    date: '2024-03-26',
-    time: '09:00',
-    type: 'inspection',
-    location: 'Domicilio',
-    address: 'Av. Vallarta 789, Guadalajara',
-    notes: 'Inspección detallada del vehículo en domicilio',
-    status: 'pending',
-  },
-  {
-    id: 4,
-    clientName: 'Laura Martínez',
-    clientPhone: '81 2345 6789',
-    clientEmail: 'laura.martinez@email.com',
-    sellerName: 'Roberto Gómez',
-    sellerPhone: '81 9876 5432',
-    sellerEmail: 'roberto.gomez@email.com',
-    vehicle: 'Audi RS7 Sportback 2022',
-    vehiclePrice: 2150000,
-    vehicleYear: 2022,
-    date: '2024-03-24',
-    time: '15:30',
-    type: 'test-drive',
-    location: 'Público',
-    address: 'Plaza comercial, Monterrey',
-    notes: '',
-    status: 'completed',
-  },
-  {
-    id: 5,
-    clientName: 'Javier Fernández',
-    clientPhone: '55 4455 6677',
-    clientEmail: 'javier.fernandez@email.com',
-    sellerName: 'Sofía Ramírez',
-    sellerPhone: '55 8899 0011',
-    sellerEmail: 'sofia.ramirez@email.com',
-    vehicle: 'Tesla Model S Plaid',
-    vehiclePrice: 2350000,
-    vehicleYear: 2023,
-    date: '2024-03-27',
-    time: '11:00',
-    type: 'test-drive',
-    location: 'Concesionaria',
-    address: 'Av. Santa Fe 234, CDMX',
-    notes: 'Prueba de manejo de vehículo eléctrico',
-    status: 'confirmed',
-  },
-  {
-    id: 6,
-    clientName: 'Fernando Díaz',
-    clientPhone: '55 3322 1144',
-    clientEmail: 'fernando.diaz@email.com',
-    sellerName: 'Mario González',
-    sellerPhone: '55 7766 5544',
-    sellerEmail: 'mario.gonzalez@email.com',
-    vehicle: 'Chevrolet Silverado 2023',
-    vehiclePrice: 35000,
-    vehicleYear: 2023,
-    date: '2024-03-23',
-    time: '14:00',
-    type: 'negotiation',
-    location: 'Domicilio',
-    address: 'Av. Universidad 567, CDMX',
-    notes: 'Negociación de contrato de renta',
-    status: 'cancelled',
-  },
-  {
-    id: 7,
-    clientName: 'Gabriela Torres',
-    clientPhone: '55 9988 7766',
-    clientEmail: 'gabriela.torres@email.com',
-    sellerName: 'Ricardo Castro',
-    sellerPhone: '55 4433 2211',
-    sellerEmail: 'ricardo.castro@email.com',
-    vehicle: 'Porsche 911 Carrera 2022',
-    vehiclePrice: 2850000,
-    vehicleYear: 2022,
-    date: '2024-03-28',
-    time: '12:00',
-    type: 'inspection',
-    location: 'Concesionaria',
-    address: 'Av. Reforma 123, CDMX',
-    notes: 'Inspección mecánica y documentación',
-    status: 'pending',
-  },
-]);
+// APPOINTMENTS: Usar los datos importados del JSON
+const appointments = ref(
+  appointmentsMock.items.map((item) => ({
+    id: item.id,
+    listingId: item.listingId,
+    listingTitle: item.listingTitle,
+    listingPrice: item.listingPrice,
+    buyerId: item.buyerId,
+    buyerName: item.buyerName,
+    buyerPhone: item.buyerPhone,
+    buyerEmail: item.buyerEmail,
+    sellerId: item.sellerId,
+    sellerName: item.sellerName,
+    sellerPhone: item.sellerPhone,
+    sellerEmail: item.sellerEmail,
+    status: item.status,
+    date: item.date,
+    time: item.time,
+    type: item.type,
+    location: item.location,
+    address: item.address,
+    locationLabel: item.locationLabel,
+    notes: item.notes,
+  }))
+);
 
 // Filters
 const searchTerm = ref('');
@@ -836,9 +721,9 @@ const filteredAppointments = computed(() => {
     const term = searchTerm.value.toLowerCase();
     filtered = filtered.filter(
       (a) =>
-        a.clientName.toLowerCase().includes(term) ||
-        a.vehicle.toLowerCase().includes(term) ||
-        a.id.toString().includes(term) ||
+        a.buyerName.toLowerCase().includes(term) ||
+        a.listingTitle.toLowerCase().includes(term) ||
+        a.id.toLowerCase().includes(term) ||
         a.sellerName.toLowerCase().includes(term)
     );
   }
@@ -923,6 +808,7 @@ const getStatusText = (status) => {
     confirmed: 'Confirmada',
     completed: 'Completada',
     cancelled: 'Cancelada',
+    rescheduled: 'Reagendada',
   };
   return statuses[status] || status;
 };
@@ -1004,7 +890,7 @@ const confirmAppointment = (appointment) => {
   const index = appointments.value.findIndex((a) => a.id === appointment.id);
   if (index !== -1) {
     appointments.value[index].status = 'confirmed';
-    alert(`Cita #${appointment.id} confirmada correctamente`);
+    alert(`Cita ${appointment.id} confirmada correctamente`);
     updateStats();
   }
 };
@@ -1013,7 +899,7 @@ const completeAppointment = (appointment) => {
   const index = appointments.value.findIndex((a) => a.id === appointment.id);
   if (index !== -1) {
     appointments.value[index].status = 'completed';
-    alert(`Cita #${appointment.id} marcada como completada`);
+    alert(`Cita ${appointment.id} marcada como completada`);
     updateStats();
   }
 };
@@ -1032,7 +918,7 @@ const confirmCancel = () => {
     if (index !== -1) {
       appointments.value[index].status = 'cancelled';
       alert(
-        `Cita #${selectedAppointment.value.id} cancelada${cancelReason.value ? `: ${cancelReason.value}` : ''}`
+        `Cita ${selectedAppointment.value.id} cancelada${cancelReason.value ? `: ${cancelReason.value}` : ''}`
       );
     }
   }
@@ -1053,7 +939,7 @@ const confirmDelete = () => {
     );
     if (index !== -1) {
       appointments.value.splice(index, 1);
-      alert(`Cita #${selectedAppointment.value.id} eliminada`);
+      alert(`Cita ${selectedAppointment.value.id} eliminada`);
     }
   }
   showDeleteModal.value = false;

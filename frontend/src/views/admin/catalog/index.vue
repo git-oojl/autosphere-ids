@@ -99,20 +99,32 @@
       <div class="items-grid">
         <div v-for="item in paginatedItems" :key="item.id" class="catalog-card">
           <div class="card-icon">
-            {{ getItemIcon() }}
+            {{ getItemIcon(item) }}
           </div>
           <div class="card-content">
             <h3 class="item-name">{{ item.name }}</h3>
             <p v-if="item.description" class="item-description">
               {{ item.description }}
             </p>
-            <div v-if="currentTab !== 'locations'" class="item-stats">
-              <span class="stat-badge">{{ item.count || 0 }} vehículos</span>
+            <div class="item-stats">
+              <span v-if="currentTab === 'brands'" class="stat-badge">
+                {{ item.count || 0 }} vehículos
+              </span>
+              <span v-else-if="currentTab === 'models'" class="stat-badge">
+                {{ item.brandName }} • {{ item.count || 0 }} vehículos
+              </span>
+              <span v-else-if="currentTab === 'types'" class="stat-badge">
+                {{ item.count || 0 }} vehículos
+              </span>
+              <span v-else class="stat-badge">
+                {{ item.listingsCount || 0 }} anuncios
+              </span>
             </div>
-            <div v-else class="item-stats">
-              <span class="stat-badge"
-                >{{ item.listingsCount || 0 }} anuncios</span
-              >
+            <div
+              v-if="currentTab === 'locations' && item.address"
+              class="item-location"
+            >
+              📍 {{ item.address }}
             </div>
           </div>
           <div class="card-actions">
@@ -186,7 +198,7 @@
       </button>
     </div>
 
-    <!-- Item Modal (Create/Edit) -->
+    <!-- Item Modal (Create/Edit) - El mismo que antes pero adaptado -->
     <div
       v-if="showItemModal"
       class="modal-overlay"
@@ -232,7 +244,7 @@
             ></textarea>
           </div>
           <div v-if="currentTab === 'locations'" class="form-group">
-            <label>Dirección / Ubicación</label>
+            <label>Dirección / Ubicación *</label>
             <input
               v-model="itemForm.address"
               type="text"
@@ -241,19 +253,40 @@
             />
           </div>
           <div v-if="currentTab === 'locations'" class="form-group">
-            <label>Coordenadas (opcional)</label>
-            <div class="form-row">
+            <label>Ciudad</label>
+            <input
+              v-model="itemForm.city"
+              type="text"
+              class="form-input"
+              placeholder="Ej: Ciudad de México"
+            />
+          </div>
+          <div v-if="currentTab === 'locations'" class="form-group">
+            <label>Estado</label>
+            <input
+              v-model="itemForm.state"
+              type="text"
+              class="form-input"
+              placeholder="Ej: CDMX"
+            />
+          </div>
+          <div v-if="currentTab === 'locations'" class="form-row">
+            <div class="form-group">
+              <label>Latitud</label>
               <input
                 v-model="itemForm.lat"
                 type="text"
                 class="form-input"
-                placeholder="Latitud"
+                placeholder="Ej: 19.4326"
               />
+            </div>
+            <div class="form-group">
+              <label>Longitud</label>
               <input
                 v-model="itemForm.lng"
                 type="text"
                 class="form-input"
-                placeholder="Longitud"
+                placeholder="Ej: -99.1332"
               />
             </div>
           </div>
@@ -308,18 +341,16 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
-const router = useRouter();
+// IMPORTAR LOS MOCKS DESDE JSON
+import brandsMock from '../../../mocks/admin/brands.json';
+import modelsMock from '../../../mocks/admin/models.json';
+import typesMock from '../../../mocks/admin/vehicle-types.json';
+import locationsMock from '../../../mocks/admin/locations.json';
 
-// ============================================
-// NOTIFICATION SYSTEM
-// ============================================
-const showBanner = (type, message) => {
-  // Temporal: usar alert mientras se implementa el sistema visual
-  alert(message);
-};
+const router = useRouter();
 
 // Current tab
 const currentTab = ref('brands');
@@ -332,173 +363,62 @@ const stats = ref({
   locations: 0,
 });
 
-// Brands data
-const brands = ref([
-  {
-    id: 1,
-    name: 'Porsche',
-    description: 'Marca alemana de autos deportivos de lujo',
-    count: 23,
-  },
-  {
-    id: 2,
-    name: 'BMW',
-    description: 'Bayerische Motoren Werke, autos premium alemanes',
-    count: 31,
-  },
-  {
-    id: 3,
-    name: 'Mercedes-Benz',
-    description: 'Marca alemana de autos de lujo',
-    count: 28,
-  },
-  {
-    id: 4,
-    name: 'Audi',
-    description: 'Marca alemana de autos premium',
-    count: 19,
-  },
-  {
-    id: 5,
-    name: 'Ferrari',
-    description: 'Marca italiana de autos deportivos',
-    count: 8,
-  },
-  {
-    id: 6,
-    name: 'Lamborghini',
-    description: 'Marca italiana de autos superdeportivos',
-    count: 5,
-  },
-  {
-    id: 7,
-    name: 'Tesla',
-    description: 'Marca americana de autos eléctricos',
-    count: 12,
-  },
-  {
-    id: 8,
-    name: 'Chevrolet',
-    description: 'Marca americana de autos',
-    count: 15,
-  },
-]);
+// Datos desde JSON
+const brands = ref(
+  brandsMock.items.map((item) => ({
+    id: item.id,
+    name: item.name,
+    description: item.description,
+    country: item.country,
+    founded: item.founded,
+    logo: item.logo,
+    active: item.active,
+    count: item.count,
+  }))
+);
 
-// Models data
-const models = ref([
-  { id: 1, name: '911 Carrera', brandId: 1, brandName: 'Porsche', count: 12 },
-  { id: 2, name: 'Cayenne', brandId: 1, brandName: 'Porsche', count: 8 },
-  { id: 3, name: 'Panamera', brandId: 1, brandName: 'Porsche', count: 3 },
-  { id: 4, name: 'X5', brandId: 2, brandName: 'BMW', count: 15 },
-  { id: 5, name: 'X6', brandId: 2, brandName: 'BMW', count: 9 },
-  { id: 6, name: 'Serie 3', brandId: 2, brandName: 'BMW', count: 7 },
-  { id: 7, name: 'Clase S', brandId: 3, brandName: 'Mercedes-Benz', count: 11 },
-  { id: 8, name: 'Clase E', brandId: 3, brandName: 'Mercedes-Benz', count: 9 },
-  { id: 9, name: 'GLE', brandId: 3, brandName: 'Mercedes-Benz', count: 8 },
-  { id: 10, name: 'RS7', brandId: 4, brandName: 'Audi', count: 6 },
-  { id: 11, name: 'Q7', brandId: 4, brandName: 'Audi', count: 7 },
-  { id: 12, name: 'A8', brandId: 4, brandName: 'Audi', count: 6 },
-  { id: 13, name: '488 GTB', brandId: 5, brandName: 'Ferrari', count: 4 },
-  { id: 14, name: 'F8 Tributo', brandId: 5, brandName: 'Ferrari', count: 4 },
-  { id: 15, name: 'Huracán', brandId: 6, brandName: 'Lamborghini', count: 3 },
-  { id: 16, name: 'Model S', brandId: 7, brandName: 'Tesla', count: 7 },
-  { id: 17, name: 'Model 3', brandId: 7, brandName: 'Tesla', count: 5 },
-  { id: 18, name: 'Silverado', brandId: 8, brandName: 'Chevrolet', count: 10 },
-  { id: 19, name: 'Camaro', brandId: 8, brandName: 'Chevrolet', count: 5 },
-]);
+const models = ref(
+  modelsMock.items.map((item) => ({
+    id: item.id,
+    name: item.name,
+    brandId: item.brandId,
+    brandName: item.brandName,
+    generation: item.generation,
+    bodyType: item.bodyType,
+    active: item.active,
+    count: item.count,
+  }))
+);
 
-// Vehicle types
-const types = ref([
-  {
-    id: 1,
-    name: 'Sedán',
-    description: 'Vehículo de 4 puertas con baúl separado',
-    count: 145,
-  },
-  {
-    id: 2,
-    name: 'SUV',
-    description: 'Vehículo deportivo utilitario',
-    count: 98,
-  },
-  {
-    id: 3,
-    name: 'Deportivo',
-    description: 'Vehículo de alto rendimiento',
-    count: 67,
-  },
-  {
-    id: 4,
-    name: 'Hatchback',
-    description: 'Vehículo compacto de 5 puertas',
-    count: 34,
-  },
-  {
-    id: 5,
-    name: 'Pickup',
-    description: 'Camioneta con caja de carga',
-    count: 28,
-  },
-  {
-    id: 6,
-    name: 'Convertible',
-    description: 'Vehículo descapotable',
-    count: 23,
-  },
-  { id: 7, name: 'Coupé', description: 'Vehículo de 2 puertas', count: 31 },
-]);
+const types = ref(
+  typesMock.items.map((item) => ({
+    id: item.id,
+    name: item.name,
+    description: item.description,
+    icon: item.icon,
+    active: item.active,
+    count: item.count,
+  }))
+);
 
-// Locations
-const locations = ref([
-  {
-    id: 1,
-    name: 'Concesionaria AutoSphere CDMX',
-    address: 'Av. Reforma 123, Col. Juárez, CDMX',
-    lat: '19.4326',
-    lng: '-99.1332',
-    listingsCount: 45,
-  },
-  {
-    id: 2,
-    name: 'Concesionaria AutoSphere GDL',
-    address: 'Av. Vallarta 456, Col. Americana, Guadalajara',
-    lat: '20.6767',
-    lng: '-103.3475',
-    listingsCount: 32,
-  },
-  {
-    id: 3,
-    name: 'Concesionaria AutoSphere MTY',
-    address: 'Av. Constitución 789, San Pedro, Monterrey',
-    lat: '25.6866',
-    lng: '-100.3161',
-    listingsCount: 28,
-  },
-  {
-    id: 4,
-    name: 'Punto de encuentro - Plaza Satélite',
-    address: 'Circuito Satélite, Naucalpan, EdoMéx',
-    lat: '19.4965',
-    lng: '-99.2365',
-    listingsCount: 15,
-  },
-  {
-    id: 5,
-    name: 'Punto de encuentro - Andares',
-    address: 'Av. Real Acueducto, Zapopan, Jalisco',
-    lat: '20.7221',
-    lng: '-103.4091',
-    listingsCount: 12,
-  },
-  {
-    id: 6,
-    name: 'Punto de encuentro - Valle Oriente',
-    address: 'Av. Gómez Morín, San Pedro Garza García',
-    lat: '25.6578',
-    lng: '-100.3689',
-    listingsCount: 10,
-  },
-]);
+const locations = ref(
+  locationsMock.items.map((item) => ({
+    id: item.id,
+    name: item.name,
+    type: item.type,
+    address: item.address,
+    city: item.city,
+    state: item.state,
+    postalCode: item.postalCode,
+    lat: item.lat,
+    lng: item.lng,
+    phone: item.phone,
+    email: item.email,
+    schedule: item.schedule,
+    active: item.active,
+    listingsCount: item.listingsCount,
+  }))
+);
 
 // Filters
 const searchTerm = ref('');
@@ -515,6 +435,8 @@ const itemForm = ref({
   description: '',
   brandId: '',
   address: '',
+  city: '',
+  state: '',
   lat: '',
   lng: '',
 });
@@ -544,7 +466,8 @@ const filteredItems = computed(() => {
       (item) =>
         item.name.toLowerCase().includes(term) ||
         (item.brandName && item.brandName.toLowerCase().includes(term)) ||
-        (item.address && item.address.toLowerCase().includes(term))
+        (item.address && item.address.toLowerCase().includes(term)) ||
+        (item.city && item.city.toLowerCase().includes(term))
     );
   }
 
@@ -592,14 +515,12 @@ const getTabLabel = () => {
   return labels[currentTab.value] || '';
 };
 
-const getItemIcon = () => {
-  const icons = {
-    brands: '🏭',
-    models: '🚗',
-    types: '📋',
-    locations: '📍',
-  };
-  return icons[currentTab.value] || '📦';
+const getItemIcon = (item) => {
+  if (currentTab.value === 'brands') return item.logo || '🏭';
+  if (currentTab.value === 'models') return '🚗';
+  if (currentTab.value === 'types') return item.icon || '📋';
+  if (currentTab.value === 'locations') return '📍';
+  return '📦';
 };
 
 const getEmptyIcon = () => {
@@ -645,6 +566,8 @@ const openItemModal = (action, item = null) => {
       description: item.description || '',
       brandId: item.brandId || '',
       address: item.address || '',
+      city: item.city || '',
+      state: item.state || '',
       lat: item.lat || '',
       lng: item.lng || '',
     };
@@ -654,6 +577,8 @@ const openItemModal = (action, item = null) => {
       description: '',
       brandId: '',
       address: '',
+      city: '',
+      state: '',
       lat: '',
       lng: '',
     };
@@ -668,11 +593,9 @@ const closeItemModal = () => {
 
 const saveItem = () => {
   if (!itemForm.value.name) {
-    showBanner('error', 'Por favor ingresa un nombre');
+    alert('Por favor ingresa un nombre');
     return;
   }
-
-  const newId = Date.now();
 
   switch (currentTab.value) {
     case 'brands': {
@@ -684,23 +607,28 @@ const saveItem = () => {
             name: itemForm.value.name,
             description: itemForm.value.description,
           };
-          showBanner('success', 'Marca actualizada correctamente');
+          alert('Marca actualizada correctamente');
         }
       } else {
+        const newId = `${currentTab.value.slice(0, 2)}-${Date.now()}`;
         brands.value.push({
           id: newId,
           name: itemForm.value.name,
           description: itemForm.value.description,
+          country: 'No especificado',
+          founded: null,
+          logo: '🏭',
+          active: true,
           count: 0,
         });
-        showBanner('success', 'Marca agregada correctamente');
+        alert('Marca agregada correctamente');
       }
       break;
     }
 
     case 'models': {
       if (!itemForm.value.brandId) {
-        showBanner('error', 'Por favor selecciona una marca');
+        alert('Por favor selecciona una marca');
         return;
       }
       const brand = brands.value.find((b) => b.id === itemForm.value.brandId);
@@ -713,17 +641,21 @@ const saveItem = () => {
             brandId: itemForm.value.brandId,
             brandName: brand?.name,
           };
-          showBanner('success', 'Modelo actualizado correctamente');
+          alert('Modelo actualizado correctamente');
         }
       } else {
+        const newId = `${currentTab.value.slice(0, 2)}-${Date.now()}`;
         models.value.push({
           id: newId,
           name: itemForm.value.name,
           brandId: itemForm.value.brandId,
           brandName: brand?.name,
+          generation: '',
+          bodyType: '',
+          active: true,
           count: 0,
         });
-        showBanner('success', 'Modelo agregado correctamente');
+        alert('Modelo agregado correctamente');
       }
       break;
     }
@@ -737,16 +669,19 @@ const saveItem = () => {
             name: itemForm.value.name,
             description: itemForm.value.description,
           };
-          showBanner('success', 'Tipo de vehículo actualizado correctamente');
+          alert('Tipo de vehículo actualizado correctamente');
         }
       } else {
+        const newId = `${currentTab.value.slice(0, 2)}-${Date.now()}`;
         types.value.push({
           id: newId,
           name: itemForm.value.name,
           description: itemForm.value.description,
+          icon: '📋',
+          active: true,
           count: 0,
         });
-        showBanner('success', 'Tipo de vehículo agregado correctamente');
+        alert('Tipo de vehículo agregado correctamente');
       }
       break;
     }
@@ -761,28 +696,38 @@ const saveItem = () => {
             ...locations.value[index],
             name: itemForm.value.name,
             address: itemForm.value.address,
-            lat: itemForm.value.lat,
-            lng: itemForm.value.lng,
+            city: itemForm.value.city,
+            state: itemForm.value.state,
+            lat: itemForm.value.lat ? parseFloat(itemForm.value.lat) : null,
+            lng: itemForm.value.lng ? parseFloat(itemForm.value.lng) : null,
           };
-          showBanner('success', 'Ubicación actualizada correctamente');
+          alert('Ubicación actualizada correctamente');
         }
       } else {
+        const newId = `${currentTab.value.slice(0, 2)}-${Date.now()}`;
         locations.value.push({
           id: newId,
           name: itemForm.value.name,
+          type: 'concesionaria',
           address: itemForm.value.address,
-          lat: itemForm.value.lat,
-          lng: itemForm.value.lng,
+          city: itemForm.value.city,
+          state: itemForm.value.state,
+          postalCode: '',
+          lat: itemForm.value.lat ? parseFloat(itemForm.value.lat) : null,
+          lng: itemForm.value.lng ? parseFloat(itemForm.value.lng) : null,
+          phone: null,
+          email: null,
+          schedule: null,
+          active: true,
           listingsCount: 0,
         });
-        showBanner('success', 'Ubicación agregada correctamente');
+        alert('Ubicación agregada correctamente');
       }
       break;
     }
 
-    default: {
+    default:
       break;
-    }
   }
 
   closeItemModal();
@@ -804,7 +749,7 @@ const confirmDelete = () => {
       );
       if (brandIndex !== -1) {
         brands.value.splice(brandIndex, 1);
-        showBanner('success', `Marca "${selectedItem.value.name}" eliminada`);
+        alert(`Marca "${selectedItem.value.name}" eliminada`);
       }
       break;
     }
@@ -815,7 +760,7 @@ const confirmDelete = () => {
       );
       if (modelIndex !== -1) {
         models.value.splice(modelIndex, 1);
-        showBanner('success', `Modelo "${selectedItem.value.name}" eliminado`);
+        alert(`Modelo "${selectedItem.value.name}" eliminado`);
       }
       break;
     }
@@ -826,7 +771,7 @@ const confirmDelete = () => {
       );
       if (typeIndex !== -1) {
         types.value.splice(typeIndex, 1);
-        showBanner('success', `Tipo "${selectedItem.value.name}" eliminado`);
+        alert(`Tipo "${selectedItem.value.name}" eliminado`);
       }
       break;
     }
@@ -837,17 +782,13 @@ const confirmDelete = () => {
       );
       if (locationIndex !== -1) {
         locations.value.splice(locationIndex, 1);
-        showBanner(
-          'success',
-          `Ubicación "${selectedItem.value.name}" eliminada`
-        );
+        alert(`Ubicación "${selectedItem.value.name}" eliminada`);
       }
       break;
     }
 
-    default: {
+    default:
       break;
-    }
   }
 
   showDeleteModal.value = false;
@@ -855,8 +796,10 @@ const confirmDelete = () => {
   updateStats();
 };
 
-// Inicializar estadísticas
-updateStats();
+// Initialize
+onMounted(() => {
+  updateStats();
+});
 </script>
 
 <style scoped src="./styles.css"></style>
