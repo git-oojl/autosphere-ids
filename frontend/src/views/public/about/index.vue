@@ -213,8 +213,8 @@
             <h3>Ana Barajas</h3>
             <p class="team-role">Desarrolladora Frontend</p>
             <p>
-              Especialista en desarrollo frontend con experiencia en tecnologías
-              modernas y diseño de interfaces.
+              Especialista en desarrollo frontend con experiencia en diseño de
+              interfaces.
             </p>
           </div>
           <div class="team-card">
@@ -237,7 +237,7 @@
                 />
               </svg>
             </div>
-            <h3>Mya Flores</h3>
+            <h3>Jennifer Estrada</h3>
             <p class="team-role">Desarrolladora Frontend</p>
             <p>
               Enfocada en crear experiencias de usuario intuitivas y atractivas.
@@ -251,7 +251,7 @@
                 />
               </svg>
             </div>
-            <h3>Jennifer Estrada</h3>
+            <h3>Mya Flores</h3>
             <p class="team-role">Desarrolladora Frontend</p>
             <p>
               Especialista con experiencia en tecnologías modernas y diseño de
@@ -272,7 +272,6 @@
               Especialista en desarrollo backend con experiencia en tecnologías
               modernas.
             </p>
-            <div class="team-card"></div>
           </div>
         </div>
       </div>

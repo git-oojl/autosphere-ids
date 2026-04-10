@@ -22,10 +22,13 @@
       <div class="button-grid">
         <button @click="goTo('/')">Inicio</button>
         <button @click="goTo('/vehiculos')">Catálogo</button>
-        <button v-if="auth.isUser" @click="goTo('/account-profile')">
+        <button v-if="auth.isUser" @click="goTo('/cuenta/perfil')">
           Mi Perfil
         </button>
-        <button v-if="auth.canListVehicles" @click="goTo('/nuevo-anuncio')">
+        <button
+          v-if="auth.canListVehicles"
+          @click="goTo('/cuenta/nuevo-anuncio')"
+        >
           Nuevo anuncio
         </button>
         <button v-if="auth.isAdmin" @click="goTo('/admin')">

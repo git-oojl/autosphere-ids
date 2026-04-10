@@ -209,7 +209,7 @@
               <rect x="3" y="4" width="18" height="18" rx="2" />
               <path d="M16 2v4M8 2v4M3 10h18" />
             </svg>
-            {{ isRental ? 'Agendar Renta' : 'Agendar Prueba' }}
+            {{ isRental ? 'Agendar Cita' : 'Agendar Cita' }}
           </button>
           <button class="btn-primary" @click="contactSeller">
             <svg
@@ -925,12 +925,6 @@ const scheduleTestDrive = () => {
     router.push(`/citas?vehicle=${vehicle.value?.id}`);
   }
 };
-// const goToHome = () => {
-//   router.push('/');
-// };
-// const goToCatalog = () => {
-//   router.push('/vehiculos');
-// };
 
 const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price);
 const formatNumber = (num) => new Intl.NumberFormat('es-MX').format(num);
