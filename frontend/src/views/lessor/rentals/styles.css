@@ -4,13 +4,15 @@
 
 .lessor-dashboard {
   min-height: 100vh;
-  background:
-    linear-gradient(rgba(15, 31, 61, 0.85), rgba(30, 58, 95, 0.9)),
-    url('https://images.unsplash.com/photo-1489824904134-891ab64532f1?w=1200&h=800&fit=crop');
+  background: transparent;
   background-attachment: fixed;
   background-size: cover;
   background-position: center;
   padding: 20px 0;
+  font-family:
+    'Inter',
+    -apple-system,
+    sans-serif;
 }
 
 /* Dashboard Header */
@@ -22,14 +24,14 @@
 .dashboard-title {
   font-size: 36px;
   font-weight: 700;
-  color: white;
+  color: rgb(0, 0, 0);
   margin-bottom: 8px;
   letter-spacing: -0.5px;
 }
 
 .dashboard-subtitle {
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(0, 0, 0, 0.8);
 }
 
 /* Stats Cards */
@@ -88,6 +90,71 @@
   border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.quick-actions-card .section-header {
+  border-bottom: none;
+  padding-bottom: 12px;
+}
+
+.quick-actions-grid {
+  padding: 0 24px 24px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.quick-action-btn {
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  border-radius: 14px;
+  min-height: 90px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e3a5f;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.quick-action-btn.primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  border-color: transparent;
+  color: #ffffff;
+}
+
+.quick-action-btn:hover {
+  transform: translateY(-2px);
+  border-color: rgba(37, 99, 235, 0.35);
+  box-shadow: 0 8px 20px rgba(30, 58, 95, 0.08);
+}
+
+.quick-action-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef4ff;
+}
+
+.quick-action-icon svg {
+  width: 18px;
+  height: 18px;
+  color: #2563eb;
+}
+
+.quick-action-btn.primary .quick-action-icon {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.quick-action-btn.primary .quick-action-icon svg {
+  color: #ffffff;
 }
 
 .section-header {
@@ -440,5 +507,9 @@
 
   .stat-value {
     font-size: 24px;
+  }
+
+  .quick-actions-grid {
+    grid-template-columns: 1fr;
   }
 }

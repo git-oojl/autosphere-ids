@@ -78,9 +78,9 @@
         </v-col>
       </v-row>
 
-      <!-- Active Rentals Section -->
+      <!-- Active Rentals + Quick Actions -->
       <v-row class="mb-8">
-        <v-col cols="12">
+        <v-col cols="12" lg="8">
           <div class="section-card">
             <div class="section-header">
               <div class="section-title-wrapper">
@@ -214,6 +214,92 @@
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M9 18l6-6-6-6" />
                 </svg>
+              </button>
+            </div>
+          </div>
+        </v-col>
+        <v-col cols="12" lg="4">
+          <div class="section-card quick-actions-card">
+            <div class="section-header">
+              <div class="section-title-wrapper">
+                <div class="section-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M13 2L3 14h8l-1 8 10-12h-8z" />
+                  </svg>
+                </div>
+                <h2 class="section-title">Acciones rápidas</h2>
+              </div>
+            </div>
+            <div class="quick-actions-grid">
+              <button
+                class="quick-action-btn primary"
+                @click="goToRegisterRental"
+              >
+                <span class="quick-action-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                </span>
+                <span>Registrar vehículo</span>
+              </button>
+              <button class="quick-action-btn" @click="viewAllRentals">
+                <span class="quick-action-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="3" y="4" width="18" height="18" rx="2" />
+                    <line x1="16" y1="2" x2="16" y2="6" />
+                    <line x1="8" y1="2" x2="8" y2="6" />
+                    <line x1="3" y1="10" x2="21" y2="10" />
+                  </svg>
+                </span>
+                <span>Ver rentas</span>
+              </button>
+              <button class="quick-action-btn" @click="showReports">
+                <span class="quick-action-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M12 9v4M12 17h.01" />
+                    <path
+                      d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"
+                    />
+                  </svg>
+                </span>
+                <span>Reportar estado</span>
+              </button>
+              <button class="quick-action-btn" @click="showIncomeSummary">
+                <span class="quick-action-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path
+                      d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"
+                    />
+                  </svg>
+                </span>
+                <span>Ver ingresos</span>
               </button>
             </div>
           </div>
@@ -520,6 +606,27 @@ export default {
       this.snackbar = {
         show: true,
         message: 'Redirigiendo a todas las rentas...',
+        color: 'info',
+      };
+    },
+    goToRegisterRental() {
+      this.snackbar = {
+        show: true,
+        message: 'Redirigiendo a registrar nuevo vehiculo...',
+        color: 'info',
+      };
+    },
+    showReports() {
+      this.snackbar = {
+        show: true,
+        message: 'Abriendo reportes del estado de vehiculos...',
+        color: 'info',
+      };
+    },
+    showIncomeSummary() {
+      this.snackbar = {
+        show: true,
+        message: 'Mostrando resumen de ingresos...',
         color: 'info',
       };
     },
