@@ -8,7 +8,7 @@
       para que TODAS las vistas arranquen desde y:0 sin tocar cada una.
     -->
     <v-main class="main-content" :style="{ paddingTop: '0 !important' }">
-      <div class="page-shell" :class="{ 'account-bg': isAccountRoute }">
+      <div class="page-shell">
         <router-view />
       </div>
     </v-main>
@@ -145,33 +145,18 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import PublicAppBar from '../components/layout/PublicAppBar.vue';
 
 const router = useRouter();
-const route = useRoute();
 
 const goToHome = () => {
   router.push('/');
 };
-
-/* Account views configuration */
-const isAccountRoute = computed(() => {
-  const name = String(route.name || '');
-  return (
-    name.startsWith('buyer-') ||
-    name.startsWith('seller-') ||
-    name.startsWith('lessor-') ||
-    name.startsWith('user-') ||
-    name.startsWith('account-') ||
-    name === 'create-listing'
-  );
-});
 </script>
 
 <style scoped>
-/*
+/* 
   🔑 Forzar que Vuetify NO agregue padding-top automático al v-main.
   Esto aplica a TODAS las vistas hijas sin tocar ninguna de ellas.
 */
@@ -300,12 +285,6 @@ const isAccountRoute = computed(() => {
 
 .footer-bottom p {
   margin: 0;
-}
-
-/* Fondo para vistas de cuenta (dashboard y vistas relacionadas) */
-:deep(.account-bg) {
-  background: #dbe8f2 !important;
-  min-height: 100vh;
 }
 
 /* ============================================

@@ -4,17 +4,17 @@
     <section id="hero" class="hero">
       <div class="hero-content">
         <h1 class="hero-title">
-          Autos en venta con excelentes precios<br />y la mejor calidad
+          Cars for sale with good prices<br />and the best quality
         </h1>
-        <p class="hero-subtitle">Marca y modelo</p>
+        <p class="hero-subtitle">Make & Model</p>
 
         <!-- SEARCH BOX -->
         <div class="search-container">
           <div class="search-box">
             <div class="search-group">
-              <label>Marca</label>
+              <label>Make</label>
               <select v-model="searchFilters.make">
-                <option value="">Seleccionar Marca</option>
+                <option value="">Select Make</option>
                 <option
                   v-for="brand in uniqueBrands"
                   :key="brand"
@@ -25,9 +25,9 @@
               </select>
             </div>
             <div class="search-group">
-              <label>Modelo</label>
+              <label>Model</label>
               <select v-model="searchFilters.model">
-                <option value="">Seleccionar Modelo</option>
+                <option value="">Select Model</option>
                 <option
                   v-for="model in uniqueModels"
                   :key="model"
@@ -38,11 +38,11 @@
               </select>
             </div>
             <div class="search-group">
-              <label>Año</label>
+              <label>ZIP Code</label>
               <input
-                v-model="searchFilters.year"
+                v-model="searchFilters.zipCode"
                 type="text"
-                placeholder="Año (opcional)"
+                placeholder="ZIP Code"
               />
             </div>
             <button class="search-btn" @click="handleSearch">
@@ -55,7 +55,7 @@
                 <circle cx="11" cy="11" r="8" />
                 <path d="M21 21L16.65 16.65" />
               </svg>
-              Buscar
+              Search
             </button>
           </div>
         </div>
@@ -65,7 +65,7 @@
     <!-- FEATURED LISTINGS -->
     <section id="cars" class="featured-section">
       <div class="section-container">
-        <h2 class="section-title">Listados Destacados</h2>
+        <h2 class="section-title">Featured Listings</h2>
 
         <div class="cars-grid">
           <div
@@ -160,7 +160,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 // IMPORTAR DATOS DESDE JSON
@@ -173,7 +173,7 @@ const router = useRouter();
 const searchFilters = ref({
   make: '',
   model: '',
-  year: '',
+  zipCode: '',
 });
 
 const currentPage = ref(0);
@@ -234,12 +234,6 @@ const filteredCars = computed(() => {
     result = result.filter((v) => v.model === searchFilters.value.model);
   }
 
-  if (searchFilters.value.year) {
-    result = result.filter(
-      (v) => String(v.year) === String(searchFilters.value.year)
-    );
-  }
-
   return result;
 });
 
@@ -283,14 +277,14 @@ const handleSearch = () => {
 
 const viewCarDetail = (carId) => {
   router.push({
-    name: 'public-listings-detail',
+    name: 'VehicleDetail',
     params: { id: carId },
   });
 };
 
 const viewDetail = (carId) => {
   router.push({
-    name: 'public-listings-detail',
+    name: 'VehicleDetail',
     params: { id: carId },
   });
 };

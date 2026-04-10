@@ -614,15 +614,14 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { ref, computed, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
 // IMPORTAR DATOS DESDE JSON
 import salesData from '../../../mocks/catalog/listings.json';
 import rentalsData from '../../../mocks/catalog/rentals.json';
 
 const router = useRouter();
-const route = useRoute();
 
 // ─── MODE ──────────────────────────────────────────────────────────────────────
 const listingMode = ref('venta'); // 'venta' | 'renta'
@@ -720,6 +719,13 @@ const vehicles = computed(() => {
       ? vehiclesData.value.items
       : rentalsDataRef.value.items;
   return source.filter((v) => v.status === 'published');
+});
+
+onMounted(() => {
+  vehicles.value.forEach((v) => {
+    const img = new Image();
+    img.src = getOptimizedImageUrl(v.coverImage);
+  });
 });
 
 // ─── COMPUTED FILTER OPTIONS ───────────────────────────────────────────────────
@@ -883,27 +889,9 @@ const filteredVehicles = computed(() => {
 
 // ─── NAVIGATION ────────────────────────────────────────────────────────────────
 const goToVehicleDetail = (vehicleId) => {
-  router.push({ name: 'public-listing-detail', params: { id: vehicleId } });
+  console.log('Navegando a detalle:', vehicleId, '| modo:', listingMode.value);
+  router.push(`/listados/${vehicleId}`);
 };
-
-onMounted(() => {
-  // Leer filtros que vienen desde el home
-  if (route.query?.make) {
-    selectedBrands.value = [route.query.make];
-  }
-  if (route.query?.model) {
-    search.value = route.query.model;
-  }
-  if (route.query?.year) {
-    search.value = route.query.year;
-  }
-
-  // Precarga de imágenes (ya lo tenías)
-  vehicles.value.forEach((v) => {
-    const img = new Image();
-    img.src = getOptimizedImageUrl(v.coverImage);
-  });
-});
 </script>
 
 <style scoped src="./styles.css"></style>
