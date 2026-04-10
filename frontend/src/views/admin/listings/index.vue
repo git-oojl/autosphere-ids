@@ -139,10 +139,12 @@
           <option value="paused">Pausados</option>
           <option value="sold">Vendidos</option>
         </select>
-        <select v-model="typeFilter" class="filter-select">
-          <option value="all">Todos los tipos</option>
-          <option value="venta">Venta</option>
-          <option value="renta">Renta</option>
+        <select v-model="categoryFilter" class="filter-select">
+          <option value="all">Todas las categorías</option>
+          <option value="SUV">SUV</option>
+          <option value="Sedán">Sedán</option>
+          <option value="Pickup">Pickup</option>
+          <option value="Hatchback">Hatchback</option>
         </select>
         <select v-model="sortBy" class="filter-select">
           <option value="date_desc">Más recientes primero</option>
@@ -183,8 +185,9 @@
               <th>Vendedor</th>
               <th>Precio</th>
               <th>Año</th>
+              <th>Categoría</th>
               <th>Kilometraje</th>
-              <th>Tipo</th>
+              <th>Ubicación</th>
               <th>Vistas</th>
               <th>Estado</th>
               <th>Acciones</th>
@@ -192,28 +195,36 @@
           </thead>
           <tbody>
             <tr v-for="listing in paginatedListings" :key="listing.id">
-              <td class="id-cell">#{{ listing.id }}</td>
+              <td class="id-cell">{{ listing.id }}</td>
               <td class="vehicle-cell">
-                <div class="vehicle-avatar">{{ listing.imageIcon }}</div>
+                <div class="vehicle-avatar">
+                  {{ getVehicleIcon(listing.category) }}
+                </div>
                 <div>
                   <div class="vehicle-title">{{ listing.title }}</div>
                   <div class="vehicle-brand">
-                    {{ listing.brand }} {{ listing.model }}
+                    {{ listing.brand }} {{ listing.model }} • {{ listing.year }}
                   </div>
                 </div>
               </td>
               <td class="seller-cell">
-                <div class="seller-name">{{ listing.seller }}</div>
+                <div class="seller-name">{{ listing.sellerName }}</div>
                 <div class="seller-email">{{ listing.sellerEmail }}</div>
               </td>
               <td class="price-cell">${{ formatPrice(listing.price) }}</td>
               <td>{{ listing.year }}</td>
-              <td>{{ listing.mileage?.toLocaleString() || 'Nuevo' }} km</td>
               <td>
-                <span :class="['type-badge', listing.type]">
-                  {{ listing.type === 'venta' ? 'Venta' : 'Renta' }}
+                <span
+                  :class="[
+                    'category-badge',
+                    getCategoryClass(listing.category),
+                  ]"
+                >
+                  {{ listing.category }}
                 </span>
               </td>
+              <td>{{ listing.mileageKm?.toLocaleString() || 'Nuevo' }} km</td>
+              <td>{{ listing.cityName || 'No especificada' }}</td>
               <td class="views-cell">
                 <span class="views-count">{{ listing.views }}</span>
               </td>
@@ -272,7 +283,7 @@
               </td>
             </tr>
             <tr v-if="filteredListings.length === 0">
-              <td colspan="10" class="empty-state">
+              <td colspan="11" class="empty-state">
                 <div class="empty-icon">🚗</div>
                 <p>No hay anuncios que coincidan con los filtros</p>
                 <button class="btn-primary-small" @click="clearFilters">
@@ -336,14 +347,17 @@
                 v-model="listingForm.title"
                 type="text"
                 class="form-input"
-                placeholder="Ej: Porsche 911 Carrera 2022"
+                placeholder="Ej: Mazda CX-5 i Grand Touring 2021"
               />
             </div>
             <div class="form-group">
-              <label>Tipo de anuncio *</label>
-              <select v-model="listingForm.type" class="form-input">
-                <option value="venta">Venta</option>
-                <option value="renta">Renta</option>
+              <label>Categoría *</label>
+              <select v-model="listingForm.category" class="form-input">
+                <option value="SUV">SUV</option>
+                <option value="Sedán">Sedán</option>
+                <option value="Pickup">Pickup</option>
+                <option value="Hatchback">Hatchback</option>
+                <option value="Deportivo">Deportivo</option>
               </select>
             </div>
           </div>
@@ -354,7 +368,7 @@
                 v-model="listingForm.brand"
                 type="text"
                 class="form-input"
-                placeholder="Ej: Porsche"
+                placeholder="Ej: Mazda"
               />
             </div>
             <div class="form-group">
@@ -363,7 +377,7 @@
                 v-model="listingForm.model"
                 type="text"
                 class="form-input"
-                placeholder="Ej: 911 Carrera"
+                placeholder="Ej: CX-5"
               />
             </div>
           </div>
@@ -374,27 +388,65 @@
                 v-model="listingForm.year"
                 type="number"
                 class="form-input"
-                placeholder="Ej: 2022"
+                placeholder="Ej: 2021"
               />
             </div>
-            <div class="form-group">
-              <label>Kilometraje</label>
-              <input
-                v-model="listingForm.mileage"
-                type="number"
-                class="form-input"
-                placeholder="Ej: 15000 (dejar vacío si es nuevo)"
-              />
-            </div>
-          </div>
-          <div class="form-row">
             <div class="form-group">
               <label>Precio *</label>
               <input
                 v-model="listingForm.price"
                 type="number"
                 class="form-input"
-                placeholder="Ej: 2850000"
+                placeholder="Ej: 478000"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Kilometraje</label>
+              <input
+                v-model="listingForm.mileageKm"
+                type="number"
+                class="form-input"
+                placeholder="Ej: 42500"
+              />
+            </div>
+            <div class="form-group">
+              <label>Color</label>
+              <input
+                v-model="listingForm.color"
+                type="text"
+                class="form-input"
+                placeholder="Ej: Rojo"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Transmisión</label>
+              <select v-model="listingForm.transmission" class="form-input">
+                <option value="Automática">Automática</option>
+                <option value="Manual">Manual</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Combustible</label>
+              <select v-model="listingForm.fuel" class="form-input">
+                <option value="Gasolina">Gasolina</option>
+                <option value="Diésel">Diésel</option>
+                <option value="Híbrido">Híbrido</option>
+                <option value="Eléctrico">Eléctrico</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Ubicación</label>
+              <input
+                v-model="listingForm.cityName"
+                type="text"
+                class="form-input"
+                placeholder="Ej: Ciudad de México"
               />
             </div>
             <div class="form-group">
@@ -405,30 +457,6 @@
                 <option value="paused">Pausado</option>
                 <option value="sold">Vendido</option>
               </select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Vendedor *</label>
-              <select v-model="listingForm.sellerId" class="form-input">
-                <option value="">Seleccionar vendedor</option>
-                <option
-                  v-for="seller in sellers"
-                  :key="seller.id"
-                  :value="seller.id"
-                >
-                  {{ seller.name }} - {{ seller.email }}
-                </option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Imagen/Icono</label>
-              <input
-                v-model="listingForm.imageIcon"
-                type="text"
-                class="form-input"
-                placeholder="Ej: 🏎️, 🚙, 🚗"
-              />
             </div>
           </div>
           <div class="form-group">
@@ -474,15 +502,22 @@
         </div>
         <div v-if="selectedListing" class="modal-body">
           <div class="details-header">
-            <div class="details-icon">{{ selectedListing.imageIcon }}</div>
+            <div class="details-icon">
+              {{ getVehicleIcon(selectedListing.category) }}
+            </div>
             <div class="details-title">
               <h3>{{ selectedListing.title }}</h3>
               <div class="details-badges">
-                <span :class="['type-badge', selectedListing.type]">
-                  {{ selectedListing.type === 'venta' ? 'Venta' : 'Renta' }}
-                </span>
                 <span :class="['status-badge', selectedListing.status]">
                   {{ getStatusText(selectedListing.status) }}
+                </span>
+                <span
+                  :class="[
+                    'category-badge',
+                    getCategoryClass(selectedListing.category),
+                  ]"
+                >
+                  {{ selectedListing.category }}
                 </span>
               </div>
             </div>
@@ -491,22 +526,14 @@
             <div class="details-section">
               <h4>Información del Vehículo</h4>
               <div class="detail-card">
-                <div class="detail-label">Marca</div>
-                <div class="detail-value">{{ selectedListing.brand }}</div>
-              </div>
-              <div class="detail-card">
-                <div class="detail-label">Modelo</div>
-                <div class="detail-value">{{ selectedListing.model }}</div>
+                <div class="detail-label">Marca / Modelo</div>
+                <div class="detail-value">
+                  {{ selectedListing.brand }} {{ selectedListing.model }}
+                </div>
               </div>
               <div class="detail-card">
                 <div class="detail-label">Año</div>
                 <div class="detail-value">{{ selectedListing.year }}</div>
-              </div>
-              <div class="detail-card">
-                <div class="detail-label">Kilometraje</div>
-                <div class="detail-value">
-                  {{ selectedListing.mileage?.toLocaleString() || 'Nuevo' }} km
-                </div>
               </div>
               <div class="detail-card">
                 <div class="detail-label">Precio</div>
@@ -514,12 +541,46 @@
                   ${{ formatPrice(selectedListing.price) }}
                 </div>
               </div>
+              <div class="detail-card">
+                <div class="detail-label">Kilometraje</div>
+                <div class="detail-value">
+                  {{ selectedListing.mileageKm?.toLocaleString() || 'Nuevo' }}
+                  km
+                </div>
+              </div>
+              <div class="detail-card">
+                <div class="detail-label">Color</div>
+                <div class="detail-value">
+                  {{ selectedListing.color || 'No especificado' }}
+                </div>
+              </div>
+            </div>
+            <div class="details-section">
+              <h4>Especificaciones</h4>
+              <div class="detail-card">
+                <div class="detail-label">Transmisión</div>
+                <div class="detail-value">
+                  {{ selectedListing.transmission || 'Automática' }}
+                </div>
+              </div>
+              <div class="detail-card">
+                <div class="detail-label">Combustible</div>
+                <div class="detail-value">
+                  {{ selectedListing.fuel || 'Gasolina' }}
+                </div>
+              </div>
+              <div class="detail-card">
+                <div class="detail-label">Ubicación</div>
+                <div class="detail-value">
+                  {{ selectedListing.cityName || 'No especificada' }}
+                </div>
+              </div>
             </div>
             <div class="details-section">
               <h4>Información del Vendedor</h4>
               <div class="detail-card">
                 <div class="detail-label">Nombre</div>
-                <div class="detail-value">{{ selectedListing.seller }}</div>
+                <div class="detail-value">{{ selectedListing.sellerName }}</div>
               </div>
               <div class="detail-card">
                 <div class="detail-label">Email</div>
@@ -630,6 +691,9 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
+// IMPORTAR EL MOCK DESDE JSON
+import listingsMock from '../../../mocks/admin/listings.json';
+
 const router = useRouter();
 
 // Stats
@@ -640,197 +704,42 @@ const stats = ref({
   sold: 0,
 });
 
-// Listings data
-const listings = ref([
-  {
-    id: 1,
-    title: 'Porsche 911 Carrera 2022',
-    brand: 'Porsche',
-    model: '911 Carrera',
-    price: 2850000,
-    seller: 'Carlos Méndez',
-    sellerId: 2,
-    sellerEmail: 'carlos.mendez@email.com',
-    sellerPhone: '55 8765 4321',
-    year: 2022,
-    mileage: 8500,
-    type: 'venta',
-    status: 'active',
-    views: 245,
-    messages: 3,
-    description:
-      'Porsche 911 Carrera en excelentes condiciones, único dueño, servicio completo en agencia. Incluye techo solar, asientos de piel, sistema de sonido Bose.',
-    features: [
-      'Aire acondicionado',
-      'Vidrios eléctricos',
-      'Cámara reversa',
-      'Sensores de estacionamiento',
-      'Asientos de piel',
-      'Techo solar',
-    ],
-    imageIcon: '🏎️',
-    createdAt: '2024-03-15T10:30:00',
-  },
-  {
-    id: 2,
-    title: 'BMW X5 M Competition 2023',
-    brand: 'BMW',
-    model: 'X5 M Competition',
-    price: 1980000,
-    seller: 'Ana Ramírez',
-    sellerId: 5,
-    sellerEmail: 'ana.ramirez@email.com',
-    sellerPhone: '55 1122 3344',
-    year: 2023,
-    mileage: 3200,
-    type: 'venta',
-    status: 'active',
-    views: 189,
-    messages: 2,
-    description:
-      'BMW X5 M Competition, equipamiento completo, garantía extendida, factura original.',
-    features: [
-      'Aire acondicionado',
-      'Vidrios eléctricos',
-      'Cámara 360°',
-      'Asientos calefactables',
-      'Apple CarPlay',
-      'Techo panorámico',
-    ],
-    imageIcon: '🚙',
-    createdAt: '2024-03-18T15:20:00',
-  },
-  {
-    id: 3,
-    title: 'Mercedes-Benz Clase S 2024',
-    brand: 'Mercedes-Benz',
-    model: 'Clase S',
-    price: 3250000,
-    seller: 'Luis Fernández',
-    sellerId: 7,
-    sellerEmail: 'luis.fernandez@email.com',
-    sellerPhone: '33 8765 4321',
-    year: 2024,
-    mileage: 500,
-    type: 'venta',
-    status: 'pending',
-    views: 312,
-    messages: 5,
-    description:
-      'Mercedes-Benz Clase S 2024, el último modelo, tecnología de punta, asientos de masaje, sistema de iluminación ambiental.',
-    features: [
-      'Aire acondicionado',
-      'Vidrios eléctricos',
-      'Asientos de masaje',
-      'Sistema de sonido Burmester',
-      'Asistente de manejo',
-      'Iluminación ambiental',
-    ],
-    imageIcon: '🚗',
-    createdAt: '2024-03-20T09:15:00',
-  },
-  {
-    id: 4,
-    title: 'Audi RS7 Sportback 2022',
-    brand: 'Audi',
-    model: 'RS7 Sportback',
-    price: 2150000,
-    seller: 'Roberto Gómez',
-    sellerId: 4,
-    sellerEmail: 'roberto.gomez@email.com',
-    sellerPhone: '55 9988 7766',
-    year: 2022,
-    mileage: 15000,
-    type: 'venta',
-    status: 'sold',
-    views: 167,
-    messages: 8,
-    description:
-      'Audi RS7 en perfecto estado, motor V8 biturbo, tracción quattro, interior en cuero.',
-    features: [
-      'Aire acondicionado',
-      'Vidrios eléctricos',
-      'Quattro',
-      'Sistema de sonido premium',
-      'Asientos deportivos',
-      'Techo solar',
-    ],
-    imageIcon: '🏎️',
-    createdAt: '2024-03-10T11:00:00',
-  },
-  {
-    id: 5,
-    title: 'Tesla Model S Plaid',
-    brand: 'Tesla',
-    model: 'Model S Plaid',
-    price: 2350000,
-    seller: 'Sofía Ramírez',
-    sellerId: 8,
-    sellerEmail: 'sofia.ramirez@email.com',
-    sellerPhone: '55 4433 2211',
-    year: 2023,
-    mileage: 8000,
-    type: 'venta',
-    status: 'active',
-    views: 423,
-    messages: 12,
-    description:
-      'Tesla Model S Plaid, autonomía de 600km, aceleración 0-100 en 2.1 segundos, autopilot incluido.',
-    features: [
-      'Aire acondicionado',
-      'Vidrios eléctricos',
-      'Autopilot',
-      'Pantalla 17"',
-      'Carga rápida',
-      'Sonido premium',
-    ],
-    imageIcon: '🔋',
-    createdAt: '2024-03-12T14:30:00',
-  },
-  {
-    id: 6,
-    title: 'Chevrolet Silverado 2023',
-    brand: 'Chevrolet',
-    model: 'Silverado',
-    price: 35000,
-    seller: 'Mario González',
-    sellerId: 6,
-    sellerEmail: 'mario.gonzalez@email.com',
-    sellerPhone: '81 9876 5432',
-    year: 2023,
-    mileage: 25000,
-    type: 'renta',
-    status: 'active',
-    views: 98,
-    messages: 4,
-    description:
-      'Camioneta Chevrolet Silverado disponible para renta mensual. Ideal para trabajo o familia.',
-    features: [
-      'Aire acondicionado',
-      'Vidrios eléctricos',
-      'Cámara reversa',
-      'Caja de carga',
-      'Remolque',
-    ],
-    imageIcon: '🚛',
-    createdAt: '2024-03-19T08:00:00',
-  },
-]);
-
-// Sellers for dropdown
-const sellers = ref([
-  { id: 2, name: 'Carlos Méndez', email: 'carlos.mendez@email.com' },
-  { id: 4, name: 'Roberto Gómez', email: 'roberto.gomez@email.com' },
-  { id: 5, name: 'Ana Ramírez', email: 'ana.ramirez@email.com' },
-  { id: 6, name: 'Mario González', email: 'mario.gonzalez@email.com' },
-  { id: 7, name: 'Luis Fernández', email: 'luis.fernandez@email.com' },
-  { id: 8, name: 'Sofía Ramírez', email: 'sofia.ramirez@email.com' },
-]);
+// LISTINGS: Usar los datos importados del JSON
+const listings = ref(
+  listingsMock.items.map((item) => ({
+    id: item.id,
+    title: item.title,
+    brand: item.brand,
+    model: item.model,
+    year: item.year,
+    price: item.price,
+    type: item.type || 'venta',
+    category: item.category,
+    transmission: item.transmission,
+    fuel: item.fuel,
+    mileageKm: item.mileageKm,
+    cityId: item.cityId,
+    cityName: item.cityName,
+    sellerId: item.sellerId,
+    sellerName: item.sellerName,
+    sellerEmail: item.sellerEmail,
+    sellerPhone: item.sellerPhone,
+    coverImage: item.coverImage,
+    status: item.status,
+    color: item.color,
+    description: item.description,
+    features: item.features || [],
+    views: item.views || 0,
+    messages: item.messages || 0,
+    createdAt: item.createdAt,
+    updatedAt: item.updatedAt,
+  }))
+);
 
 // Filters
 const searchTerm = ref('');
 const statusFilter = ref('all');
-const typeFilter = ref('all');
+const categoryFilter = ref('all');
 const sortBy = ref('date_desc');
 const currentPage = ref(1);
 const itemsPerPage = 10;
@@ -846,14 +755,16 @@ const listingForm = ref({
   brand: '',
   model: '',
   year: '',
-  mileage: '',
   price: '',
-  type: 'venta',
+  category: 'SUV',
+  transmission: 'Automática',
+  fuel: 'Gasolina',
+  mileageKm: '',
+  cityName: '',
+  color: '',
   status: 'pending',
-  sellerId: '',
   description: '',
   featuresInput: '',
-  imageIcon: '🚗',
 });
 
 // Computed
@@ -867,7 +778,7 @@ const filteredListings = computed(() => {
       (l) =>
         l.title.toLowerCase().includes(term) ||
         l.brand.toLowerCase().includes(term) ||
-        l.seller.toLowerCase().includes(term)
+        l.sellerName.toLowerCase().includes(term)
     );
   }
 
@@ -876,9 +787,9 @@ const filteredListings = computed(() => {
     filtered = filtered.filter((l) => l.status === statusFilter.value);
   }
 
-  // Filter by type
-  if (typeFilter.value !== 'all') {
-    filtered = filtered.filter((l) => l.type === typeFilter.value);
+  // Filter by category
+  if (categoryFilter.value !== 'all') {
+    filtered = filtered.filter((l) => l.category === categoryFilter.value);
   }
 
   // Sort
@@ -958,6 +869,28 @@ const getStatusText = (status) => {
   return statuses[status] || status;
 };
 
+const getCategoryClass = (category) => {
+  const classes = {
+    SUV: 'suv',
+    Sedán: 'sedan',
+    Pickup: 'pickup',
+    Hatchback: 'hatchback',
+    Deportivo: 'deportivo',
+  };
+  return classes[category] || 'suv';
+};
+
+const getVehicleIcon = (category) => {
+  const icons = {
+    SUV: '🚙',
+    Sedán: '🚗',
+    Pickup: '🛻',
+    Hatchback: '🚘',
+    Deportivo: '🏎️',
+  };
+  return icons[category] || '🚗';
+};
+
 const updateStats = () => {
   stats.value.total = listings.value.length;
   stats.value.active = listings.value.filter(
@@ -977,7 +910,7 @@ const setStatusFilter = (status) => {
 const clearFilters = () => {
   searchTerm.value = '';
   statusFilter.value = 'all';
-  typeFilter.value = 'all';
+  categoryFilter.value = 'all';
   sortBy.value = 'date_desc';
   currentPage.value = 1;
 };
@@ -991,14 +924,16 @@ const openListingModal = (action, listing = null) => {
       brand: listing.brand,
       model: listing.model,
       year: listing.year,
-      mileage: listing.mileage || '',
       price: listing.price,
-      type: listing.type,
+      category: listing.category,
+      transmission: listing.transmission,
+      fuel: listing.fuel,
+      mileageKm: listing.mileageKm || '',
+      cityName: listing.cityName || '',
+      color: listing.color || '',
       status: listing.status,
-      sellerId: listing.sellerId,
-      description: listing.description,
-      featuresInput: listing.features.join(', '),
-      imageIcon: listing.imageIcon,
+      description: listing.description || '',
+      featuresInput: (listing.features || []).join(', '),
     };
   } else {
     listingForm.value = {
@@ -1006,14 +941,16 @@ const openListingModal = (action, listing = null) => {
       brand: '',
       model: '',
       year: '',
-      mileage: '',
       price: '',
-      type: 'venta',
+      category: 'SUV',
+      transmission: 'Automática',
+      fuel: 'Gasolina',
+      mileageKm: '',
+      cityName: '',
+      color: '',
       status: 'pending',
-      sellerId: '',
       description: '',
       featuresInput: '',
-      imageIcon: '🚗',
     };
   }
   showListingModal.value = true;
@@ -1030,22 +967,19 @@ const saveListing = () => {
     !listingForm.value.brand ||
     !listingForm.value.model ||
     !listingForm.value.year ||
-    !listingForm.value.price ||
-    !listingForm.value.sellerId
+    !listingForm.value.price
   ) {
     alert('Por favor completa los campos requeridos');
     return;
   }
 
-  const seller = sellers.value.find((s) => s.id === listingForm.value.sellerId);
-  if (!seller) return;
-
   const features = listingForm.value.featuresInput
     .split(',')
     .map((f) => f.trim())
     .filter((f) => f);
+  const newId = `vh-${Date.now()}`;
 
-  if (isEditing.value) {
+  if (isEditing.value && listingForm.value.id) {
     // Edit existing listing
     const index = listings.value.findIndex(
       (l) => l.id === listingForm.value.id
@@ -1056,46 +990,53 @@ const saveListing = () => {
         title: listingForm.value.title,
         brand: listingForm.value.brand,
         model: listingForm.value.model,
-        year: listingForm.value.year,
-        mileage: listingForm.value.mileage
-          ? parseInt(listingForm.value.mileage)
-          : null,
+        year: parseInt(listingForm.value.year),
         price: parseInt(listingForm.value.price),
-        type: listingForm.value.type,
+        category: listingForm.value.category,
+        transmission: listingForm.value.transmission,
+        fuel: listingForm.value.fuel,
+        mileageKm: listingForm.value.mileageKm
+          ? parseInt(listingForm.value.mileageKm)
+          : null,
+        cityName: listingForm.value.cityName,
+        color: listingForm.value.color,
         status: listingForm.value.status,
-        sellerId: listingForm.value.sellerId,
-        seller: seller.name,
-        sellerEmail: seller.email,
         description: listingForm.value.description,
         features: features,
-        imageIcon: listingForm.value.imageIcon,
+        updatedAt: new Date().toISOString(),
       };
       alert(`Anuncio ${listingForm.value.title} actualizado correctamente`);
     }
   } else {
     // Create new listing
     const newListing = {
-      id: Date.now(),
+      id: newId,
       title: listingForm.value.title,
       brand: listingForm.value.brand,
       model: listingForm.value.model,
-      price: parseInt(listingForm.value.price),
-      seller: seller.name,
-      sellerId: listingForm.value.sellerId,
-      sellerEmail: seller.email,
-      sellerPhone: '',
       year: parseInt(listingForm.value.year),
-      mileage: listingForm.value.mileage
-        ? parseInt(listingForm.value.mileage)
+      price: parseInt(listingForm.value.price),
+      type: 'venta',
+      category: listingForm.value.category,
+      transmission: listingForm.value.transmission,
+      fuel: listingForm.value.fuel,
+      mileageKm: listingForm.value.mileageKm
+        ? parseInt(listingForm.value.mileageKm)
         : null,
-      type: listingForm.value.type,
+      cityName: listingForm.value.cityName,
+      sellerId: 'u-seller-001',
+      sellerName: 'Carlos Méndez',
+      sellerEmail: 'carlos.mendez@email.com',
+      sellerPhone: '55 8765 4321',
+      coverImage: '',
       status: listingForm.value.status,
-      views: 0,
-      messages: 0,
+      color: listingForm.value.color,
       description: listingForm.value.description,
       features: features,
-      imageIcon: listingForm.value.imageIcon,
+      views: 0,
+      messages: 0,
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     };
     listings.value.unshift(newListing);
     alert(`Anuncio ${listingForm.value.title} creado correctamente`);

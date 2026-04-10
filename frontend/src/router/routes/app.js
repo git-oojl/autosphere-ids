@@ -65,7 +65,7 @@ export default [
         meta: { requiresAuth: true },
       },
 
-     // ── CITAS (unificadas comprador + vendedor) ───────────────────────────
+      // ── CITAS (unificadas comprador + vendedor) ───────────────────────────
 
       // "Mis citas" en el menú desplegable lleva aquí (vista del comprador)
       {
@@ -77,7 +77,8 @@ export default [
       {
         path: 'cuenta/citas/:id',
         name: 'buyer-appointment-detail',
-        component: () => import('../../views/buyer/appointment-detail/index.vue'),
+        component: () =>
+          import('../../views/buyer/appointment-detail/index.vue'),
         meta: { requiresAuth: true },
       },
 
@@ -85,7 +86,8 @@ export default [
       {
         path: 'cuenta/citas-vendedor/:id',
         name: 'seller-appointment-detail',
-        component: () => import('../../views/seller/appointment-detail/index.vue'),
+        component: () =>
+          import('../../views/seller/appointment-detail/index.vue'),
         meta: { requiresAuth: true },
       },
 
@@ -94,7 +96,8 @@ export default [
       {
         path: 'cuenta/mis-citas',
         name: 'my-appointments',
-        component: () => import('../../views/appointments/gestion-citas/index.vue'),
+        component: () =>
+          import('../../views/appointments/gestion-citas/index.vue'),
         meta: { requiresAuth: true },
       },
 
@@ -102,12 +105,11 @@ export default [
       {
         path: 'cuenta/mis-citas/:id',
         name: 'my-appointments-with-id',
-        component: () => import('../../views/appointments/gestion-citas/index.vue'),
+        component: () =>
+          import('../../views/appointments/gestion-citas/index.vue'),
         meta: { requiresAuth: true },
         props: true,
       },
-
-
 
       // ── PUBLICACIONES (vendedor) ──────────────────────────────────────────
       // "Mis publicaciones" en el menú desplegable lleva aquí.

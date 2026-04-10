@@ -3,42 +3,119 @@
     {
       "id": "sp-001",
       "userId": "u-seller-002",
+      "userName": "Carlos Méndez",
+      "userEmail": "carlos.mendez@email.com",
       "reason": "Incumplimiento de políticas",
+      "description": "El usuario publicó contenido que viola las políticas de la plataforma",
       "status": "active",
-      "createdAt": "2026-02-20",
-      "expiresAt": "2026-03-20"
+      "duration": "30 días",
+      "suspensionDate": "2026-02-20",
+      "expiresAt": "2026-03-20",
+      "reinstatementDate": null
     },
     {
       "id": "sp-002",
       "userId": "u-seller-003",
+      "userName": "Ana Ramírez",
+      "userEmail": "ana.ramirez@email.com",
       "reason": "Actividad sospechosa",
+      "description": "Se detectaron patrones inusuales en sus publicaciones",
       "status": "active",
-      "createdAt": "2026-02-25",
-      "expiresAt": "2026-03-25"
+      "duration": "30 días",
+      "suspensionDate": "2026-02-25",
+      "expiresAt": "2026-03-25",
+      "reinstatementDate": null
     },
     {
       "id": "sp-003",
       "userId": "u-seller-004",
+      "userName": "Luis Fernández",
+      "userEmail": "luis.fernandez@email.com",
       "reason": "Repetidas quejas de clientes",
+      "description": "Múltiples reportes por mal servicio",
       "status": "active",
-      "createdAt": "2026-02-28",
-      "expiresAt": "2026-03-28"
+      "duration": "30 días",
+      "suspensionDate": "2026-02-28",
+      "expiresAt": "2026-03-28",
+      "reinstatementDate": null
     },
     {
       "id": "sp-004",
       "userId": "u-seller-005",
+      "userName": "Mario González",
+      "userEmail": "mario.gonzalez@email.com",
       "reason": "Venta de productos prohibidos",
+      "description": "Intento de publicar vehículos sin documentación",
       "status": "active",
-      "createdAt": "2026-03-01",
-      "expiresAt": "2026-03-31"
+      "duration": "Permanente",
+      "suspensionDate": "2026-03-01",
+      "expiresAt": null,
+      "reinstatementDate": null
     },
     {
       "id": "sp-005",
       "userId": "u-seller-006",
+      "userName": "Sofía Ramírez",
+      "userEmail": "sofia.ramirez@email.com",
       "reason": "Falsificación de información",
+      "description": "Kilometraje manipulado en el anuncio",
       "status": "active",
-      "createdAt": "2026-03-05",
-      "expiresAt": "2026-04-05"
+      "duration": "30 días",
+      "suspensionDate": "2026-03-05",
+      "expiresAt": "2026-04-05",
+      "reinstatementDate": null
+    },
+    {
+      "id": "sp-006",
+      "userId": "u-seller-007",
+      "userName": "Ricardo Castro",
+      "userEmail": "ricardo.castro@email.com",
+      "reason": "Incumplimiento de términos de servicio",
+      "description": "Publicación de contenido inapropiado",
+      "status": "expired",
+      "duration": "15 días",
+      "suspensionDate": "2026-02-15",
+      "expiresAt": "2026-03-02",
+      "reinstatementDate": "2026-03-02"
+    },
+    {
+      "id": "sp-007",
+      "userId": "u-seller-008",
+      "userName": "Gabriela Torres",
+      "userEmail": "gabriela.torres@email.com",
+      "reason": "Uso de lenguaje inapropiado",
+      "description": "Lenguaje ofensivo en mensajes a otros usuarios",
+      "status": "active",
+      "duration": "7 días",
+      "suspensionDate": "2026-03-18",
+      "expiresAt": "2026-03-25",
+      "reinstatementDate": null
+    },
+    {
+      "id": "sp-008",
+      "userId": "u-seller-009",
+      "userName": "Fernando Díaz",
+      "userEmail": "fernando.diaz@email.com",
+      "reason": "Incumplimiento de políticas de envío",
+      "description": "No entregó el vehículo en el plazo acordado",
+      "status": "pending_review",
+      "duration": "15 días",
+      "suspensionDate": "2026-03-20",
+      "expiresAt": "2026-04-04",
+      "reinstatementDate": null
+    },
+    {
+      "id": "sp-009",
+      "userId": "u-seller-010",
+      "userName": "Laura Martínez",
+      "userEmail": "laura.martinez@email.com",
+      "reason": "Incumplimiento de políticas de devolución",
+      "description": "No aceptó la devolución del vehículo en el plazo establecido",
+      "status": "active",
+      "duration": "15 días",
+      "suspensionDate": "2026-03-22",
+      "expiresAt": "2026-04-06",
+      "reinstatementDate": null
     }
   ]
 }

@@ -947,7 +947,7 @@ const menuItems = computed(() => {
     {
       label: 'Inicio',
       description: 'Volver al panel principal.',
-      route: { name: 'account-profile' },
+      route: { name: 'public-home' },
     },
   ];
 });
