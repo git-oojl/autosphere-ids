@@ -14,7 +14,7 @@
             <img
               v-if="profile.avatar"
               :src="profile.avatar"
-              :alt="profile.fullName"
+              :alt="fullName"
               class="avatar-img"
             />
             <div v-else class="avatar-placeholder">
@@ -556,6 +556,41 @@
           </ul>
         </div>
 
+        <!-- Accesos rápidos -->
+        <div class="side-card">
+          <div class="side-card-header">
+            <div class="card-icon blue">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path d="M12 3v18M3 12h18" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="card-title sm">Accesos rápidos</h3>
+              <p class="card-subtitle">Opciones disponibles según tu rol.</p>
+            </div>
+          </div>
+          <div class="quick-links">
+            <button
+              v-for="item in menuItems"
+              :key="item.label"
+              class="quick-link"
+              type="button"
+              @click="navigate(item)"
+            >
+              <div class="quick-link-text">
+                <span class="quick-link-label">{{ item.label }}</span>
+                <span class="quick-link-desc">{{ item.description }}</span>
+              </div>
+              <span class="quick-link-arrow">›</span>
+            </button>
+          </div>
+        </div>
+
         <!-- Cuenta -->
         <div class="side-card">
           <div class="side-card-header">
@@ -605,9 +640,14 @@
 
 <script setup>
 import { ref, computed, reactive, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '../../../stores/auth.js';
+
+const router = useRouter();
+const auth = useAuthStore();
 
 // ── Profile ───────────────────────────────────
-const profile = reactive({
+const defaultProfile = {
   id: 'U-00421',
   firstName: 'Carlos',
   lastName: 'Méndez',
@@ -619,6 +659,19 @@ const profile = reactive({
   avatar: 'https://i.pravatar.cc/200?img=25',
   role: 'seller',
   joinedAt: '2022-03-15',
+};
+
+const profile = reactive({
+  ...defaultProfile,
+  id: auth.user?.id ?? defaultProfile.id,
+  email: auth.user?.email ?? defaultProfile.email,
+  firstName: auth.user?.name
+    ? auth.user.name.split(' ')[0]
+    : defaultProfile.firstName,
+  lastName: auth.user?.name
+    ? auth.user.name.split(' ').slice(1).join(' ') || defaultProfile.lastName
+    : defaultProfile.lastName,
+  role: auth.primaryRole ?? defaultProfile.role,
 });
 
 const lastLogin = ref('');
@@ -636,18 +689,26 @@ const initials = computed(() =>
 
 const roleLabel = computed(
   () =>
-    ({ seller: 'Vendedor', buyer: 'Comprador', landlord: 'Arrendador' })[
-      profile.role
-    ] ?? 'Usuario'
+    ({
+      admin: 'Administrador',
+      seller: 'Vendedor',
+      buyer: 'Comprador',
+      lessor: 'Arrendador',
+    })[profile.role] ?? 'Usuario'
 );
 
 const roleBadgeClass = computed(
   () =>
     ({
+      admin: 'badge-admin',
       seller: 'badge-seller',
       buyer: 'badge-buyer',
-      landlord: 'badge-landlord',
+      lessor: 'badge-landlord',
     })[profile.role] ?? ''
+);
+
+const fullName = computed(() =>
+  [profile.firstName, profile.lastName].filter(Boolean).join(' ')
 );
 
 const joinDate = computed(() =>
@@ -801,15 +862,95 @@ function showBanner(type, message) {
   }, 5000);
 }
 
-// ── Navigation ────────────────────────────────
-//function goTo(section) {
-//const routes = { security: '/perfil/seguridad', listings: '/mis-anuncios', appointments: '/mis-citas' }
-//if (routes[section]) router.push(routes[section])
-//}
+function navigate(item) {
+  if (!item?.route) return;
+  router.push(item.route);
+}
 
-//function confirmLogout() {
-//if (confirm('¿Seguro que deseas cerrar sesión?')) router.push('/login')
-///}
+const menuItems = computed(() => {
+  if (auth.hasRole('admin')) {
+    return [
+      {
+        label: 'Moderación',
+        description: 'Revisar contenido reportado y casos pendientes.',
+        route: { name: 'admin-moderation' },
+      },
+      {
+        label: 'Usuarios',
+        description: 'Gestionar cuentas y permisos de usuarios.',
+        route: { name: 'admin-users' },
+      },
+      {
+        label: 'Reportes',
+        description: 'Ver denuncias, métricas y seguimiento.',
+        route: { name: 'admin-reports' },
+      },
+    ];
+  }
+
+  if (auth.hasRole('seller')) {
+    return [
+      {
+        label: 'Citas',
+        description: 'Ver y administrar tus citas.',
+        route: { name: 'seller-appointments' },
+      },
+      {
+        label: 'Publicaciones',
+        description: 'Revisar tus anuncios publicados.',
+        route: { name: 'seller-listings' },
+      },
+      {
+        label: 'Publicar anuncio nuevo',
+        description: 'Crear un nuevo anuncio para vender.',
+        route: { name: 'seller-create-listing' },
+      },
+    ];
+  }
+
+  if (auth.hasRole('buyer')) {
+    return [
+      {
+        label: 'Citas',
+        description: 'Ver y administrar tus citas.',
+        route: { name: 'buyer-appointments' },
+      },
+      {
+        label: 'Guardados',
+        description: 'Ver tus vehículos guardados.',
+        route: { name: 'buyer-saved-vehicles' },
+      },
+      {
+        label: 'Historial',
+        description: 'Revisar tus búsquedas recientes.',
+        route: { name: 'buyer-search-history' },
+      },
+    ];
+  }
+
+  if (auth.hasRole('lessor')) {
+    return [
+      {
+        label: 'Rentas',
+        description: 'Ver tus rentas activas.',
+        route: { name: 'lessor-rentals' },
+      },
+      {
+        label: 'Registrar renta',
+        description: 'Agregar una nueva renta.',
+        route: { name: 'lessor-register-rental' },
+      },
+    ];
+  }
+
+  return [
+    {
+      label: 'Inicio',
+      description: 'Volver al panel principal.',
+      route: { name: 'account-profile' },
+    },
+  ];
+});
 
 // ── States data ───────────────────────────────
 const mexicanStates = [

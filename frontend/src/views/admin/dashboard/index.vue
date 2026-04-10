@@ -1,569 +1,419 @@
 <template>
   <div class="admin-dashboard">
-    <!-- DASHBOARD CONTENT -->
-    <div class="dashboard-wrapper">
-      <div class="dashboard-container">
-        <!-- HEADER -->
-        <div class="dashboard-header">
-          <div>
-            <h1 class="dashboard-title">Panel de Administración</h1>
-            <p class="dashboard-subtitle">
-              Gestiona usuarios, reportes y configuración del sistema
+    <br /><br /><br /><br />
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="header-container">
+        <div>
+          <h1 class="page-title">Panel de Administración</h1>
+          <p class="page-subtitle">
+            Gestiona todos los aspectos de la plataforma AutoSphere
+          </p>
+        </div>
+        <div class="header-date">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+            <rect
+              x="3"
+              y="4"
+              width="18"
+              height="18"
+              rx="2"
+              ry="2"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <line
+              x1="8"
+              y1="2"
+              x2="8"
+              y2="6"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <line
+              x1="16"
+              y1="2"
+              x2="16"
+              y2="6"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <line
+              x1="3"
+              y1="10"
+              x2="21"
+              y2="10"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+          </svg>
+          <span>{{ currentDate }}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Overview Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12Z"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <path
+              d="M20 21V19C20 16.8 18.2 15 16 15H8C5.8 15 4 16.8 4 19V21"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-number">{{ stats.totalUsers }}</span>
+          <span class="stat-title">Usuarios Totales</span>
+        </div>
+        <div class="stat-change positive">+12%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M20 7H4C2.9 7 2 7.9 2 9V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V9C22 7.9 21.1 7 20 7Z"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <path
+              d="M16 21V5C16 3.9 15.1 3 14 3H10C8.9 3 8 3.9 8 5V21"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-number">{{ stats.totalListings }}</span>
+          <span class="stat-title">Anuncios Activos</span>
+        </div>
+        <div class="stat-change positive">+8%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <rect
+              x="3"
+              y="4"
+              width="18"
+              height="18"
+              rx="2"
+              ry="2"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <line
+              x1="8"
+              y1="2"
+              x2="8"
+              y2="6"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <line
+              x1="16"
+              y1="2"
+              x2="16"
+              y2="6"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+            <circle cx="12" cy="14" r="1" fill="currentColor" />
+            <circle cx="16" cy="14" r="1" fill="currentColor" />
+            <circle cx="8" cy="14" r="1" fill="currentColor" />
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-number">{{ stats.totalAppointments }}</span>
+          <span class="stat-title">Citas Programadas</span>
+        </div>
+        <div class="stat-change positive">+5%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon orange">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M12 8V12M12 16H12.01M3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12Z"
+              stroke="currentColor"
+              stroke-width="2"
+            />
+          </svg>
+        </div>
+        <div class="stat-content">
+          <span class="stat-number">{{ stats.pendingReports }}</span>
+          <span class="stat-title">Reportes Pendientes</span>
+        </div>
+        <div class="stat-change negative">+3</div>
+      </div>
+    </div>
+
+    <!-- Main Sections Grid -->
+    <div class="sections-container">
+      <h2 class="sections-title">Gestión de la Plataforma</h2>
+
+      <!-- SECCIÓN 1: Gestión / CRUD -->
+      <div class="section-group">
+        <div class="group-header">
+          <h3 class="group-title">Gestión / CRUD</h3>
+          <span class="group-description">Administración de datos</span>
+        </div>
+        <div class="cards-grid">
+          <!-- Usuarios -->
+          <div class="module-card" @click="goToUsers">
+            <div class="module-icon gradient-cyan">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M17 21V19C17 16.8 15.2 15 13 15H5C2.8 15 1 16.8 1 19V21"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <circle
+                  cx="9"
+                  cy="7"
+                  r="4"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path
+                  d="M23 21V19C22.9 17 21.4 15.3 19 15"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path
+                  d="M16 3.5C18.1 4 19.5 5.8 19.5 8C19.5 10.2 18.1 12 16 12.5"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <h4 class="module-title">Usuarios</h4>
+            <p class="module-desc">
+              Gestiona compradores, vendedores y arrendadores
             </p>
+            <div class="module-badge">{{ stats.totalUsers }} usuarios</div>
+            <span class="module-action">Gestionar →</span>
           </div>
-          <div class="header-actions">
-            <button class="btn-secondary" @click="exportData">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
+
+          <!-- Anuncios / Vehículos -->
+          <div class="module-card" @click="goToListings">
+            <div class="module-icon gradient-green">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
                 <path
-                  d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"
-                />
-              </svg>
-              Exportar
-            </button>
-            <button class="btn-primary" @click="openSettings">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <circle cx="12" cy="12" r="3" />
-                <path
-                  d="M12 1v6m0 6v6M5.6 5.6l4.2 4.2m4.2 4.2l4.2 4.2M1 12h6m6 0h6M5.6 18.4l4.2-4.2m4.2-4.2l4.2-4.2"
-                />
-              </svg>
-              Configuración
-            </button>
-          </div>
-        </div>
-
-        <!-- OVERVIEW TAB -->
-        <div v-if="activeTab === 'overview'" class="tab-content">
-          <!-- STATS CARDS -->
-          <div class="stats-cards">
-            <div class="stat-card">
-              <div class="stat-header">
-                <div class="stat-icon users">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"
-                    />
-                  </svg>
-                </div>
-                <h2 class="stat-title">Total Usuarios</h2>
-              </div>
-              <p class="stat-value">{{ stats.totalUsers }}</p>
-              <div class="stat-footer">
-                <div class="stat-change positive">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path d="M12 19V5M5 12L12 5L19 12" />
-                  </svg>
-                  <span>+{{ stats.newUsers }} esta semana</span>
-                </div>
-              </div>
-            </div>
-
-            <div class="stat-card">
-              <div class="stat-header">
-                <div class="stat-icon buyers">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
-                  </svg>
-                </div>
-                <h2 class="stat-title">Compradores</h2>
-              </div>
-              <p class="stat-value">{{ stats.buyers }}</p>
-              <div class="stat-footer">
-                <span class="stat-percent"
-                  >{{ ((stats.buyers / stats.totalUsers) * 100).toFixed(0) }}%
-                  del total</span
-                >
-              </div>
-            </div>
-
-            <div class="stat-card">
-              <div class="stat-header">
-                <div class="stat-icon sellers">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <path
-                      d="M5 17H4a2 2 0 01-2-2V9.5M7 17a2 2 0 100-4M17 17a2 2 0 100-4"
-                    />
-                  </svg>
-                </div>
-                <h2 class="stat-title">Vendedores</h2>
-              </div>
-              <p class="stat-value">{{ stats.sellers }}</p>
-              <div class="stat-footer">
-                <span class="stat-percent"
-                  >{{ ((stats.sellers / stats.totalUsers) * 100).toFixed(0) }}%
-                  del total</span
-                >
-              </div>
-            </div>
-
-            <div class="stat-card highlight">
-              <div class="stat-header">
-                <div class="stat-icon reports">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <path d="M12 8v4M12 16h.01" />
-                  </svg>
-                </div>
-                <h2 class="stat-title">Reportes Pendientes</h2>
-              </div>
-              <p class="stat-value">{{ stats.pendingReports }}</p>
-              <button class="btn-card" @click="activeTab = 'reports'">
-                Ver Reportes
-              </button>
-            </div>
-          </div>
-
-          <!-- CHARTS ROW -->
-          <div class="charts-row">
-            <div class="chart-card">
-              <div class="chart-header">
-                <h3>Usuarios por Tipo</h3>
-                <span class="period">Último mes</span>
-              </div>
-              <div class="chart-content">
-                <div class="bar-chart">
-                  <div class="bar-item">
-                    <div class="bar-label">Compradores</div>
-                    <div class="bar-container">
-                      <div
-                        class="bar-fill buyers"
-                        :style="{
-                          width: (stats.buyers / stats.totalUsers) * 100 + '%',
-                        }"
-                      ></div>
-                      <span class="bar-value">{{ stats.buyers }}</span>
-                    </div>
-                  </div>
-                  <div class="bar-item">
-                    <div class="bar-label">Vendedores</div>
-                    <div class="bar-container">
-                      <div
-                        class="bar-fill sellers"
-                        :style="{
-                          width: (stats.sellers / stats.totalUsers) * 100 + '%',
-                        }"
-                      ></div>
-                      <span class="bar-value">{{ stats.sellers }}</span>
-                    </div>
-                  </div>
-                  <div class="bar-item">
-                    <div class="bar-label">Arrendadores</div>
-                    <div class="bar-container">
-                      <div
-                        class="bar-fill landlords"
-                        :style="{
-                          width:
-                            (stats.landlords / stats.totalUsers) * 100 + '%',
-                        }"
-                      ></div>
-                      <span class="bar-value">{{ stats.landlords }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="chart-card">
-              <div class="chart-header">
-                <h3>Reportes por Severidad</h3>
-                <span class="period">Hoy</span>
-              </div>
-              <div class="chart-content">
-                <div class="severity-grid">
-                  <div class="severity-item high">
-                    <div class="severity-icon">
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 8v4M12 16h.01" />
-                      </svg>
-                    </div>
-                    <div class="severity-info">
-                      <span class="severity-label">Alta</span>
-                      <span class="severity-count">{{
-                        reportsBySeverity.high
-                      }}</span>
-                    </div>
-                  </div>
-                  <div class="severity-item medium">
-                    <div class="severity-icon">
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <path
-                          d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"
-                        />
-                        <path d="M12 9v4M12 17h.01" />
-                      </svg>
-                    </div>
-                    <div class="severity-info">
-                      <span class="severity-label">Media</span>
-                      <span class="severity-count">{{
-                        reportsBySeverity.medium
-                      }}</span>
-                    </div>
-                  </div>
-                  <div class="severity-item low">
-                    <div class="severity-icon">
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 16v-4M12 8h.01" />
-                      </svg>
-                    </div>
-                    <div class="severity-info">
-                      <span class="severity-label">Baja</span>
-                      <span class="severity-count">{{
-                        reportsBySeverity.low
-                      }}</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- USERS TAB -->
-        <div v-if="activeTab === 'users'" class="tab-content">
-          <div class="section">
-            <div class="section-header">
-              <div class="section-title-row">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
+                  d="M20 7H4C2.9 7 2 7.9 2 9V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V9C22 7.9 21.1 7 20 7Z"
                   stroke="currentColor"
                   stroke-width="2"
-                >
-                  <path
-                    d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"
-                  />
-                </svg>
-                <h3 class="section-title">Gestión de Usuarios</h3>
-              </div>
-              <div class="section-actions">
-                <div class="search-box">
-                  <svg
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  >
-                    <circle cx="11" cy="11" r="8" />
-                    <path d="M21 21l-4.35-4.35" />
-                  </svg>
-                  <input
-                    v-model="userSearchQuery"
-                    type="text"
-                    placeholder="Buscar usuarios..."
-                  />
-                </div>
-                <select v-model="userRoleFilter" class="filter-select">
-                  <option value="all">Todos</option>
-                  <option value="buyer">Compradores</option>
-                  <option value="seller">Vendedores</option>
-                  <option value="landlord">Arrendadores</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="users-table-container">
-              <table class="users-table">
-                <thead>
-                  <tr>
-                    <th>Usuario</th>
-                    <th>Email</th>
-                    <th>Rol</th>
-                    <th>Estado</th>
-                    <th>Fecha Registro</th>
-                    <th>Anuncios</th>
-                    <th>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="user in filteredUsers" :key="user.id">
-                    <td>
-                      <div class="user-cell">
-                        <div class="user-avatar-small">
-                          <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                          >
-                            <path
-                              d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"
-                            />
-                          </svg>
-                        </div>
-                        <div>
-                          <div class="user-name-cell">{{ user.name }}</div>
-                          <div class="user-id">ID: {{ user.id }}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td>{{ user.email }}</td>
-                    <td>
-                      <span class="role-badge" :class="user.role">
-                        {{ roleLabels[user.role] }}
-                      </span>
-                    </td>
-                    <td>
-                      <span class="status-badge" :class="user.status">
-                        {{ statusLabels[user.status] }}
-                      </span>
-                    </td>
-                    <td>{{ formatDate(user.registeredAt) }}</td>
-                    <td>
-                      <span class="listings-count">{{
-                        user.listingsCount || 0
-                      }}</span>
-                    </td>
-                    <td>
-                      <div class="table-actions">
-                        <button
-                          class="btn-icon"
-                          title="Ver detalles"
-                          @click="viewUser(user.id)"
-                        >
-                          <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                          >
-                            <path
-                              d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
-                            />
-                            <circle cx="12" cy="12" r="3" />
-                          </svg>
-                        </button>
-                        <button
-                          class="btn-icon"
-                          title="Editar"
-                          @click="editUser(user.id)"
-                        >
-                          <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                          >
-                            <path
-                              d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"
-                            />
-                            <path
-                              d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"
-                            />
-                          </svg>
-                        </button>
-                        <button
-                          class="btn-icon danger"
-                          title="Suspender"
-                          @click="suspendUser(user.id)"
-                        >
-                          <svg
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                          >
-                            <circle cx="12" cy="12" r="10" />
-                            <path d="M4.93 4.93l14.14 14.14" />
-                          </svg>
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-
-        <!-- REPORTS TAB -->
-        <div v-if="activeTab === 'reports'" class="tab-content">
-          <div class="section">
-            <div class="section-header">
-              <div class="section-title-row">
-                <svg
-                  viewBox="0 0 24 24"
-                  fill="none"
+                />
+                <path
+                  d="M16 21V5C16 3.9 15.1 3 14 3H10C8.9 3 8 3.9 8 5V21"
                   stroke="currentColor"
                   stroke-width="2"
-                >
-                  <circle cx="12" cy="12" r="10" />
-                  <path d="M12 8v4M12 16h.01" />
-                </svg>
-                <h3 class="section-title">Reportes y Quejas</h3>
-              </div>
-              <div class="section-actions">
-                <select v-model="reportStatusFilter" class="filter-select">
-                  <option value="all">Todos</option>
-                  <option value="pending">Pendientes</option>
-                  <option value="reviewing">En Revisión</option>
-                  <option value="resolved">Resueltos</option>
-                </select>
-                <select v-model="reportSeverityFilter" class="filter-select">
-                  <option value="all">Todas las Severidades</option>
-                  <option value="high">Alta</option>
-                  <option value="medium">Media</option>
-                  <option value="low">Baja</option>
-                </select>
-              </div>
+                />
+              </svg>
             </div>
+            <h4 class="module-title">Anuncios / Vehículos</h4>
+            <p class="module-desc">CRUD completo de vehículos publicados</p>
+            <div class="module-badge">{{ stats.totalListings }} activos</div>
+            <span class="module-action">Gestionar →</span>
+          </div>
 
-            <div class="reports-grid">
-              <div
-                v-for="report in filteredReports"
-                :key="report.id"
-                class="report-card"
-                :class="report.severity"
-              >
-                <div class="report-header">
-                  <div class="report-severity-badge" :class="report.severity">
-                    {{ severityLabels[report.severity] }}
-                  </div>
-                  <div class="report-status-badge" :class="report.status">
-                    {{ reportStatusLabels[report.status] }}
-                  </div>
-                </div>
-
-                <div class="report-content">
-                  <h4 class="report-title">{{ report.title }}</h4>
-                  <p class="report-description">{{ report.description }}</p>
-
-                  <div class="report-meta">
-                    <div class="meta-item">
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <path
-                          d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2M12 11a4 4 0 100-8 4 4 0 000 8z"
-                        />
-                      </svg>
-                      <span>{{ report.reporterName }}</span>
-                    </div>
-                    <div class="meta-item">
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                      >
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 6v6l4 2" />
-                      </svg>
-                      <span>{{ formatDate(report.createdAt) }}</span>
-                    </div>
-                  </div>
-
-                  <div v-if="report.subjectType" class="report-subject">
-                    <span class="subject-label">{{ report.subjectType }}:</span>
-                    <span class="subject-value">{{ report.subjectName }}</span>
-                  </div>
-                </div>
-
-                <div class="report-actions">
-                  <button
-                    class="btn-action view"
-                    @click="viewReport(report.id)"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                      <circle cx="12" cy="12" r="3" />
-                    </svg>
-                    Ver Detalles
-                  </button>
-                  <button
-                    v-if="report.status !== 'resolved'"
-                    class="btn-action resolve"
-                    @click="resolveReport(report.id)"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path d="M22 11.08V12a10 10 0 11-5.93-9.14" />
-                      <path d="M22 4L12 14.01l-3-3" />
-                    </svg>
-                    Resolver
-                  </button>
-                  <button
-                    class="btn-action delete"
-                    @click="deleteReport(report.id)"
-                  >
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      stroke-width="2"
-                    >
-                      <path
-                        d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
-                      />
-                    </svg>
-                    Eliminar
-                  </button>
-                </div>
-              </div>
+          <!-- Citas -->
+          <div class="module-card" @click="goToAppointments">
+            <div class="module-icon gradient-purple">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <rect
+                  x="3"
+                  y="4"
+                  width="18"
+                  height="18"
+                  rx="2"
+                  ry="2"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <line
+                  x1="8"
+                  y1="2"
+                  x2="8"
+                  y2="6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <line
+                  x1="16"
+                  y1="2"
+                  x2="16"
+                  y2="6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path d="M3 10H21" stroke="currentColor" stroke-width="2" />
+                <circle cx="12" cy="15" r="1" fill="currentColor" />
+                <circle cx="16" cy="15" r="1" fill="currentColor" />
+                <circle cx="8" cy="15" r="1" fill="currentColor" />
+              </svg>
             </div>
+            <h4 class="module-title">Citas</h4>
+            <p class="module-desc">Gestiona todas las citas agendadas</p>
+            <div class="module-badge">
+              {{ stats.totalAppointments }} programadas
+            </div>
+            <span class="module-action">Gestionar →</span>
+          </div>
+
+          <!-- Catálogos -->
+          <div class="module-card" @click="goToCatalog">
+            <div class="module-icon gradient-orange">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M4 6H20V18H4V6Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path d="M8 10H16" stroke="currentColor" stroke-width="2" />
+                <path d="M8 14H13" stroke="currentColor" stroke-width="2" />
+                <circle cx="17" cy="14" r="1" fill="currentColor" />
+                <circle cx="17" cy="10" r="1" fill="currentColor" />
+              </svg>
+            </div>
+            <h4 class="module-title">Catálogos</h4>
+            <p class="module-desc">Gestiona marcas, modelos y ubicaciones</p>
+            <div class="module-badge">12 marcas | 45 modelos</div>
+            <span class="module-action">Gestionar →</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: Moderación -->
+      <div class="section-group">
+        <div class="group-header">
+          <h3 class="group-title">Moderación</h3>
+          <span class="group-description">Control de calidad y seguridad</span>
+        </div>
+        <div class="cards-grid">
+          <!-- Aprobar / Rechazar Anuncios (Moderación) -->
+          <div class="module-card" @click="goToModeration">
+            <div class="module-icon gradient-yellow">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path
+                  d="M9 12L11 14L15 10"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <h4 class="module-title">Aprobar / Rechazar Anuncios</h4>
+            <p class="module-desc">Revisa y modera anuncios pendientes</p>
+            <div class="module-badge warning">
+              {{ stats.pendingModeration }} pendientes
+            </div>
+            <span class="module-action">Moderar →</span>
+          </div>
+
+          <!-- Reportes / Denuncias -->
+          <div class="module-card" @click="goToReports">
+            <div class="module-icon gradient-red">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 8V12M12 16H12.01M3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+            <h4 class="module-title">Reportes / Denuncias</h4>
+            <p class="module-desc">Gestiona quejas y reportes de usuarios</p>
+            <div class="module-badge danger">
+              {{ stats.pendingReports }} pendientes
+            </div>
+            <span class="module-action">Revisar →</span>
+          </div>
+
+          <!-- Bloqueos / Suspensiones -->
+          <div class="module-card" @click="goToSuspensions">
+            <div class="module-icon gradient-dark">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M18 8C18 4.68629 15.3137 2 12 2C8.68629 2 6 4.68629 6 8V11H18V8Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path
+                  d="M4 14C4 12.8954 4.89543 12 6 12H18C19.1046 12 20 12.8954 20 14V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V14Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <circle cx="12" cy="17" r="1" fill="currentColor" />
+              </svg>
+            </div>
+            <h4 class="module-title">Bloqueos / Suspensiones</h4>
+            <p class="module-desc">
+              Gestiona usuarios bloqueados y suspendidos
+            </p>
+            <div class="module-badge danger">
+              {{ stats.suspendedUsers }} suspendidos
+            </div>
+            <span class="module-action">Gestionar →</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity Section -->
+    <div class="recent-activity">
+      <div class="recent-header">
+        <h3>Actividad Reciente</h3>
+        <button class="view-all-btn">Ver todo →</button>
+      </div>
+      <div class="activity-list">
+        <div class="activity-item">
+          <div class="activity-icon green">✓</div>
+          <div class="activity-content">
+            <p>
+              <strong>Nuevo usuario registrado</strong> - Ana García se unió
+              como Compradora
+            </p>
+            <span class="activity-time">Hace 5 minutos</span>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon blue">📢</div>
+          <div class="activity-content">
+            <p>
+              <strong>Anuncio pendiente</strong> - Porsche 911 espera moderación
+            </p>
+            <span class="activity-time">Hace 15 minutos</span>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon yellow">⚠️</div>
+          <div class="activity-content">
+            <p>
+              <strong>Nuevo reporte</strong> - Denuncia de alta severidad
+              recibida
+            </p>
+            <span class="activity-time">Hace 1 hora</span>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-icon red">⛔</div>
+          <div class="activity-content">
+            <p>
+              <strong>Suspensión aplicada</strong> - Usuario Carlos R.
+              suspendido por 30 días
+            </p>
+            <span class="activity-time">Hace 2 horas</span>
           </div>
         </div>
       </div>
@@ -572,250 +422,61 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
 
-const activeTab = ref('overview');
+// Initialize router
+const router = useRouter();
 
-const userSearchQuery = ref('');
-const userRoleFilter = ref('all');
-const reportStatusFilter = ref('all');
-const reportSeverityFilter = ref('all');
-
-const roleLabels = {
-  buyer: 'Comprador',
-  seller: 'Vendedor',
-  landlord: 'Arrendador',
-};
-const statusLabels = {
-  active: 'Activo',
-  suspended: 'Suspendido',
-  inactive: 'Inactivo',
-};
-const severityLabels = { high: 'Alta', medium: 'Media', low: 'Baja' };
-const reportStatusLabels = {
-  pending: 'Pendiente',
-  reviewing: 'En Revisión',
-  resolved: 'Resuelto',
-};
-
+// Stats data
 const stats = ref({
   totalUsers: 1247,
-  newUsers: 23,
-  buyers: 856,
-  sellers: 284,
-  landlords: 107,
+  totalListings: 342,
+  totalAppointments: 156,
   pendingReports: 12,
-});
-const reportsBySeverity = ref({ high: 3, medium: 5, low: 4 });
-
-const users = ref([
-  {
-    id: 'U001',
-    name: 'Ana García Martínez',
-    email: 'ana.garcia@email.com',
-    role: 'buyer',
-    status: 'active',
-    registeredAt: '2024-01-15',
-    listingsCount: 0,
-  },
-  {
-    id: 'U002',
-    name: 'Carlos Méndez López',
-    email: 'carlos.mendez@email.com',
-    role: 'seller',
-    status: 'active',
-    registeredAt: '2024-01-20',
-    listingsCount: 12,
-  },
-  {
-    id: 'U003',
-    name: 'María Rodríguez Soto',
-    email: 'maria.rodriguez@email.com',
-    role: 'buyer',
-    status: 'active',
-    registeredAt: '2024-02-05',
-    listingsCount: 0,
-  },
-  {
-    id: 'U004',
-    name: 'Juan Pérez Ruiz',
-    email: 'juan.perez@email.com',
-    role: 'seller',
-    status: 'active',
-    registeredAt: '2024-02-10',
-    listingsCount: 8,
-  },
-  {
-    id: 'U005',
-    name: 'Laura González',
-    email: 'laura.gonzalez@email.com',
-    role: 'landlord',
-    status: 'active',
-    registeredAt: '2024-02-15',
-    listingsCount: 5,
-  },
-  {
-    id: 'U006',
-    name: 'Roberto Sánchez',
-    email: 'roberto.sanchez@email.com',
-    role: 'buyer',
-    status: 'suspended',
-    registeredAt: '2024-03-01',
-    listingsCount: 0,
-  },
-  {
-    id: 'U007',
-    name: 'Patricia Torres',
-    email: 'patricia.torres@email.com',
-    role: 'seller',
-    status: 'active',
-    registeredAt: '2024-03-05',
-    listingsCount: 15,
-  },
-  {
-    id: 'U008',
-    name: 'Diego Ramírez',
-    email: 'diego.ramirez@email.com',
-    role: 'landlord',
-    status: 'active',
-    registeredAt: '2024-03-10',
-    listingsCount: 3,
-  },
-]);
-
-const reports = ref([
-  {
-    id: 'R001',
-    title: 'Vehículo no corresponde a las fotos',
-    description:
-      'El vehículo mostrado en las fotografías no corresponde al vehículo real. Solicito revisión y posible sanción al vendedor.',
-    severity: 'high',
-    status: 'pending',
-    reporterName: 'Ana García',
-    createdAt: '2024-03-20',
-    subjectType: 'Anuncio',
-    subjectName: 'Mazda CX-5 2021',
-  },
-  {
-    id: 'R002',
-    title: 'Vendedor no responde mensajes',
-    description:
-      'He intentado contactar al vendedor múltiples veces sin obtener respuesta. Han pasado más de 5 días.',
-    severity: 'medium',
-    status: 'reviewing',
-    reporterName: 'Carlos López',
-    createdAt: '2024-03-19',
-    subjectType: 'Usuario',
-    subjectName: 'Juan Pérez Ruiz',
-  },
-  {
-    id: 'R003',
-    title: 'Precio excesivamente alto',
-    description:
-      'El precio publicado es significativamente superior al valor de mercado del vehículo.',
-    severity: 'low',
-    status: 'resolved',
-    reporterName: 'María Rodríguez',
-    createdAt: '2024-03-18',
-    subjectType: 'Anuncio',
-    subjectName: 'Toyota Corolla 2020',
-  },
-  {
-    id: 'R004',
-    title: 'Posible fraude - solicita anticipo',
-    description:
-      'El vendedor solicita un anticipo del 50% antes de permitir ver el vehículo. Comportamiento sospechoso.',
-    severity: 'high',
-    status: 'pending',
-    reporterName: 'Roberto Sánchez',
-    createdAt: '2024-03-21',
-    subjectType: 'Usuario',
-    subjectName: 'Vendedor Desconocido',
-  },
-  {
-    id: 'R005',
-    title: 'Información de kilometraje falsa',
-    description:
-      'El odómetro del vehículo muestra más kilómetros que los anunciados en la publicación.',
-    severity: 'high',
-    status: 'reviewing',
-    reporterName: 'Laura González',
-    createdAt: '2024-03-20',
-    subjectType: 'Anuncio',
-    subjectName: 'Ford Ranger 2022',
-  },
-  {
-    id: 'R006',
-    title: 'Lenguaje inapropiado en mensajes',
-    description:
-      'El usuario utiliza lenguaje ofensivo e inapropiado en las conversaciones.',
-    severity: 'medium',
-    status: 'pending',
-    reporterName: 'Patricia Torres',
-    createdAt: '2024-03-19',
-    subjectType: 'Usuario',
-    subjectName: 'Comprador Anónimo',
-  },
-]);
-
-const filteredUsers = computed(() => {
-  let filtered = users.value;
-  if (userRoleFilter.value !== 'all')
-    filtered = filtered.filter((u) => u.role === userRoleFilter.value);
-  if (userSearchQuery.value) {
-    const query = userSearchQuery.value.toLowerCase();
-    filtered = filtered.filter(
-      (u) =>
-        u.name.toLowerCase().includes(query) ||
-        u.email.toLowerCase().includes(query) ||
-        u.id.toLowerCase().includes(query)
-    );
-  }
-  return filtered;
+  pendingModeration: 8,
+  suspendedUsers: 7,
 });
 
-const filteredReports = computed(() => {
-  let filtered = reports.value;
-  if (reportStatusFilter.value !== 'all')
-    filtered = filtered.filter((r) => r.status === reportStatusFilter.value);
-  if (reportSeverityFilter.value !== 'all')
-    filtered = filtered.filter(
-      (r) => r.severity === reportSeverityFilter.value
-    );
-  return filtered;
-});
+// Current date
+const currentDate = ref('');
 
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('es-MX', {
+onMounted(() => {
+  const now = new Date();
+  currentDate.value = now.toLocaleDateString('es-MX', {
+    weekday: 'long',
     year: 'numeric',
-    month: 'short',
+    month: 'long',
     day: 'numeric',
   });
+});
+
+const goToUsers = () => {
+  router.push('/admin/usuarios');
 };
 
-const exportData = () => alert('Exportando datos...');
-const openSettings = () => alert('Abriendo configuración...');
-const viewUser = (id) => alert(`Ver detalles del usuario: ${id}`);
-const editUser = (id) => alert(`Editar usuario: ${id}`);
-const suspendUser = (id) => {
-  if (confirm('¿Está seguro de suspender este usuario?'))
-    alert(`Usuario ${id} suspendido`);
+const goToListings = () => {
+  router.push('/admin/vehiculos');
 };
-const viewReport = (id) => alert(`Ver detalles del reporte: ${id}`);
-const resolveReport = (id) => {
-  if (confirm('¿Marcar este reporte como resuelto?')) {
-    const report = reports.value.find((r) => r.id === id);
-    if (report) report.status = 'resolved';
-    alert(`Reporte ${id} resuelto`);
-  }
+
+const goToAppointments = () => {
+  router.push('/admin/citas');
 };
-const deleteReport = (id) => {
-  if (confirm('¿Está seguro de eliminar este reporte?')) {
-    const index = reports.value.findIndex((r) => r.id === id);
-    if (index !== -1) reports.value.splice(index, 1);
-    alert(`Reporte ${id} eliminado`);
-  }
+
+const goToCatalog = () => {
+  router.push('/admin/catalogo');
+};
+
+const goToModeration = () => {
+  router.push('/admin/moderacion');
+};
+
+const goToReports = () => {
+  router.push('/admin/reportes');
+};
+
+const goToSuspensions = () => {
+  router.push('/admin/suspensiones');
 };
 </script>
 

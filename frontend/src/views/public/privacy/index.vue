@@ -742,12 +742,12 @@ import { ref, onMounted, onUnmounted } from 'vue';
 const activeSection = ref('uso-plataforma');
 
 const sections = [
-  { id: 'uso-plataforma', title: 'Uso de la Plataforma', icon: '🖥️' },
-  { id: 'compra-venta', title: 'Compra y Venta', icon: '🚗' },
-  { id: 'renta-vehiculos', title: 'Renta de Vehículos', icon: '📅' },
-  { id: 'politica-pagos', title: 'Pagos y Datos Financieros', icon: '💳' },
-  { id: 'privacidad-datos', title: 'Privacidad y Datos', icon: '🔒' },
-  { id: 'responsabilidades', title: 'Responsabilidades', icon: '⚖️' },
+  { id: 'uso-plataforma', title: 'Uso de la Plataforma' },
+  { id: 'compra-venta', title: 'Compra y Venta' },
+  { id: 'renta-vehiculos', title: 'Renta de Vehículos' },
+  { id: 'politica-pagos', title: 'Pagos y Datos Financieros' },
+  { id: 'privacidad-datos', title: 'Privacidad y Datos' },
+  { id: 'responsabilidades', title: 'Responsabilidades' },
 ];
 
 const scrollTo = (id) => {

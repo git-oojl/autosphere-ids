@@ -113,7 +113,7 @@ body {
 
 /* VALUES SECTION */
 .values-section {
-  padding: 80px 40px;
+  padding: 10px 40px;
   background: white;
 }
 .section-title {
@@ -241,7 +241,7 @@ body {
 
 /* TEAM SECTION */
 .team-section {
-  padding: 10px 50px;
+  padding: 10px 10px;
   background: white;
 }
 .team-subtitle {
@@ -252,13 +252,13 @@ body {
   margin-top: -40px;
 }
 .team-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
 }
 .team-card {
   text-align: center;
-  padding: 20px 10px;
+  padding: 30px 10px;
   background: linear-gradient(135deg, #f8f9fb 0%, #ffffff 100%);
   border: 1px solid #e2e8f0;
   border-radius: 16px;
