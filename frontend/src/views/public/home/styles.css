@@ -19,6 +19,10 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+.home-page {
+  background: #d8e6f4;
+}
+
 /* --------------------------------------------
    NAVBAR
 --------------------------------------------- */
@@ -104,7 +108,7 @@ body {
   align-items: center;
   justify-content: center;
   position: relative;
-  background: linear-gradient(135deg, #0f1f3d 0%, #1e3a5f 50%, #2d5179 100%);
+  background: linear-gradient(135deg, #3d6ba8 0%, #2f5a96 50%, #254a82 100%);
   overflow: hidden;
 }
 

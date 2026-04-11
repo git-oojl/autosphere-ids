@@ -19,8 +19,4 @@ const route = useRoute();
 .auth-layout {
   min-height: 100vh;
 }
-
-.auth-main {
-  padding: 0 !important;
-}
 </style>

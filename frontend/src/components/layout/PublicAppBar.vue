@@ -4,6 +4,7 @@
     color="transparent"
     class="public-appbar"
     height="96"
+    scroll-behavior="hide"
   >
     <v-container class="navbar-wrapper">
       <nav class="navbar">
@@ -241,7 +242,7 @@ function handleLogout() {
 </script>
 
 <style scoped>
-/* Estilos principales */
+/* Sin fondo en la franja del app-bar; el color lo dan body/layout (#deeaf6) */
 .public-appbar {
   background: transparent !important;
 }

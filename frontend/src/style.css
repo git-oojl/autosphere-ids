@@ -2,6 +2,15 @@
   box-sizing: border-box;
 }
 
+/* Tokens visuales AutoSphere (área pública / cuenta) */
+:root {
+  --as-page-bg: #deeaf6;
+  --as-accent: #386ba8;
+  --as-accent-strong: #2563eb;
+  --as-card-radius: 16px;
+  --as-text-muted: #64748b;
+}
+
 html,
 body,
 #app {
@@ -11,6 +20,11 @@ body,
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--as-page-bg);
+}
+
+#app {
+  background-color: var(--as-page-bg);
 }
 
 a {
