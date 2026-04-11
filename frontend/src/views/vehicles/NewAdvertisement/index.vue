@@ -7,16 +7,6 @@
         <!-- HEADER -->
         <div class="page-header">
           <div class="header-left">
-            <button class="btn-back" @click="goBack">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M19 12H5M12 19l-7-7 7-7" />
-              </svg>
-            </button>
             <div class="header-content">
               <h1 class="page-title">Crear Nuevo Anuncio</h1>
               <p class="page-subtitle">
@@ -1472,13 +1462,6 @@ const formData = ref({
   contactEmail: '',
   acceptTerms: false,
 });
-
-// Methods
-const goBack = () => {
-  if (confirm('¿Seguro que deseas salir? Se perderán los cambios.')) {
-    router.push('/mis-anuncios');
-  }
-};
 
 const goToStep = (step) => {
   if (step < currentStep.value) {

@@ -1,0 +1,104 @@
+{
+  "items": [
+    {
+      "id": "br-001",
+      "name": "Porsche",
+      "description": "Marca alemana de autos deportivos de lujo",
+      "country": "Alemania",
+      "founded": 1931,
+      "logo": "🏎️",
+      "active": true,
+      "count": 23
+    },
+    {
+      "id": "br-002",
+      "name": "BMW",
+      "description": "Bayerische Motoren Werke, autos premium alemanes",
+      "country": "Alemania",
+      "founded": 1916,
+      "logo": "🚙",
+      "active": true,
+      "count": 31
+    },
+    {
+      "id": "br-003",
+      "name": "Mercedes-Benz",
+      "description": "Marca alemana de autos de lujo",
+      "country": "Alemania",
+      "founded": 1926,
+      "logo": "🚗",
+      "active": true,
+      "count": 28
+    },
+    {
+      "id": "br-004",
+      "name": "Audi",
+      "description": "Marca alemana de autos premium",
+      "country": "Alemania",
+      "founded": 1909,
+      "logo": "🔘",
+      "active": true,
+      "count": 19
+    },
+    {
+      "id": "br-005",
+      "name": "Ferrari",
+      "description": "Marca italiana de autos deportivos",
+      "country": "Italia",
+      "founded": 1939,
+      "logo": "🐴",
+      "active": true,
+      "count": 8
+    },
+    {
+      "id": "br-006",
+      "name": "Lamborghini",
+      "description": "Marca italiana de autos superdeportivos",
+      "country": "Italia",
+      "founded": 1963,
+      "logo": "🐂",
+      "active": true,
+      "count": 5
+    },
+    {
+      "id": "br-007",
+      "name": "Tesla",
+      "description": "Marca americana de autos eléctricos",
+      "country": "USA",
+      "founded": 2003,
+      "logo": "🔋",
+      "active": true,
+      "count": 12
+    },
+    {
+      "id": "br-008",
+      "name": "Chevrolet",
+      "description": "Marca americana de autos",
+      "country": "USA",
+      "founded": 1911,
+      "logo": "🏁",
+      "active": true,
+      "count": 15
+    },
+    {
+      "id": "br-009",
+      "name": "Ford",
+      "description": "Marca americana de autos y camionetas",
+      "country": "USA",
+      "founded": 1903,
+      "logo": "🛻",
+      "active": true,
+      "count": 10
+    },
+    {
+      "id": "br-010",
+      "name": "Volkswagen",
+      "description": "Marca alemana de autos accesibles",
+      "country": "Alemania",
+      "founded": 1937,
+      "logo": "🚘",
+      "active": true,
+      "count": 14
+    }
+  ]
+}

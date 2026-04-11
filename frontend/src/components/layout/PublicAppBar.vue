@@ -142,6 +142,17 @@
                   <v-list-item-title>Dashboard</v-list-item-title>
                 </v-list-item>
 
+                <v-list-item
+                  v-if="!auth.isAdmin"
+                  :to="{ name: 'buyer-dashboard' }"
+                  class="menu-item"
+                >
+                  <template #prepend>
+                    <v-icon>mdi-view-dashboard</v-icon>
+                  </template>
+                  <v-list-item-title>Comprador</v-list-item-title>
+                </v-list-item>
+
                 <!-- Mis citas -->
                 <v-list-item
                   v-if="!auth.isAdmin"

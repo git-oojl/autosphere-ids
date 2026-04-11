@@ -1,0 +1,234 @@
+{
+  "items": [
+    {
+      "id": "md-001",
+      "brandId": "br-001",
+      "brandName": "Porsche",
+      "name": "911 Carrera",
+      "generation": "992",
+      "bodyType": "Coupé",
+      "active": true,
+      "count": 12
+    },
+    {
+      "id": "md-002",
+      "brandId": "br-001",
+      "brandName": "Porsche",
+      "name": "Cayenne",
+      "generation": "E3",
+      "bodyType": "SUV",
+      "active": true,
+      "count": 8
+    },
+    {
+      "id": "md-003",
+      "brandId": "br-001",
+      "brandName": "Porsche",
+      "name": "Panamera",
+      "generation": "G2",
+      "bodyType": "Sedán",
+      "active": true,
+      "count": 3
+    },
+    {
+      "id": "md-004",
+      "brandId": "br-002",
+      "brandName": "BMW",
+      "name": "X5",
+      "generation": "G05",
+      "bodyType": "SUV",
+      "active": true,
+      "count": 15
+    },
+    {
+      "id": "md-005",
+      "brandId": "br-002",
+      "brandName": "BMW",
+      "name": "X6",
+      "generation": "G06",
+      "bodyType": "SUV Coupé",
+      "active": true,
+      "count": 9
+    },
+    {
+      "id": "md-006",
+      "brandId": "br-002",
+      "brandName": "BMW",
+      "name": "Serie 3",
+      "generation": "G20",
+      "bodyType": "Sedán",
+      "active": true,
+      "count": 7
+    },
+    {
+      "id": "md-007",
+      "brandId": "br-003",
+      "brandName": "Mercedes-Benz",
+      "name": "Clase S",
+      "generation": "W223",
+      "bodyType": "Sedán",
+      "active": true,
+      "count": 11
+    },
+    {
+      "id": "md-008",
+      "brandId": "br-003",
+      "brandName": "Mercedes-Benz",
+      "name": "Clase E",
+      "generation": "W213",
+      "bodyType": "Sedán",
+      "active": true,
+      "count": 9
+    },
+    {
+      "id": "md-009",
+      "brandId": "br-003",
+      "brandName": "Mercedes-Benz",
+      "name": "GLE",
+      "generation": "V167",
+      "bodyType": "SUV",
+      "active": true,
+      "count": 8
+    },
+    {
+      "id": "md-010",
+      "brandId": "br-004",
+      "brandName": "Audi",
+      "name": "RS7",
+      "generation": "4K8",
+      "bodyType": "Sportback",
+      "active": true,
+      "count": 6
+    },
+    {
+      "id": "md-011",
+      "brandId": "br-004",
+      "brandName": "Audi",
+      "name": "Q7",
+      "generation": "4M",
+      "bodyType": "SUV",
+      "active": true,
+      "count": 7
+    },
+    {
+      "id": "md-012",
+      "brandId": "br-004",
+      "brandName": "Audi",
+      "name": "A8",
+      "generation": "D5",
+      "bodyType": "Sedán",
+      "active": true,
+      "count": 6
+    },
+    {
+      "id": "md-013",
+      "brandId": "br-005",
+      "brandName": "Ferrari",
+      "name": "488 GTB",
+      "generation": "Tipo F142M",
+      "bodyType": "Deportivo",
+      "active": true,
+      "count": 4
+    },
+    {
+      "id": "md-014",
+      "brandId": "br-005",
+      "brandName": "Ferrari",
+      "name": "F8 Tributo",
+      "generation": "Tipo F142MFL",
+      "bodyType": "Deportivo",
+      "active": true,
+      "count": 4
+    },
+    {
+      "id": "md-015",
+      "brandId": "br-006",
+      "brandName": "Lamborghini",
+      "name": "Huracán",
+      "generation": "LP 610-4",
+      "bodyType": "Deportivo",
+      "active": true,
+      "count": 3
+    },
+    {
+      "id": "md-016",
+      "brandId": "br-007",
+      "brandName": "Tesla",
+      "name": "Model S",
+      "generation": "Palladium",
+      "bodyType": "Sedán",
+      "active": true,
+      "count": 7
+    },
+    {
+      "id": "md-017",
+      "brandId": "br-007",
+      "brandName": "Tesla",
+      "name": "Model 3",
+      "generation": "Highland",
+      "bodyType": "Sedán",
+      "active": true,
+      "count": 5
+    },
+    {
+      "id": "md-018",
+      "brandId": "br-008",
+      "brandName": "Chevrolet",
+      "name": "Silverado",
+      "generation": "T1XX",
+      "bodyType": "Pickup",
+      "active": true,
+      "count": 10
+    },
+    {
+      "id": "md-019",
+      "brandId": "br-008",
+      "brandName": "Chevrolet",
+      "name": "Camaro",
+      "generation": "6ta Gen",
+      "bodyType": "Deportivo",
+      "active": true,
+      "count": 5
+    },
+    {
+      "id": "md-020",
+      "brandId": "br-009",
+      "brandName": "Ford",
+      "name": "Mustang",
+      "generation": "S650",
+      "bodyType": "Deportivo",
+      "active": true,
+      "count": 6
+    },
+    {
+      "id": "md-021",
+      "brandId": "br-009",
+      "brandName": "Ford",
+      "name": "F-150",
+      "generation": "14th Gen",
+      "bodyType": "Pickup",
+      "active": true,
+      "count": 4
+    },
+    {
+      "id": "md-022",
+      "brandId": "br-010",
+      "brandName": "Volkswagen",
+      "name": "Jetta",
+      "generation": "A7",
+      "bodyType": "Sedán",
+      "active": true,
+      "count": 8
+    },
+    {
+      "id": "md-023",
+      "brandId": "br-010",
+      "brandName": "Volkswagen",
+      "name": "Tiguan",
+      "generation": "MK2",
+      "bodyType": "SUV",
+      "active": true,
+      "count": 6
+    }
+  ]
+}

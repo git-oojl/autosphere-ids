@@ -1,6 +1,6 @@
 <template>
   <div class="users-page">
-    <br /><br /><br /><br />
+    <br /><br /><br /><br /><br />
 
     <!-- Page Header -->
     <div class="page-header">
@@ -151,6 +151,11 @@
           <option value="suspended">Suspendidos</option>
           <option value="inactive">Inactivos</option>
         </select>
+        <select v-model="verificationFilter" class="filter-select">
+          <option value="all">Todos</option>
+          <option value="verified">Verificados</option>
+          <option value="unverified">No verificados</option>
+        </select>
         <select v-model="sortBy" class="filter-select">
           <option value="date_desc">Más recientes primero</option>
           <option value="date_asc">Más antiguos primero</option>
@@ -175,7 +180,8 @@
       <div class="table-header">
         <h3>Lista de Usuarios Registrados</h3>
         <div class="table-info">
-          Mostrando {{ filteredUsers.length }} de {{ users.length }} usuarios
+          Mostrando {{ paginatedUsers.length }} de
+          {{ filteredUsers.length }} usuarios
         </div>
       </div>
 
@@ -189,7 +195,7 @@
               <th>Rol</th>
               <th>Estado</th>
               <th>Registro</th>
-              <th>Anuncios</th>
+              <th>Último acceso</th>
               <th>Verificación</th>
               <th>Acciones</th>
             </tr>
@@ -223,9 +229,7 @@
                 </span>
               </td>
               <td>{{ formatDate(user.registeredAt) }}</td>
-              <td class="listings-count">
-                <span class="count-badge">{{ user.listingsCount || 0 }}</span>
-              </td>
+              <td class="last-login">{{ formatLastLogin(user.lastLogin) }}</td>
               <td>
                 <span
                   :class="[
@@ -529,19 +533,15 @@
               </div>
             </div>
             <div class="detail-card">
-              <div class="detail-label">Anuncios publicados</div>
+              <div class="detail-label">Último acceso</div>
               <div class="detail-value">
-                {{ selectedUser.listingsCount || 0 }}
+                {{ formatLastLogin(selectedUser.lastLogin) }}
               </div>
             </div>
             <div class="detail-card">
-              <div class="detail-label">Último acceso</div>
+              <div class="detail-label">Anuncios publicados</div>
               <div class="detail-value">
-                {{
-                  selectedUser.lastLogin
-                    ? formatDate(selectedUser.lastLogin)
-                    : 'Nunca'
-                }}
+                {{ selectedUser.listingsCount || 0 }}
               </div>
             </div>
           </div>
@@ -660,6 +660,9 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 
+// IMPORTAR EL MOCK DESDE JSON
+import usersMock from '../../../mocks/admin/users.json';
+
 const router = useRouter();
 
 // Stats
@@ -670,118 +673,29 @@ const stats = ref({
   landlords: 0,
 });
 
-// Users data
-const users = ref([
-  {
-    id: 1,
-    name: 'Ana García Martínez',
-    email: 'ana.garcia@email.com',
-    phone: '55 1234 5678',
-    location: 'Ciudad de México',
-    role: 'buyer',
-    status: 'active',
-    verified: true,
-    registeredAt: '2024-01-15',
-    lastLogin: '2024-03-20T10:30:00',
-    listingsCount: 0,
-  },
-  {
-    id: 2,
-    name: 'Carlos Méndez',
-    email: 'carlos.mendez@email.com',
-    phone: '55 8765 4321',
-    location: 'Guadalajara, Jalisco',
-    role: 'seller',
-    status: 'active',
-    verified: true,
-    registeredAt: '2024-01-20',
-    lastLogin: '2024-03-19T15:20:00',
-    listingsCount: 5,
-  },
-  {
-    id: 3,
-    name: 'María López',
-    email: 'maria.lopez@email.com',
-    phone: '33 1234 5678',
-    location: 'Monterrey, Nuevo León',
-    role: 'buyer',
-    status: 'active',
-    verified: false,
-    registeredAt: '2024-02-01',
-    lastLogin: '2024-03-18T09:15:00',
-    listingsCount: 0,
-  },
-  {
-    id: 4,
-    name: 'Roberto Gómez',
-    email: 'roberto.gomez@email.com',
-    phone: '55 9988 7766',
-    location: 'Ciudad de México',
-    role: 'seller',
-    status: 'suspended',
-    verified: true,
-    registeredAt: '2024-01-10',
-    lastLogin: '2024-03-10T14:30:00',
-    listingsCount: 3,
-  },
-  {
-    id: 5,
-    name: 'Laura Martínez',
-    email: 'laura.martinez@email.com',
-    phone: '81 2345 6789',
-    location: 'Querétaro',
-    role: 'landlord',
-    status: 'active',
-    verified: true,
-    registeredAt: '2024-02-15',
-    lastLogin: '2024-03-20T08:45:00',
-    listingsCount: 2,
-  },
-  {
-    id: 6,
-    name: 'Pedro Sánchez',
-    email: 'pedro.sanchez@email.com',
-    phone: '55 4433 2211',
-    location: 'Puebla',
-    role: 'seller',
-    status: 'inactive',
-    verified: false,
-    registeredAt: '2024-01-25',
-    lastLogin: '2024-02-28T11:00:00',
-    listingsCount: 1,
-  },
-  {
-    id: 7,
-    name: 'Lucía Fernández',
-    email: 'lucia.fernandez@email.com',
-    phone: '33 9876 5432',
-    location: 'Guadalajara, Jalisco',
-    role: 'buyer',
-    status: 'suspended',
-    verified: true,
-    registeredAt: '2024-02-10',
-    lastLogin: '2024-03-15T16:20:00',
-    listingsCount: 0,
-  },
-  {
-    id: 8,
-    name: 'Miguel Ángel Ruiz',
-    email: 'miguel.ruiz@email.com',
-    phone: '55 1122 3344',
-    location: 'Ciudad de México',
-    role: 'landlord',
-    status: 'active',
-    verified: true,
-    registeredAt: '2024-03-01',
-    lastLogin: '2024-03-19T12:00:00',
-    listingsCount: 1,
-  },
-]);
+// USERS: Usar los datos importados del JSON
+const users = ref(
+  usersMock.items.map((item) => ({
+    id: item.id,
+    name: item.name,
+    email: item.email,
+    phone: item.phone,
+    location: item.location,
+    role: item.role,
+    status: item.status,
+    verified: item.verified,
+    registeredAt: item.registeredAt,
+    lastLogin: item.lastLogin,
+    listingsCount: item.listingsCount,
+    avatar: item.avatar,
+  }))
+);
 
 // Filters
 const searchTerm = ref('');
 const roleFilter = ref('all');
 const statusFilter = ref('all');
+const verificationFilter = ref('all');
 const sortBy = ref('date_desc');
 const currentPage = ref(1);
 const itemsPerPage = 10;
@@ -829,6 +743,13 @@ const filteredUsers = computed(() => {
   // Filter by status
   if (statusFilter.value !== 'all') {
     filtered = filtered.filter((u) => u.status === statusFilter.value);
+  }
+
+  // Filter by verification
+  if (verificationFilter.value === 'verified') {
+    filtered = filtered.filter((u) => u.verified === true);
+  } else if (verificationFilter.value === 'unverified') {
+    filtered = filtered.filter((u) => u.verified === false);
   }
 
   // Sort
@@ -895,6 +816,19 @@ const formatDate = (date) => {
   });
 };
 
+const formatLastLogin = (lastLogin) => {
+  if (!lastLogin) return 'Nunca';
+  const d = new Date(lastLogin);
+  const now = new Date();
+  const diff = now - d;
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+  if (days === 0) return 'Hoy';
+  if (days === 1) return 'Ayer';
+  if (days < 7) return `Hace ${days} días`;
+  return d.toLocaleDateString('es-MX', { day: 'numeric', month: 'short' });
+};
+
 const getRoleText = (role) => {
   const roles = {
     buyer: 'Comprador',
@@ -944,6 +878,7 @@ const clearFilters = () => {
   searchTerm.value = '';
   roleFilter.value = 'all';
   statusFilter.value = 'all';
+  verificationFilter.value = 'all';
   sortBy.value = 'date_desc';
   currentPage.value = 1;
 };
@@ -988,6 +923,8 @@ const saveUser = () => {
     return;
   }
 
+  const newId = `u-${userForm.value.role}-${Date.now()}`;
+
   if (isEditing.value) {
     // Edit existing user
     const index = users.value.findIndex((u) => u.id === userForm.value.id);
@@ -1007,7 +944,7 @@ const saveUser = () => {
   } else {
     // Create new user
     const newUser = {
-      id: Date.now(),
+      id: newId,
       name: userForm.value.name,
       email: userForm.value.email,
       phone: userForm.value.phone,
@@ -1018,6 +955,7 @@ const saveUser = () => {
       registeredAt: new Date().toISOString().split('T')[0],
       lastLogin: null,
       listingsCount: 0,
+      avatar: null,
     };
     users.value.unshift(newUser);
     alert(`Usuario ${userForm.value.name} creado correctamente`);

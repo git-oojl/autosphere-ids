@@ -234,6 +234,7 @@
 <script>
 export default {
   name: 'AgendarCita',
+
   props: {
     vehicle: {
       type: Object,

@@ -1,5 +1,6 @@
 <template>
   <div class="gestion-citas">
+    <br /><br /><br /><br /><br />
     <div class="container">
       <!-- Page Title -->
       <h1 class="page-title">Mis citas</h1>
