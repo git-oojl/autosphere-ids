@@ -1126,3 +1126,376 @@ body {
     padding-right: 0;
   }
 }
+
+/* ============================================
+   EDIT MODE BANNER
+   ============================================ */
+.edit-mode-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  z-index: 1001;
+  padding: 12px 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.edit-mode-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.edit-mode-content svg {
+  width: 24px;
+  height: 24px;
+  stroke: white;
+}
+
+.edit-mode-content span {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.edit-mode-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-save,
+.btn-cancel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-save {
+  background: white;
+  color: #d97706;
+}
+
+.btn-save:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-cancel {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* ============================================
+   EDIT MODE CARD
+   ============================================ */
+.edit-mode-card {
+  border: 2px solid #f59e0b !important;
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.2) !important;
+}
+
+/* ============================================
+   EDIT BADGE
+   ============================================ */
+.edit-badge {
+  background: #f59e0b;
+  color: white;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  margin-left: 12px;
+}
+
+/* ============================================
+   EDITABLE FIELDS
+   ============================================ */
+.edit-title-input {
+  font-size: 32px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid #f59e0b;
+  border-radius: 12px;
+  padding: 8px 16px;
+  width: 100%;
+  color: #1e3a5f;
+  font-family: inherit;
+}
+
+.edit-title-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.edit-price {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.edit-price-input {
+  font-size: 36px;
+  font-weight: 800;
+  width: 220px;
+  background: white;
+  border: 2px solid #f59e0b;
+  border-radius: 12px;
+  padding: 8px 12px;
+  color: #3b82f6;
+  font-family: inherit;
+}
+
+.edit-price-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.edit-spec {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.edit-spec-input {
+  padding: 6px 10px;
+  border: 2px solid #f59e0b;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 100px;
+  font-family: inherit;
+}
+
+.edit-spec-input:focus,
+.edit-spec-select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.edit-spec-select {
+  padding: 6px 10px;
+  border: 2px solid #f59e0b;
+  border-radius: 8px;
+  font-size: 14px;
+  width: 120px;
+  background: white;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.edit-info-input {
+  padding: 8px 12px;
+  border: 2px solid #f59e0b;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.edit-info-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+.edit-description-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #f59e0b;
+  border-radius: 12px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.edit-description-textarea:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* ============================================
+   EDIT FEATURES
+   ============================================ */
+.edit-features {
+  background: #f8f9fb;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.features-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.feature-tag-editable {
+  background: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  color: #1e3a5f;
+  border: 1px solid #e2e8f0;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+
+.feature-tag-editable:hover {
+  border-color: #dc2626;
+  background: #fee2e2;
+}
+
+.remove-feature {
+  background: none;
+  border: none;
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 0 4px;
+  font-weight: bold;
+}
+
+.remove-feature:hover {
+  color: #b91c1c;
+  transform: scale(1.2);
+}
+
+.add-feature {
+  display: flex;
+  gap: 10px;
+}
+
+.add-feature-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.add-feature-input:focus {
+  outline: none;
+  border-color: #f59e0b;
+}
+
+.add-feature-btn {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 0 20px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-feature-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+/* ============================================
+   EDIT MODE BANNER - CORREGIDO
+   ============================================ */
+.edit-mode-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: white;
+  z-index: 9999; /* Aumentado para que esté encima de todo */
+  padding: 12px 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Ajuste para que el navbar no tape el banner cuando existe */
+body:has(.edit-mode-banner) .navbar {
+  top: 60px; /* Empuja el navbar hacia abajo cuando el banner está presente */
+}
+
+/* Alternativa: si no funciona el :has(), usa esto en el componente */
+.navbar.shifted {
+  top: 60px !important;
+}
+
+.edit-mode-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.edit-mode-content svg {
+  width: 24px;
+  height: 24px;
+  stroke: white;
+}
+
+.edit-mode-content span {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.edit-mode-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-save,
+.btn-cancel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 20px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.btn-save {
+  background: white;
+  color: #d97706;
+}
+
+.btn-save:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.btn-cancel {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
