@@ -13,9 +13,10 @@ const userMap = users.reduce((acc, user) => {
 }, {});
 
 function baseAppointments() {
-  return appointmentsData.items.map(
-    (item) => appointmentDetailsMap[item.id] || item
-  );
+  const list = Array.isArray(appointmentsData)
+    ? appointmentsData
+    : (appointmentsData?.items ?? []);
+  return list.map((item) => appointmentDetailsMap[item.id] || item);
 }
 
 function enrichAppointment(appointment) {

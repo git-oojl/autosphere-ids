@@ -4,17 +4,17 @@
     <section id="hero" class="hero">
       <div class="hero-content">
         <h1 class="hero-title">
-          Cars for sale with good prices<br />and the best quality
+          Autos en venta con excelentes precios<br />y la mejor calidad
         </h1>
-        <p class="hero-subtitle">Make & Model</p>
+        <p class="hero-subtitle">Marca y modelo</p>
 
         <!-- SEARCH BOX -->
         <div class="search-container">
           <div class="search-box">
             <div class="search-group">
-              <label>Make</label>
+              <label>Marca</label>
               <select v-model="searchFilters.make">
-                <option value="">Select Make</option>
+                <option value="">Seleccionar Marca</option>
                 <option
                   v-for="brand in uniqueBrands"
                   :key="brand"
@@ -25,9 +25,9 @@
               </select>
             </div>
             <div class="search-group">
-              <label>Model</label>
+              <label>Modelo</label>
               <select v-model="searchFilters.model">
-                <option value="">Select Model</option>
+                <option value="">Seleccionar Modelo</option>
                 <option
                   v-for="model in uniqueModels"
                   :key="model"
@@ -38,11 +38,11 @@
               </select>
             </div>
             <div class="search-group">
-              <label>ZIP Code</label>
+              <label>Año</label>
               <input
-                v-model="searchFilters.zipCode"
+                v-model="searchFilters.year"
                 type="text"
-                placeholder="ZIP Code"
+                placeholder="Año (opcional)"
               />
             </div>
             <button class="search-btn" @click="handleSearch">
@@ -55,7 +55,7 @@
                 <circle cx="11" cy="11" r="8" />
                 <path d="M21 21L16.65 16.65" />
               </svg>
-              Search
+              Buscar
             </button>
           </div>
         </div>
@@ -65,7 +65,7 @@
     <!-- FEATURED LISTINGS -->
     <section id="cars" class="featured-section">
       <div class="section-container">
-        <h2 class="section-title">Featured Listings</h2>
+        <h2 class="section-title">Listados Destacados</h2>
 
         <div class="cars-grid">
           <div
@@ -160,7 +160,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 // IMPORTAR DATOS DESDE JSON
@@ -173,7 +173,7 @@ const router = useRouter();
 const searchFilters = ref({
   make: '',
   model: '',
-  zipCode: '',
+  year: '',
 });
 
 const currentPage = ref(0);
@@ -234,6 +234,12 @@ const filteredCars = computed(() => {
     result = result.filter((v) => v.model === searchFilters.value.model);
   }
 
+  if (searchFilters.value.year) {
+    result = result.filter(
+      (v) => String(v.year) === String(searchFilters.value.year)
+    );
+  }
+
   return result;
 });
 
@@ -269,22 +275,27 @@ const nextPage = () => {
 };
 
 const handleSearch = () => {
-  router.push({
-    name: 'public-catalog',
-    query: searchFilters.value,
-  });
+  if (filteredCars.value.length > 0) {
+    router.push({
+      name: 'public-listing-detail',
+      params: { id: filteredCars.value[0].id },
+    });
+    return;
+  }
+
+  router.push({ name: 'public-catalog', query: searchFilters.value });
 };
 
 const viewCarDetail = (carId) => {
   router.push({
-    name: 'VehicleDetail',
+    name: 'public-listing-detail',
     params: { id: carId },
   });
 };
 
 const viewDetail = (carId) => {
   router.push({
-    name: 'VehicleDetail',
+    name: 'public-listing-detail',
     params: { id: carId },
   });
 };

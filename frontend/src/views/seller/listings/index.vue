@@ -40,26 +40,6 @@
           </button>
         </div>
 
-        <!-- TABS: Venta / Renta -->
-        <div class="tabs-container">
-          <div class="tabs">
-            <button
-              :class="['tab', { active: listingType === 'sale' }]"
-              @click="switchListingType('sale')"
-            >
-              Venta
-              <span class="tab-count">{{ saleCount }}</span>
-            </button>
-            <button
-              :class="['tab', { active: listingType === 'rental' }]"
-              @click="switchListingType('rental')"
-            >
-              Renta
-              <span class="tab-count">{{ rentalCount }}</span>
-            </button>
-          </div>
-        </div>
-
         <!-- FILTERS AND SEARCH -->
         <div class="toolbar">
           <div class="toolbar-left">
@@ -119,15 +99,6 @@
                 <button @click="filterBy('published')">Activos</button>
                 <button @click="filterBy('draft')">Borradores</button>
                 <button @click="filterBy('archived')">Archivados</button>
-                <button v-if="listingType === 'sale'" @click="filterBy('sold')">
-                  Vendidos
-                </button>
-                <button
-                  v-if="listingType === 'rental'"
-                  @click="filterBy('unavailable')"
-                >
-                  No disponibles
-                </button>
               </div>
             </div>
 
@@ -157,7 +128,6 @@
                 type="text"
                 placeholder="Buscar por marca, modelo o título..."
                 class="search-input"
-                @keyup.enter="handleSearch"
               />
             </div>
           </div>
@@ -172,7 +142,7 @@
           >
             <!-- LEFT SECTION - Vehicle Info -->
             <div class="listing-left">
-              <div class="vehicle-icon" @click="viewAsPublic(listing.id)">
+              <div class="vehicle-icon">
                 <img
                   v-if="listing.coverImage"
                   :src="listing.coverImage"
@@ -192,16 +162,8 @@
                   <span class="separator">•</span>
                   <span class="year">{{ listing.year }}</span>
                 </div>
-                <div v-if="listingType === 'sale'" class="vehicle-price">
+                <div class="vehicle-price">
                   ${{ formatPrice(listing.price) }}
-                </div>
-                <div v-else class="vehicle-price rental-price">
-                  ${{ formatPrice(listing.pricePerDay) }}/día
-                  <span class="price-period"
-                    >| ${{ formatPrice(listing.pricePerWeek) }}/sem | ${{
-                      formatPrice(listing.pricePerMonth)
-                    }}/mes</span
-                  >
                 </div>
               </div>
             </div>
@@ -283,18 +245,7 @@
                       stroke-width="2"
                     />
                   </svg>
-                  {{
-                    listing.mileageKm?.toLocaleString() ||
-                    listing.kmIncludedPerDay ||
-                    'Nuevo'
-                  }}
-                  {{
-                    listing.mileageKm
-                      ? 'km'
-                      : listing.kmIncludedPerDay
-                        ? 'km/día'
-                        : ''
-                  }}
+                  {{ listing.mileageKm?.toLocaleString() || 'Nuevo' }} km
                 </span>
                 <span class="detail-item">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -325,25 +276,7 @@
                     <circle cx="9" cy="15" r="1" fill="currentColor" />
                     <circle cx="15" cy="15" r="1" fill="currentColor" />
                   </svg>
-                  {{ listing.fuel || 'Gasolina' }}
-                </span>
-              </div>
-              <!-- Disponibilidad para rentas -->
-              <div v-if="listingType === 'rental'" class="availability-info">
-                <span
-                  :class="[
-                    'availability-badge',
-                    listing.available ? 'available' : 'unavailable',
-                  ]"
-                >
-                  {{ listing.available ? 'Disponible' : 'No disponible' }}
-                </span>
-                <span
-                  v-if="listing.availableFrom && listing.availableTo"
-                  class="availability-dates"
-                >
-                  {{ formatDate(listing.availableFrom) }} -
-                  {{ formatDate(listing.availableTo) }}
+                  {{ listing.color || 'No especificado' }}
                 </span>
               </div>
             </div>
@@ -473,7 +406,7 @@
           <button
             class="page-btn"
             :disabled="currentPage === 1"
-            @click="prevPage"
+            @click="currentPage--"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
               <path
@@ -489,7 +422,7 @@
               v-for="page in visiblePages"
               :key="page"
               :class="['page-number', { active: currentPage === page }]"
-              @click="goToPage(page)"
+              @click="currentPage = page"
             >
               {{ page }}
             </button>
@@ -497,7 +430,7 @@
           <button
             class="page-btn"
             :disabled="currentPage === totalPages"
-            @click="nextPage"
+            @click="currentPage++"
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
               <path
@@ -584,34 +517,17 @@
         </div>
       </div>
     </div>
-
-    <!-- Toast Notification -->
-    <div v-if="showToast" class="toast-notification" :class="toastType">
-      <span>{{ toastMessage }}</span>
-      <button class="toast-close" @click="showToast = false">×</button>
-    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
+// import { useRouter } from 'vue-router';
 
-// IMPORTAR LOS MOCKS DESDE JSON
+// IMPORTAR EL MOCK DESDE JSON
 import listingsMock from '../../../mocks/admin/listings.json';
-import rentalsMock from '../../../mocks/catalog/rentals.json';
 
-const router = useRouter();
-
-// Toast notification
-const showToast = ref(false);
-const toastMessage = ref('');
-const toastType = ref('success');
-
-// Datos del usuario
-
-// Tipo de listado actual ('sale' o 'rental')
-const listingType = ref('sale');
+// const router = useRouter();
 
 // Estados
 const searchQuery = ref('');
@@ -621,27 +537,17 @@ const currentPage = ref(1);
 const itemsPerPage = ref(6);
 
 // Listings desde JSON
-const salesListings = ref([]);
-const rentalListings = ref([]);
-
-// Función para mostrar toast
-const showNotification = (message, type = 'success') => {
-  toastMessage.value = message;
-  toastType.value = type;
-  showToast.value = true;
-  setTimeout(() => {
-    showToast.value = false;
-  }, 3000);
-};
+const listings = ref([]);
 
 // Cargar datos desde JSON
 const loadListings = () => {
-  // Cargar anuncios de venta (vendedor actual u-seller-001)
+  // Filtrar solo los anuncios del vendedor actual (u-seller-001)
   const sellerListings = listingsMock.items.filter(
     (item) => item.sellerId === 'u-seller-001'
   );
 
-  salesListings.value = sellerListings.map((item) => ({
+  // Mapear los datos al formato que usa el componente
+  listings.value = sellerListings.map((item) => ({
     id: item.id,
     title: item.title,
     brand: item.brand,
@@ -656,50 +562,11 @@ const loadListings = () => {
     coverImage: item.coverImage,
     status: item.status,
     color: item.color,
-    views: Math.floor(Math.random() * 500) + 50,
-    messages: Math.floor(Math.random() * 20),
+    views: Math.floor(Math.random() * 500) + 50, // Simular vistas
+    messages: Math.floor(Math.random() * 20), // Simular mensajes
     createdAt: new Date().toISOString().split('T')[0],
-    listingType: 'sale',
-  }));
-
-  // Cargar anuncios de renta (arrendador actual - simulamos algunos)
-  rentalListings.value = rentalsMock.items.slice(0, 3).map((item) => ({
-    id: item.id,
-    title: item.title,
-    brand: item.brand,
-    model: item.model,
-    year: item.year,
-    type: item.type,
-    transmission: item.transmission,
-    fuel: item.fuel,
-    cityId: item.cityId,
-    coverImage: item.coverImage,
-    pricePerDay: item.pricePerDay,
-    pricePerWeek: item.pricePerWeek,
-    pricePerMonth: item.pricePerMonth,
-    depositAmount: item.depositAmount,
-    kmIncludedPerDay: item.kmIncludedPerDay,
-    availableFrom: item.availableFrom,
-    availableTo: item.availableTo,
-    available: item.available,
-    status: item.status,
-    views: Math.floor(Math.random() * 300) + 30,
-    messages: Math.floor(Math.random() * 15),
-    createdAt: new Date().toISOString().split('T')[0],
-    listingType: 'rental',
   }));
 };
-
-// Listados según el tipo seleccionado
-const currentListings = computed(() => {
-  return listingType.value === 'sale'
-    ? salesListings.value
-    : rentalListings.value;
-});
-
-// Contadores
-const saleCount = computed(() => salesListings.value.length);
-const rentalCount = computed(() => rentalListings.value.length);
 
 // Ciudades para mostrar el nombre
 const cities = {
@@ -715,7 +582,6 @@ const getCityName = (cityId) => {
 };
 
 const formatPrice = (price) => {
-  if (!price) return '0';
   return new Intl.NumberFormat('es-MX').format(price);
 };
 
@@ -734,8 +600,6 @@ const getStatusText = (status) => {
     published: 'Activo',
     draft: 'Borrador',
     archived: 'Archivado',
-    sold: 'Vendido',
-    unavailable: 'No disponible',
   };
   return statuses[status] || status;
 };
@@ -745,8 +609,6 @@ const getStatusClass = (status) => {
     published: 'active',
     draft: 'draft',
     archived: 'archived',
-    sold: 'sold',
-    unavailable: 'unavailable',
   };
   return classes[status] || status;
 };
@@ -757,8 +619,6 @@ const getFilterLabel = (filter) => {
     published: 'Activos',
     draft: 'Borradores',
     archived: 'Archivados',
-    sold: 'Vendidos',
-    unavailable: 'No disponibles',
   };
   return labels[filter] || filter;
 };
@@ -774,23 +634,14 @@ const getVehicleIcon = (type) => {
   return icons[type] || '🚗';
 };
 
-const totalListings = computed(() => currentListings.value.length);
+const totalListings = computed(() => listings.value.length);
 
 const filteredListings = computed(() => {
-  let result = [...currentListings.value];
+  let result = [...listings.value];
 
   // Filter by status
   if (selectedFilter.value !== 'all') {
-    if (listingType.value === 'sale') {
-      result = result.filter((l) => l.status === selectedFilter.value);
-    } else {
-      // Para rentas, mapeamos 'unavailable' a available === false
-      if (selectedFilter.value === 'unavailable') {
-        result = result.filter((l) => l.available === false);
-      } else {
-        result = result.filter((l) => l.status === selectedFilter.value);
-      }
-    }
+    result = result.filter((l) => l.status === selectedFilter.value);
   }
 
   // Filter by search query
@@ -833,36 +684,7 @@ const visiblePages = computed(() => {
   return pages;
 });
 
-// Navigation methods
-
-const goToPage = (page) => {
-  currentPage.value = page;
-};
-
-const prevPage = () => {
-  if (currentPage.value > 1) {
-    currentPage.value--;
-  }
-};
-
-const nextPage = () => {
-  if (currentPage.value < totalPages.value) {
-    currentPage.value++;
-  }
-};
-
 // Methods
-const switchListingType = (type) => {
-  listingType.value = type;
-  selectedFilter.value = 'all';
-  searchQuery.value = '';
-  currentPage.value = 1;
-  showNotification(
-    `Mostrando ${type === 'sale' ? 'anuncios de venta' : 'anuncios de renta'}`,
-    'info'
-  );
-};
-
 const toggleFilterDropdown = () => {
   showFilterDropdown.value = !showFilterDropdown.value;
 };
@@ -871,63 +693,27 @@ const filterBy = (filter) => {
   selectedFilter.value = filter;
   showFilterDropdown.value = false;
   currentPage.value = 1;
-  showNotification(`Mostrando ${getFilterLabel(filter)}`, 'info');
-};
-
-const handleSearch = () => {
-  if (searchQuery.value) {
-    showNotification(`Buscando: "${searchQuery.value}"`, 'info');
-  }
-  currentPage.value = 1;
 };
 
 const createNewListing = () => {
-  // ✅ CORREGIDO: Rutas diferentes para venta y renta
-  const route =
-    listingType.value === 'sale'
-      ? '/cuenta/nuevo-anuncio'
-      : '/cuenta/nuevo-anuncio';
-  router.push(route);
-  showNotification(
-    `Redirigiendo al formulario de creación de ${listingType.value === 'sale' ? 'venta' : 'renta'}...`,
-    'info'
-  );
+  console.log('Crear nuevo anuncio');
+  // router.push('create-listing');
 };
 
 const editListing = (id) => {
-  // Para ambos tipos (venta y renta), redirigir al detalle con modo edición
-  const route = `/listados/${id}?edit=true`;
-  router.push(route);
-  showNotification(`Editando anuncio...`, 'info');
+  console.log('Editar anuncio:', id);
+  // router.push(`/editar-anuncio/${id}`)
 };
 
 const viewAsPublic = (id) => {
-  // Vista pública sin modo edición
-  const route = `/listados/${id}`;
-  window.open(route, '_blank');
-  showNotification(`Abriendo vista pública`, 'info');
+  console.log('Ver como público:', id);
+  // router.push(`/vehiculo/${id}`)
 };
 
 const deleteListing = (id) => {
-  const listingToDelete = currentListings.value.find((l) => l.id === id);
-  if (
-    confirm(
-      `¿Estás seguro de eliminar el anuncio "${listingToDelete?.title}"? Esta acción no se puede deshacer.`
-    )
-  ) {
-    if (listingType.value === 'sale') {
-      salesListings.value = salesListings.value.filter((l) => l.id !== id);
-    } else {
-      rentalListings.value = rentalListings.value.filter((l) => l.id !== id);
-    }
-    showNotification(
-      `Anuncio "${listingToDelete?.title}" eliminado correctamente`,
-      'success'
-    );
-
-    if (paginatedListings.value.length === 0 && currentPage.value > 1) {
-      currentPage.value--;
-    }
+  if (confirm('¿Estás seguro de eliminar este anuncio?')) {
+    listings.value = listings.value.filter((l) => l.id !== id);
+    console.log('Anuncio eliminado:', id);
   }
 };
 

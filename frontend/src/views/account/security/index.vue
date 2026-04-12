@@ -341,6 +341,72 @@
           </div>
         </div>
 
+        <!-- Autenticación de Dos Factores (2FA) - Solo para usuarios registrados -->
+        <div v-if="userRole !== 'admin'" class="security-card">
+          <div class="card-header">
+            <div class="card-icon green">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path
+                  d="M12 2a10 10 0 00-10 10 10 10 0 0010 10 10 10 0 0010-10"
+                />
+                <path d="M12 6v6l4 2" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </div>
+            <div class="card-header-text">
+              <h2 class="card-title">Autenticación de dos factores</h2>
+              <p class="card-subtitle">
+                Añade una capa extra de seguridad a tu cuenta
+              </p>
+            </div>
+            <div class="card-badge" :class="{ active: twoFactorEnabled }">
+              {{ twoFactorEnabled ? 'Activado' : 'Desactivado' }}
+            </div>
+          </div>
+          <div class="card-body">
+            <div v-if="!twoFactorEnabled">
+              <p class="info-text">
+                Protege tu cuenta con verificación en dos pasos. Recibirás un
+                código único en tu teléfono cada vez que inicies sesión.
+              </p>
+              <button class="btn-secondary" @click="setupTwoFactor">
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+                Configurar 2FA
+              </button>
+            </div>
+            <div v-else class="two-factor-status">
+              <div class="status-row">
+                <span class="status-label">Método de verificación</span>
+                <span class="status-value">SMS / Autenticador</span>
+              </div>
+              <div class="status-row">
+                <span class="status-label">Teléfono vinculado</span>
+                <span class="status-value">{{
+                  userPhone || 'No vinculado'
+                }}</span>
+              </div>
+              <button class="btn-outline" @click="disableTwoFactor">
+                Desactivar 2FA
+              </button>
+            </div>
+          </div>
+        </div>
+
         <!-- Dispositivos Confiables - Solo para usuarios registrados -->
         <div v-if="userRole !== 'admin'" class="security-card">
           <div class="card-header">
@@ -495,6 +561,74 @@
           </div>
         </div>
 
+        <!-- Recomendaciones de Seguridad -->
+        <div class="security-card">
+          <div class="card-header">
+            <div class="card-icon blue">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <polygon points="12 2 2 7 12 12 22 7 12 2" />
+                <polyline points="2 17 12 22 22 17" />
+                <polyline points="2 12 12 17 22 12" />
+              </svg>
+            </div>
+            <div class="card-header-text">
+              <h2 class="card-title">Recomendaciones de seguridad</h2>
+              <p class="card-subtitle">Mejora la protección de tu cuenta</p>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="recommendations-list">
+              <div
+                v-for="rec in securityRecommendations"
+                :key="rec.id"
+                class="recommendation-item"
+                :class="{ completed: rec.completed }"
+              >
+                <div class="rec-check">
+                  <svg
+                    v-if="rec.completed"
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M20 6L9 17l-5-5" />
+                  </svg>
+                  <svg
+                    v-else
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                  </svg>
+                </div>
+                <div class="rec-info">
+                  <span class="rec-title">{{ rec.title }}</span>
+                  <span class="rec-desc">{{ rec.description }}</span>
+                </div>
+                <button
+                  v-if="!rec.completed"
+                  class="rec-action"
+                  @click="takeAction(rec)"
+                >
+                  {{ rec.action }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- Zona de Peligro (solo visible para usuarios registrados) -->
         <div v-if="userRole !== 'guest'" class="security-card danger-zone">
           <div class="card-header">
@@ -559,6 +693,58 @@
       </div>
     </div>
 
+    <!-- 2FA Setup Modal -->
+    <div
+      v-if="show2FAModal"
+      class="modal-overlay"
+      @click.self="show2FAModal = false"
+    >
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Configurar autenticación de dos factores</h2>
+          <button class="modal-close" @click="show2FAModal = false">×</button>
+        </div>
+        <div class="modal-body">
+          <div class="qr-container">
+            <div class="qr-placeholder">
+              <svg width="200" height="200" viewBox="0 0 200 200">
+                <rect width="200" height="200" fill="#f8f9fb" />
+                <rect x="20" y="20" width="160" height="160" fill="#e2e8f0" />
+                <rect x="40" y="40" width="40" height="40" fill="#94a3b8" />
+                <rect x="120" y="40" width="40" height="40" fill="#94a3b8" />
+                <rect x="40" y="120" width="40" height="40" fill="#94a3b8" />
+                <rect x="120" y="120" width="40" height="40" fill="#94a3b8" />
+                <rect x="80" y="80" width="40" height="40" fill="#3b82f6" />
+              </svg>
+            </div>
+            <p class="qr-instruction">
+              Escanea este código QR con Google Authenticator o similar
+            </p>
+            <p class="qr-code">
+              Código secreto: <strong>ABCD EFGH IJKL MNOP</strong>
+            </p>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Código de verificación</label>
+            <input
+              v-model="twoFactorCode"
+              type="text"
+              class="form-input"
+              placeholder="Ingresa el código de 6 dígitos"
+            />
+          </div>
+          <div class="modal-actions">
+            <button class="btn-secondary" @click="show2FAModal = false">
+              Cancelar
+            </button>
+            <button class="btn-primary" @click="enableTwoFactor">
+              Verificar y activar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Delete Account Modal -->
     <div
       v-if="showDeleteModal"
@@ -611,12 +797,14 @@ import { ref, computed, onMounted } from 'vue';
 // ============================================
 // En producción, esto vendría del store de autenticación
 const userRole = ref('user'); // 'user' | 'admin'
+const userPhone = ref('+52 55 1234 5678');
 
 // Security data
 const securityScore = ref(85);
 const activeSessions = ref(2);
 const lastPasswordDays = ref(45);
 const securityIssues = ref(3);
+const twoFactorEnabled = ref(false);
 
 // Password form
 const passwordForm = ref({
@@ -637,6 +825,8 @@ const showConfirmPassword = ref(false);
 const isChangingPassword = ref(false);
 
 // 2FA
+const show2FAModal = ref(false);
+const twoFactorCode = ref('');
 
 // Delete account
 const showDeleteModal = ref(false);
@@ -791,6 +981,47 @@ const changePassword = () => {
   }, 1500);
 };
 
+const setupTwoFactor = () => {
+  show2FAModal.value = true;
+};
+
+const enableTwoFactor = () => {
+  if (twoFactorCode.value.length === 6) {
+    twoFactorEnabled.value = true;
+    show2FAModal.value = false;
+    twoFactorCode.value = '';
+    alert('Autenticación de dos factores activada correctamente');
+
+    // Marcar recomendación como completada
+    const rec = securityRecommendations.value.find((r) => r.id === 1);
+    if (rec) rec.completed = true;
+    securityIssues.value = securityRecommendations.value.filter(
+      (r) => !r.completed
+    ).length;
+    securityScore.value = 100 - securityIssues.value * 5;
+  } else {
+    alert('Por favor ingresa un código válido de 6 dígitos');
+  }
+};
+
+const disableTwoFactor = () => {
+  if (
+    confirm(
+      '¿Estás seguro de que deseas desactivar la autenticación de dos factores?'
+    )
+  ) {
+    twoFactorEnabled.value = false;
+    alert('Autenticación de dos factores desactivada');
+
+    const rec = securityRecommendations.value.find((r) => r.id === 1);
+    if (rec) rec.completed = false;
+    securityIssues.value = securityRecommendations.value.filter(
+      (r) => !r.completed
+    ).length;
+    securityScore.value = 100 - securityIssues.value * 5;
+  }
+};
+
 const removeDevice = (deviceId) => {
   if (confirm('¿Eliminar este dispositivo de la lista de confiados?')) {
     trustedDevices.value = trustedDevices.value.filter(
@@ -833,6 +1064,18 @@ const deleteAccount = () => {
     alert('Cuenta eliminada permanentemente');
     showDeleteModal.value = false;
     // router.push('/login')
+  }
+};
+
+const takeAction = (recommendation) => {
+  if (recommendation.id === 1) {
+    setupTwoFactor();
+  } else if (recommendation.id === 2) {
+    document
+      .querySelector('.security-card')
+      .scrollIntoView({ behavior: 'smooth' });
+  } else {
+    alert(`Acción: ${recommendation.action}`);
   }
 };
 

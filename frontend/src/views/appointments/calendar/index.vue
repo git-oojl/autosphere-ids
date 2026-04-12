@@ -239,7 +239,18 @@ export default {
     vehicle: {
       type: Object,
       required: true,
-      // Elimina el default porque la prop es requerida
+      default: () => ({
+        id: null,
+        name: '',
+        year: '',
+        type: '',
+        mileage: '',
+        fuel: '',
+        transmission: '',
+        price: '',
+        location: '',
+        image: '',
+      }),
     },
   },
   data() {
