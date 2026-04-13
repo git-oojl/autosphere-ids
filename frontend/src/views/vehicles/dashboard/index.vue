@@ -508,31 +508,6 @@
                       <line x1="8" y1="2" x2="8" y2="6" />
                       <line x1="3" y1="10" x2="21" y2="10" />
                     </svg>
-                    <svg
-                      v-else-if="a.icon === 'heart'"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#386ba8"
-                      stroke-width="2"
-                    >
-                      <path
-                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                      />
-                    </svg>
-                    <svg
-                      v-else-if="a.icon === 'clock'"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="#386ba8"
-                      stroke-width="2"
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                      <path d="M12 6v6l4 2" />
-                    </svg>
                   </div>
                   <span>{{ a.label }}</span>
                 </button>
@@ -1399,38 +1374,6 @@
                     stroke="#386ba8"
                     stroke-width="2.2"
                   >
-                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-                  </svg>
-                  <h3>Acciones rápidas</h3>
-                </div>
-              </div>
-              <div class="udash-quick-grid udash-quick-grid--outline">
-                <button
-                  v-for="a in landlordActions"
-                  :key="a.label"
-                  type="button"
-                  class="udash-quick-btn udash-quick-btn--outline"
-                  @click="a.onClick"
-                >
-                  <div class="udash-quick-icon udash-quick-icon--glyph">
-                    <QuickActionGlyph :name="a.icon" />
-                  </div>
-                  <span>{{ a.label }}</span>
-                </button>
-              </div>
-            </div>
-
-            <div class="udash-card">
-              <div class="udash-card-head">
-                <div class="udash-card-head-l">
-                  <svg
-                    width="15"
-                    height="15"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="#386ba8"
-                    stroke-width="2.2"
-                  >
                     <line x1="18" y1="20" x2="18" y2="10" />
                     <line x1="12" y1="20" x2="12" y2="4" />
                     <line x1="6" y1="20" x2="6" y2="14" />
@@ -1483,21 +1426,16 @@ const goToNewListing = () => router.push({ name: 'create-listing' });
 const sellerGoNewListing = () => router.push({ name: 'create-listing' });
 const sellerGoNewAppointment = () => router.push({ name: 'my-appointments' });
 const sellerGoAppointments = () => router.push({ name: 'my-appointments' });
-const sellerGoMessages = () => router.push({ name: 'user-listings' });
-const sellerGoAnalytics = () => router.push({ name: 'user-listings' });
 const sellerGoListings = () => router.push({ name: 'user-listings' });
 const sellerEditListing = (id) =>
   router.push({ name: 'seller-edit-listing', params: { id: String(id) } });
 
-const landlordGoAddVehicle = () => router.push({ name: 'create-listing' });
 const landlordGoNewRenta = () => router.push({ name: 'user-rentals' });
-const landlordGoReports = () => router.push({ name: 'user-rentals' });
-const landlordGoIncome = () => router.push({ name: 'user-rentals' });
-const landlordGoAppointments = () => router.push({ name: 'user-appointments' });
+const landlordGoAppointments = () => router.push({ name: 'my-appointments' });
 const landlordGoListings = () => router.push({ name: 'user-listings' });
 
 const buyerGoCatalog = () => router.push({ name: 'public-catalog' });
-const buyerGoAppointments = () => router.push({ name: 'user-appointments' });
+const buyerGoAppointments = () => router.push({ name: 'my-appointments' });
 const buyerGoSaved = () => router.push({ name: 'buyer-saved-vehicles' });
 const buyerGoHistory = () => router.push({ name: 'buyer-search-history' });
 const buyerOpenListing = (id) =>
@@ -1723,18 +1661,6 @@ const buyerActions = computed(() => [
     bg: '#dbeafe',
     onClick: buyerGoAppointments,
   },
-  {
-    label: 'Favoritos',
-    icon: 'heart',
-    bg: '#cfe2f8',
-    onClick: buyerGoSaved,
-  },
-  {
-    label: 'Historial',
-    icon: 'clock',
-    bg: '#e8f0f8',
-    onClick: buyerGoHistory,
-  },
 ]);
 
 function buyerRemoveSearch(id) {
@@ -1834,9 +1760,7 @@ const sellerData = ref({
 
 const sellerActions = [
   { label: 'Nuevo Anuncio', icon: 'plus', onClick: sellerGoNewListing },
-  { label: 'Nueva Cita', icon: 'calendar', onClick: sellerGoNewAppointment },
-  { label: 'Mensajes', icon: 'message', onClick: sellerGoMessages },
-  { label: 'Analíticas', icon: 'chart', onClick: sellerGoAnalytics },
+  { label: 'Mis Citas', icon: 'calendar', onClick: sellerGoNewAppointment },
 ];
 
 // ── Data arrendador ──────────────────────────────────────────────
@@ -1946,13 +1870,6 @@ const landlordData = ref({
 const maxIncome = computed(() =>
   Math.max(...landlordData.value.incomeChart.map((i) => i.value))
 );
-
-const landlordActions = [
-  { label: 'Agregar vehículo', icon: 'plus', onClick: landlordGoAddVehicle },
-  { label: 'Nueva renta', icon: 'calendar', onClick: landlordGoNewRenta },
-  { label: 'Reportes', icon: 'alert', onClick: landlordGoReports },
-  { label: 'Ingresos', icon: 'dollar', onClick: landlordGoIncome },
-];
 </script>
 
 <style scoped src="./styles.css"></style>
