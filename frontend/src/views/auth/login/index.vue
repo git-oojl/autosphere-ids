@@ -298,7 +298,7 @@ const handleLogin = async () => {
 // Manejar recuperación de contraseña
 const handleForgotPassword = () => {
   console.log('Recuperar contraseña');
-  router.push('../../views/auth/forgot-password/index.vue');
+  router.push('recuperar-contrasena');
 };
 </script>
 

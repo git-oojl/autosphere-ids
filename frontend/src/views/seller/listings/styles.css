@@ -5,78 +5,6 @@
 }
 
 /* ============================================
-   NAVBAR - Tamaño reducido
-   ============================================ */
-.navbar {
-  background: linear-gradient(135deg, #1e3a5f 0%, #2d5179 100%);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-}
-
-.nav-container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 10px 24px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.nav-brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.brand-icon {
-  font-size: 24px;
-}
-
-.brand-text {
-  font-size: 20px;
-  font-weight: 700;
-  color: white;
-  letter-spacing: -0.3px;
-}
-
-.nav-user {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.user-avatar {
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  color: white;
-  font-size: 13px;
-}
-
-.user-info {
-  text-align: right;
-}
-
-.user-name {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
-  color: white;
-}
-
-.user-role {
-  font-size: 10px;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-/* ============================================
    CONTENT WRAPPER - Padding reducido
    ============================================ */
 .content-wrapper {
@@ -766,5 +694,182 @@
     padding: 5px 8px;
     font-size: 12px;
     min-width: 28px;
+  }
+}
+
+/* ============================================
+   TABS PARA VENTA / RENTA
+   ============================================ */
+.tabs-container {
+  margin-bottom: 24px;
+}
+
+.tabs {
+  display: flex;
+  gap: 12px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.tab:hover {
+  color: #1e3a5f;
+}
+
+.tab.active {
+  color: #3b82f6;
+}
+
+.tab.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #3b82f6;
+}
+
+.tab-icon {
+  font-size: 18px;
+}
+
+.tab-count {
+  background: #f1f5f9;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1e3a5f;
+  margin-left: 6px;
+}
+
+/* Precio de renta */
+.rental-price {
+  font-size: 15px !important;
+}
+
+.price-period {
+  font-size: 12px;
+  font-weight: normal;
+  color: #64748b;
+}
+
+/* Availability badge */
+.availability-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.availability-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.availability-badge.available {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.availability-badge.unavailable {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.availability-dates {
+  font-size: 11px;
+  color: #64748b;
+}
+
+/* Estado vendido */
+.status-badge.sold {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.status-badge.unavailable {
+  background: #fee2e2;
+  color: #dc2626;
+}
+/* ============================================
+   TOAST NOTIFICATION
+   ============================================ */
+.toast-notification {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  background: white;
+  border-radius: 12px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  z-index: 2000;
+  animation: slideIn 0.3s ease;
+  border-left: 4px solid;
+}
+
+.toast-notification.success {
+  border-left-color: #10b981;
+  background: #f0fdf4;
+  color: #065f46;
+}
+
+.toast-notification.error {
+  border-left-color: #ef4444;
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.toast-notification.info {
+  border-left-color: #3b82f6;
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: currentColor;
+  opacity: 0.6;
+  padding: 0 4px;
+}
+
+.toast-close:hover {
+  opacity: 1;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
   }
 }

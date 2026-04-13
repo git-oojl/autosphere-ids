@@ -1,227 +1,378 @@
 <template>
-  <v-app-bar
-    elevation="0"
-    color="transparent"
-    class="public-appbar"
-    height="96"
-  >
-    <v-container class="navbar-wrapper">
+  <!-- Navbar personalizado - SIN v-app-bar de Vuetify -->
+  <header class="custom-navbar" :class="{ 'navbar-hidden': !isNavbarVisible }">
+    <div class="navbar-container">
       <nav class="navbar">
         <div class="logo" @click="goHome">AutoSphere</div>
 
-        <!-- Menú de navegación principal (siempre visible) -->
+        <!-- Menú de navegación principal -->
         <div class="nav-links">
-          <v-btn
-            variant="text"
+          <button
             class="nav-btn"
-            active-class="nav-active"
-            :to="{ name: 'public-home' }"
-            exact
+            :class="{ 'nav-active': isActive('public-home') }"
+            @click="goToPage('public-home')"
           >
             Inicio
-          </v-btn>
+          </button>
 
-          <v-btn
-            variant="text"
+          <button
             class="nav-btn"
-            active-class="nav-active"
-            :to="{ name: 'public-catalog' }"
+            :class="{ 'nav-active': isActive('public-catalog') }"
+            @click="goToPage('public-catalog')"
           >
             Vehículos
-          </v-btn>
+          </button>
 
-          <v-btn
-            variant="text"
+          <button
             class="nav-btn"
-            active-class="nav-active"
-            :to="{ name: 'public-about' }"
+            :class="{ 'nav-active': isActive('public-about') }"
+            @click="goToPage('public-about')"
           >
             Nosotros
-          </v-btn>
+          </button>
 
-          <v-btn
-            variant="text"
+          <button
             class="nav-btn"
-            active-class="nav-active"
-            :to="{ name: 'public-contact' }"
+            :class="{ 'nav-active': isActive('public-contact') }"
+            @click="goToPage('public-contact')"
           >
             Contacto
-          </v-btn>
+          </button>
 
-          <!-- Botón "Publicar vehículo" (solo usuarios autenticados NO admin) -->
-          <v-btn
+          <!-- Botón "Publicar vehículo" -->
+          <button
             v-if="auth.isAuthenticated && !auth.isAdmin"
-            variant="text"
             class="nav-btn nav-highlight"
-            :to="{ name: 'create-listing' }"
+            @click="goToPage('create-listing')"
           >
-            <v-icon left size="18" class="mr-1">mdi-plus-circle</v-icon>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              style="margin-right: 6px"
+            >
+              <line
+                x1="12"
+                y1="5"
+                x2="12"
+                y2="19"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <line
+                x1="5"
+                y1="12"
+                x2="19"
+                y2="12"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
             Publicar vehículo
-          </v-btn>
+          </button>
 
-          <!-- Enlace a Admin (solo admin) -->
-          <v-btn
+          <!-- Enlace a Admin -->
+          <button
             v-if="auth.isAdmin"
-            variant="text"
             class="nav-btn nav-admin"
-            :to="{ name: 'admin-dashboard' }"
+            @click="goToPage('admin-dashboard')"
           >
-            <v-icon left size="18" class="mr-1">mdi-shield-account</v-icon>
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              style="margin-right: 6px"
+            >
+              <path
+                d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
             Admin
-          </v-btn>
+          </button>
         </div>
 
         <div class="search-container">
           <!-- Buscador -->
           <div class="search-box">
-            <v-text-field
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              class="search-icon-custom"
+            >
+              <circle
+                cx="11"
+                cy="11"
+                r="8"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path
+                d="M21 21L16.65 16.65"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+            <input
               v-model="q"
-              variant="plain"
-              density="compact"
-              hide-details
+              type="text"
               placeholder="Búsqueda"
-              class="search-field"
-              prepend-inner-icon="mdi-magnify"
+              class="search-input-custom"
               @keyup.enter="goSearch"
             />
           </div>
 
-          <!-- Icono de usuario con menú desplegable -->
-          <v-menu
-            v-if="auth.isAuthenticated"
-            offset-y
-            transition="slide-y-transition"
-            :close-on-content-click="false"
-          >
-            <template #activator="{ props }">
-              <v-btn
-                icon
-                class="user-icon user-logged"
-                v-bind="props"
-                aria-label="Mi cuenta"
-              >
-                <v-icon>mdi-account</v-icon>
-              </v-btn>
-            </template>
+          <!-- Icono de usuario con menú -->
+          <div v-if="auth.isAuthenticated" class="user-menu-wrapper">
+            <button class="user-icon user-logged" @click="toggleUserMenu">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path
+                  d="M20 21V19C20 16.8 18.2 15 16 15H8C5.8 15 4 16.8 4 19V21"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </button>
 
-            <v-card class="user-menu-card" min-width="250">
+            <div v-if="showUserMenu" class="user-dropdown" @click.stop>
               <div class="user-menu-header">
-                <div class="user-avatar">
-                  <v-icon size="40">mdi-account-circle</v-icon>
+                <div class="user-avatar-custom">
+                  {{ auth.user?.name?.charAt(0) || 'U' }}
                 </div>
-                <div class="user-info">
-                  <div class="user-name">
+                <div class="user-info-custom">
+                  <div class="user-name-custom">
                     {{ auth.user?.name || 'Usuario' }}
                   </div>
-                  <div class="user-email">
+                  <div class="user-email-custom">
                     {{ auth.user?.email || 'usuario@email.com' }}
                   </div>
                 </div>
               </div>
-
-              <v-divider />
-
-              <v-list density="compact">
-                <!--
-                  TODAS las rutas apuntan al layout PÚBLICO
-                  (mismo layout que Inicio, Vehículos, etc.)
-                  El DashboardLayout ya no inyecta sidebar propio.
-                -->
-
-                <!-- Dashboard unificado -->
-
-                <v-list-item
+              <div class="user-menu-divider"></div>
+              <div class="user-menu-items">
+                <button
                   v-if="!auth.isAdmin"
-                  :to="{ name: 'user-dashboard' }"
-                  class="menu-item"
+                  class="menu-item-custom"
+                  @click="goToPage('user-dashboard')"
                 >
-                  <template #prepend>
-                    <v-icon>mdi-view-dashboard</v-icon>
-                  </template>
-                  <v-list-item-title>Dashboard</v-list-item-title>
-                </v-list-item>
-
-                <!-- Mis citas -->
-                <v-list-item
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M3 3H21V21H3V3Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M7 15L10 10L13 13L19 6"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                  Dashboard
+                </button>
+                <!--<button v-if="!auth.isAdmin" class="menu-item-custom" @click="goToPage('buyer-dashboard')">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 7H4C2.9 7 2 7.9 2 9V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V9C22 7.9 21.1 7 20 7Z" stroke="currentColor" stroke-width="2"/>
+                    <path d="M16 21V5C16 3.9 15.1 3 14 3H10C8.9 3 8 3.9 8 5V21" stroke="currentColor" stroke-width="2"/>
+                  </svg>
+                  Comprador
+                </button> -->
+                <button
                   v-if="!auth.isAdmin"
-                  :to="{ name: 'my-appointments' }"
-                  class="menu-item"
+                  class="menu-item-custom"
+                  @click="goToPage('my-appointments')"
                 >
-                  <template #prepend>
-                    <v-icon>mdi-calendar</v-icon>
-                  </template>
-                  <v-list-item-title>Mis citas</v-list-item-title>
-                </v-list-item>
-                <!-- Mis publicaciones -->
-                <v-list-item
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <rect
+                      x="3"
+                      y="4"
+                      width="18"
+                      height="18"
+                      rx="2"
+                      ry="2"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <line
+                      x1="8"
+                      y1="2"
+                      x2="8"
+                      y2="6"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <line
+                      x1="16"
+                      y1="2"
+                      x2="16"
+                      y2="6"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <circle cx="12" cy="14" r="1" fill="currentColor" />
+                  </svg>
+                  Mis citas
+                </button>
+                <button
                   v-if="!auth.isAdmin"
-                  :to="{ name: 'user-listings' }"
-                  class="menu-item"
+                  class="menu-item-custom"
+                  @click="goToPage('user-listings')"
                 >
-                  <template #prepend>
-                    <v-icon>mdi-car</v-icon>
-                  </template>
-                  <v-list-item-title>Mis publicaciones</v-list-item-title>
-                </v-list-item>
-
-                <!-- Mi perfil -->
-                <v-list-item :to="{ name: 'user-profile' }" class="menu-item">
-                  <template #prepend>
-                    <v-icon>mdi-account-settings</v-icon>
-                  </template>
-                  <v-list-item-title>Mi perfil</v-list-item-title>
-                </v-list-item>
-
-                <!-- Seguridad -->
-                <v-list-item :to="{ name: 'user-security' }" class="menu-item">
-                  <template #prepend>
-                    <v-icon>mdi-shield-lock</v-icon>
-                  </template>
-                  <v-list-item-title>Seguridad</v-list-item-title>
-                </v-list-item>
-
-                <v-divider />
-
-                <!-- Cerrar sesión -->
-                <v-list-item
-                  class="menu-item logout-item"
-                  @click="handleLogout"
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M20 7H4C2.9 7 2 7.9 2 9V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V9C22 7.9 21.1 7 20 7Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M16 21V5C16 3.9 15.1 3 14 3H10C8.9 3 8 3.9 8 5V21"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                  Mis publicaciones
+                </button>
+                <button
+                  class="menu-item-custom"
+                  @click="goToPage('user-profile')"
                 >
-                  <template #prepend>
-                    <v-icon color="error">mdi-logout</v-icon>
-                  </template>
-                  <v-list-item-title class="text-error"
-                    >Cerrar sesión</v-list-item-title
-                  >
-                </v-list-item>
-              </v-list>
-            </v-card>
-          </v-menu>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M20 21V19C20 16.8 18.2 15 16 15H8C5.8 15 4 16.8 4 19V21"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                  Mi perfil
+                </button>
+                <button
+                  class="menu-item-custom"
+                  @click="goToPage('user-security')"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="3"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                  Seguridad
+                </button>
+                <div class="user-menu-divider"></div>
+                <button class="menu-item-custom logout" @click="handleLogout">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M9 21H5C4.46957 21 3.96086 20.7893 3.58579 20.4142C3.21071 20.0391 3 19.5304 3 19V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H9"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M16 17L21 12L16 7"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <path d="M21 12H9" stroke="currentColor" stroke-width="2" />
+                  </svg>
+                  Cerrar sesión
+                </button>
+              </div>
+            </div>
+          </div>
 
           <!-- Icono de login (invitado) -->
-          <v-btn
-            v-else
-            icon
-            class="user-icon"
-            :to="{ name: 'auth-login' }"
-            aria-label="login"
-          >
-            <v-icon>mdi-account</v-icon>
-          </v-btn>
+          <button v-else class="user-icon" @click="goToPage('auth-login')">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12Z"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+              <path
+                d="M20 21V19C20 16.8 18.2 15 16 15H8C5.8 15 4 16.8 4 19V21"
+                stroke="currentColor"
+                stroke-width="2"
+              />
+            </svg>
+          </button>
         </div>
       </nav>
-    </v-container>
-  </v-app-bar>
+    </div>
+  </header>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref, onMounted, onUnmounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '../../stores/auth';
 
 const router = useRouter();
+const route = useRoute();
 const auth = useAuthStore();
 const q = ref('');
+const isNavbarVisible = ref(true);
+const showUserMenu = ref(false);
+let lastScrollY = ref(0);
+
+// Cerrar menú al hacer clic fuera
+const handleClickOutside = (event) => {
+  const wrapper = document.querySelector('.user-menu-wrapper');
+  if (wrapper && !wrapper.contains(event.target)) {
+    showUserMenu.value = false;
+  }
+};
+
+const handleScroll = () => {
+  const currentScrollY = window.scrollY;
+
+  if (currentScrollY <= 10) {
+    isNavbarVisible.value = true;
+    lastScrollY.value = currentScrollY;
+    return;
+  }
+
+  if (currentScrollY > lastScrollY.value && currentScrollY > 80) {
+    isNavbarVisible.value = false;
+    showUserMenu.value = false; // Cerrar menú al ocultar navbar
+  } else if (currentScrollY < lastScrollY.value) {
+    isNavbarVisible.value = true;
+  }
+
+  lastScrollY.value = currentScrollY;
+};
+
+const isActive = (name) => {
+  return route.name === name;
+};
+
+const goToPage = (name) => {
+  showUserMenu.value = false;
+  router.push({ name });
+};
+
+const toggleUserMenu = () => {
+  showUserMenu.value = !showUserMenu.value;
+};
 
 function goHome() {
   router.push({ name: 'public-home' });
@@ -236,23 +387,47 @@ function goSearch() {
 
 function handleLogout() {
   auth.clearSession();
+  showUserMenu.value = false;
   router.push({ name: 'public-home' });
 }
+
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+  document.addEventListener('click', handleClickOutside);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+  document.removeEventListener('click', handleClickOutside);
+});
 </script>
 
 <style scoped>
-/* Estilos principales */
-.public-appbar {
-  background: transparent !important;
+/* ============================================
+   NAVBAR PERSONALIZADO - SIN FONDO BLANCO
+   ============================================ */
+.custom-navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 20px 32px;
+  transition: transform 0.3s ease-in-out;
 }
 
-.navbar-wrapper {
-  padding: 10px;
+.navbar-hidden {
+  transform: translateY(-100%);
+}
+
+.navbar-container {
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .navbar {
   background: #0f1e2c;
-  padding: 15px 40px;
+  padding: 12px 32px;
   border-radius: 100px;
   display: flex;
   justify-content: space-between;
@@ -267,6 +442,7 @@ function handleLogout() {
   color: #ffffff;
   cursor: pointer;
   transition: opacity 0.3s;
+  white-space: nowrap;
 }
 
 .logo:hover {
@@ -275,18 +451,24 @@ function handleLogout() {
 
 .nav-links {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   align-items: center;
   flex-wrap: wrap;
 }
 
 .nav-btn {
+  background: none;
+  border: none;
   text-transform: none;
-  letter-spacing: normal;
   font-weight: 500;
-  font-size: 15px;
+  font-size: 14px;
   color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 40px;
+  cursor: pointer;
   transition: all 0.3s;
+  display: flex;
+  align-items: center;
 }
 
 .nav-btn:hover {
@@ -296,6 +478,7 @@ function handleLogout() {
 .nav-active {
   color: #0f1e2c !important;
   font-weight: 600 !important;
+  background: rgba(255, 255, 255, 0.9) !important;
 }
 
 .nav-highlight {
@@ -315,165 +498,169 @@ function handleLogout() {
 .search-container {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 12px;
 }
 
 .search-box {
   display: flex;
   align-items: center;
+  gap: 8px;
   background: #f5f5f5;
-  padding: 0 14px;
-  border-radius: 20px;
-  min-width: 220px;
+  padding: 0 16px;
+  border-radius: 40px;
+  min-width: 200px;
   height: 40px;
 }
 
-.search-field {
-  flex: 1;
-}
-
-.search-field :deep(.v-input__control) {
-  min-height: 40px !important;
-}
-
-.search-field :deep(.v-field) {
-  min-height: 40px !important;
-  height: 40px !important;
-  display: flex;
-  align-items: center;
-  background: transparent !important;
-  box-shadow: none !important;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-}
-
-.search-field :deep(.v-field__field) {
-  min-height: 40px !important;
-  height: 40px !important;
-  display: flex;
-  align-items: center;
-}
-
-.search-field :deep(.v-field__input) {
-  min-height: 40px !important;
-  height: 40px !important;
-  display: flex;
-  align-items: center;
-  padding-top: 0 !important;
-  padding-bottom: 0 !important;
-  font-size: 14px;
-  color: #333;
-}
-
-.search-field :deep(.v-field__prepend-inner) {
-  height: 40px !important;
-  display: flex;
-  align-items: center;
-  padding-top: 0 !important;
-}
-
-.search-field :deep(.v-field__prepend-inner .v-icon) {
-  transform: translateY(1px);
-}
-
-.search-field :deep(.v-icon) {
+.search-icon-custom {
   color: #777;
+  flex-shrink: 0;
 }
 
-.search-field :deep(input) {
+.search-input-custom {
+  flex: 1;
+  border: none;
+  background: transparent;
   font-size: 14px;
+  outline: none;
   color: #333;
 }
 
-.search-field :deep(input::placeholder) {
+.search-input-custom::placeholder {
   color: #999;
 }
 
-/* Estilos del icono de usuario */
+/* Icono de usuario */
 .user-icon {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   background: #2a4c6d;
   color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
   transition: all 0.3s ease;
+  border: none;
 }
 
 .user-icon:hover {
-  background: #2a4c6d;
   transform: scale(1.05);
+  background: #3a5c7d;
 }
 
 .user-logged {
   background: linear-gradient(135deg, #436d97 0%, #436d97 100%);
 }
 
-.user-logged:hover {
-  background: linear-gradient(135deg, #314d6a 0%, #314d6a 100%);
+/* Menú desplegable */
+.user-menu-wrapper {
+  position: relative;
 }
 
-/* Menú desplegable del usuario */
-.user-menu-card {
+.user-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 12px;
+  background: white;
   border-radius: 16px;
-  overflow: hidden;
+  min-width: 260px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  overflow: hidden;
 }
 
 .user-menu-header {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   padding: 16px;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
 }
 
-.user-avatar {
-  width: 50px;
-  height: 50px;
+.user-avatar-custom {
+  width: 44px;
+  height: 44px;
   background: #3b82f6;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
+  font-weight: bold;
+  font-size: 18px;
 }
 
-.user-info {
+.user-info-custom {
   flex: 1;
 }
 
-.user-name {
+.user-name-custom {
   font-weight: 700;
-  font-size: 16px;
+  font-size: 14px;
   color: #1e293b;
 }
 
-.user-email {
-  font-size: 12px;
+.user-email-custom {
+  font-size: 11px;
   color: #64748b;
 }
 
-.menu-item {
-  transition: background 0.2s;
+.user-menu-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 8px 0;
 }
 
-.menu-item:hover {
+.user-menu-items {
+  padding: 8px 0;
+}
+
+.menu-item-custom {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: #334155;
+  cursor: pointer;
+  transition: background 0.2s;
+  text-align: left;
+}
+
+.menu-item-custom svg {
+  flex-shrink: 0;
+  color: #64748b;
+}
+
+.menu-item-custom:hover {
   background: #f1f5f9;
 }
 
-.logout-item:hover {
-  background: #fef2f2;
+.menu-item-custom.logout {
+  color: #dc2626;
 }
 
-.text-error {
+.menu-item-custom.logout svg {
   color: #dc2626;
 }
 
 /* Responsive */
-@media (max-width: 1200px) {
+@media (max-width: 1100px) {
+  .custom-navbar {
+    padding: 16px 20px;
+  }
+
   .navbar {
     flex-wrap: wrap;
     justify-content: center;
+    border-radius: 30px;
+    padding: 16px 24px;
   }
 
   .nav-links {
@@ -488,25 +675,24 @@ function handleLogout() {
 }
 
 @media (max-width: 768px) {
-  .navbar-wrapper {
-    padding: 15px;
+  .custom-navbar {
+    padding: 12px 16px;
   }
 
   .navbar {
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
     border-radius: 20px;
-    padding: 20px;
+    padding: 16px;
   }
 
   .nav-links {
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
     width: 100%;
-    text-align: center;
   }
 
-  .nav-links .nav-btn {
+  .nav-btn {
     width: 100%;
     justify-content: center;
   }
@@ -519,6 +705,11 @@ function handleLogout() {
   .search-box {
     width: 100%;
     min-width: unset;
+  }
+
+  .logo {
+    text-align: center;
+    width: 100%;
   }
 }
 </style>

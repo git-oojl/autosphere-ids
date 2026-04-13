@@ -1,8 +1,6 @@
 <template>
   <div class="listados">
-    <br />
-    <br />
-    <br />
+    <br /><br /><br /><br /><br />
 
     <!-- MAIN CONTENT WITH SIDEBAR FILTERS -->
     <div class="main-layout">
