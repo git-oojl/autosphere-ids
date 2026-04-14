@@ -13,7 +13,7 @@ body {
 }
 .seller-dashboard {
   min-height: 100vh;
-  background: linear-gradient(135deg, #f8f9fb 0%, #ffffff 100%);
+  background: #deeaf6;
 }
 
 /* NAVBAR */

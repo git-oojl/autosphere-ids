@@ -3,7 +3,7 @@
     <br /><br /><br /><br /><br />
     <div class="container">
       <!-- Page Title -->
-      <h1 class="page-title">Mis Citas</h1>
+      <h1 class="page-title">Mis citas</h1>
       <p class="page-subtitle">
         Listado completo de tus citas con todas las acciones disponibles
       </p>
@@ -116,15 +116,7 @@
             <thead>
               <tr>
                 <th>Hora</th>
-                <th>
-                  {{
-                    activeTab === 'comprador'
-                      ? 'Vendedor'
-                      : activeTab === 'vendedor'
-                        ? 'Comprador'
-                        : 'Cliente'
-                  }}
-                </th>
+                <th>Cliente</th>
                 <th>Vehículo</th>
                 <th>Tipo</th>
                 <th>Estado</th>
@@ -138,16 +130,9 @@
                 v-for="appointment in group.appointments"
                 :key="appointment.id"
               >
-                <td class="time-cell">{{ appointment.time }}</td>
-                <td>
-                  <strong>{{ getPersonName(appointment) }}</strong>
-                  <div class="contact-info">
-                    {{ getPersonPhone(appointment) }}
-                  </div>
-                </td>
-                <td class="vehicle-cell">
-                  <strong>{{ appointment.vehicle }}</strong>
-                </td>
+                <td>{{ appointment.time }}</td>
+                <td>{{ appointment.client }}</td>
+                <td>{{ appointment.vehicle }}</td>
                 <td>
                   <span :class="['type-badge', getTipoClass(appointment.tipo)]">
                     {{ getTipoLabel(appointment.tipo) }}
@@ -169,10 +154,7 @@
                 <td>
                   <button
                     class="action-btn reschedule"
-                    :disabled="
-                      appointment.status === 'Cancelada' ||
-                      appointment.status === 'Completada'
-                    "
+                    :disabled="appointment.status === 'Cancelada'"
                     @click="openRescheduleModal(appointment)"
                   >
                     Reprogramar
@@ -193,7 +175,7 @@
               </tr>
               <tr v-if="group.appointments.length === 0">
                 <td colspan="8" class="empty-row">
-                  📭 No hay citas para este día
+                  No hay citas para este día
                 </td>
               </tr>
             </tbody>
@@ -332,11 +314,11 @@ export default {
             time: '10:30',
             status: 'Pendiente',
             tipo: 'compra',
-            phone: '55 1234 5678',
+            phone: '555-0101',
             email: 'ana@email.com',
             notes: 'Interesada en financiamiento',
             sellerName: 'Juan Pérez',
-            sellerPhone: '55 8765 4321',
+            sellerPhone: '555-0102',
           },
           {
             id: 2,
@@ -346,11 +328,11 @@ export default {
             time: '13:00',
             status: 'Confirmada',
             tipo: 'renta',
-            phone: '55 1234 5679',
+            phone: '555-0103',
             email: 'carlos@email.com',
             notes: 'Renta por 6 meses',
             sellerName: 'María Gómez',
-            sellerPhone: '55 8765 4322',
+            sellerPhone: '555-0104',
           },
         ],
         vendedor: [
@@ -362,11 +344,10 @@ export default {
             time: '09:00',
             status: 'Pendiente',
             tipo: 'venta',
-            phone: '55 1234 5680',
+            phone: '555-0201',
             email: 'roberto@email.com',
             notes: 'Prueba de manejo',
             buyerName: 'Roberto Martínez',
-            buyerPhone: '55 8765 4323',
           },
           {
             id: 102,
@@ -376,11 +357,10 @@ export default {
             time: '15:00',
             status: 'Confirmada',
             tipo: 'venta',
-            phone: '55 1234 5681',
+            phone: '555-0202',
             email: 'laura@email.com',
             notes: 'Interesada en compra directa',
             buyerName: 'Laura Fernández',
-            buyerPhone: '55 8765 4324',
           },
         ],
         rentador: [
@@ -392,11 +372,10 @@ export default {
             time: '11:00',
             status: 'Pendiente',
             tipo: 'renta',
-            phone: '55 1234 5682',
+            phone: '555-0301',
             email: 'pedro@email.com',
             notes: 'Renta por 3 meses',
             renterName: 'Pedro Sánchez',
-            renterPhone: '55 8765 4325',
           },
           {
             id: 202,
@@ -406,11 +385,10 @@ export default {
             time: '14:00',
             status: 'Confirmada',
             tipo: 'renta',
-            phone: '55 1234 5683',
+            phone: '555-0302',
             email: 'sofia@email.com',
             notes: 'Renta por 12 meses',
             renterName: 'Sofía Ramírez',
-            renterPhone: '55 8765 4326',
           },
         ],
       },
@@ -418,6 +396,7 @@ export default {
   },
   computed: {
     currentUser() {
+      // Obtener el rol del usuario logueado desde el store o localStorage
       return localStorage.getItem('userRole') || 'comprador';
     },
     currentAppointments() {
@@ -466,13 +445,13 @@ export default {
 
         let key;
         if (appDate.getTime() === today.getTime()) {
-          key = ` Hoy - ${formatDate(today)}`;
+          key = `Hoy - ${formatDate(today)}`;
         } else if (appDate.getTime() === tomorrow.getTime()) {
-          key = ` Mañana - ${formatDate(tomorrow)}`;
+          key = `Mañana - ${formatDate(tomorrow)}`;
         } else if (appDate.getTime() === dayAfter.getTime()) {
-          key = ` Pasado mañana - ${formatDate(dayAfter)}`;
+          key = `Pasado mañana - ${formatDate(dayAfter)}`;
         } else {
-          key = ` ${formatDate(appDate)}`;
+          key = formatDate(appDate);
         }
 
         if (!groups[key]) {
@@ -484,8 +463,8 @@ export default {
       const sortedGroups = {};
       Object.keys(groups)
         .sort((a, b) => {
-          const dateA = a.split(' - ')[1] || a.replace(' ', '');
-          const dateB = b.split(' - ')[1] || b.replace(' ', '');
+          const dateA = a.split(' - ')[1] || a;
+          const dateB = b.split(' - ')[1] || b;
           const [dayA, monthA, yearA] = dateA.split('/');
           const [dayB, monthB, yearB] = dateB.split('/');
           return (
@@ -517,30 +496,13 @@ export default {
     },
   },
   mounted() {
+    // Establecer la pestaña activa según el rol del usuario
     const userRole = localStorage.getItem('userRole');
     if (userRole && ['comprador', 'vendedor', 'rentador'].includes(userRole)) {
       this.activeTab = userRole;
     }
   },
   methods: {
-    getPersonName(appointment) {
-      if (this.activeTab === 'comprador') {
-        return appointment.sellerName || appointment.client;
-      } else if (this.activeTab === 'vendedor') {
-        return appointment.buyerName || appointment.client;
-      } else {
-        return appointment.renterName || appointment.client;
-      }
-    },
-    getPersonPhone(appointment) {
-      if (this.activeTab === 'comprador') {
-        return appointment.sellerPhone || '';
-      } else if (this.activeTab === 'vendedor') {
-        return appointment.buyerPhone || '';
-      } else {
-        return appointment.renterPhone || '';
-      }
-    },
     getTipoLabel(tipo) {
       const labels = {
         compra: 'Compra',
@@ -574,6 +536,7 @@ export default {
       this.showStatusDropdown = false;
     },
     viewAppointmentDetail(appointment) {
+      // Navegar al detalle según el rol
       const routeName =
         this.activeTab === 'vendedor'
           ? 'seller-appointment-detail'
@@ -613,8 +576,11 @@ export default {
           rescheduleReason: this.rescheduleData.reason,
         };
 
+        // Forzar actualización reactiva
         this.appointments[this.activeTab] = [...appointmentsList];
-        alert('✅ Cita reprogramada exitosamente');
+
+        // Mostrar notificación de éxito
+        alert('Cita reprogramada exitosamente');
       }
 
       this.closeRescheduleModal();
@@ -640,7 +606,7 @@ export default {
         };
 
         this.appointments[this.activeTab] = [...appointmentsList];
-        alert('✅ Cita cancelada exitosamente');
+        alert('Cita cancelada exitosamente');
       }
 
       this.closeCancelModal();
@@ -649,4 +615,6 @@ export default {
 };
 </script>
 
-<style scoped src="./styles.css"></style>
+<style scoped>
+@import './styles.css';
+</style>

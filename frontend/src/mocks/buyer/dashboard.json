@@ -2,7 +2,10 @@
   "summary": {
     "upcomingAppointments": 2,
     "savedVehicles": 4,
-    "searchesThisMonth": 9
+    "searchesThisMonth": 9,
+    "unreadMessages": 2,
+    "totalMessages": 5,
+    "newOffersThisWeek": 2
   },
   "highlights": [
     {
