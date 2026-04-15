@@ -887,13 +887,6 @@ const recentActivity = ref([
 // Security recommendations
 const securityRecommendations = ref([
   {
-    id: 1,
-    title: 'Activar autenticación de dos factores',
-    description: 'Protege tu cuenta con verificación en dos pasos',
-    action: 'Activar',
-    completed: false,
-  },
-  {
     id: 2,
     title: 'Actualizar contraseña',
     description: 'Tu contraseña tiene más de 90 días',

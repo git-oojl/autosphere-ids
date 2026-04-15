@@ -918,12 +918,11 @@ const contactSeller = () => {
   );
 };
 const scheduleTestDrive = () => {
-  if (isRental.value) {
-    alert('Redirigiendo a calendario de rentas...');
-    router.push(`/rentas?vehicle=${vehicle.value?.id}`);
-  } else {
-    router.push(`/citas?vehicle=${vehicle.value?.id}`);
-  }
+  // Redirigir al formulario de agendamiento con el ID del vehículo
+  router.push({
+    name: 'my-appointments',
+    query: { vehicle: vehicle.value?.id },
+  });
 };
 
 const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price);

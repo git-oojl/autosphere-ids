@@ -1,620 +1,863 @@
 <template>
-  <div class="gestion-citas">
-    <br /><br /><br /><br /><br />
-    <div class="container">
-      <!-- Page Title -->
-      <h1 class="page-title">Mis citas</h1>
-      <p class="page-subtitle">
-        Listado completo de tus citas con todas las acciones disponibles
-      </p>
+  <div class="appointment-booking-page">
+    <br /><br /><br /><br /><br /><br />
 
-      <!-- Tabs: Comprador / Vendedor / Rentador -->
-      <div class="tabs-container">
-        <button
-          :class="['tab-btn', { active: activeTab === 'comprador' }]"
-          @click="activeTab = 'comprador'"
-        >
-          Comprador
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="header-container">
+        <button class="back-btn" @click="goBack">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M15 18L9 12L15 6"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+          Volver
         </button>
-        <button
-          :class="['tab-btn', { active: activeTab === 'vendedor' }]"
-          @click="activeTab = 'vendedor'"
-        >
-          Vendedor
-        </button>
-        <button
-          :class="['tab-btn', { active: activeTab === 'rentador' }]"
-          @click="activeTab = 'rentador'"
-        >
-          Rentador
-        </button>
-      </div>
-
-      <!-- Stats Cards -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-info">
-            <span class="stat-value">{{ totalCitas }}</span>
-            <span class="stat-label">Total Citas</span>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-info">
-            <span class="stat-value">{{ citasPendientes }}</span>
-            <span class="stat-label">Pendientes</span>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-info">
-            <span class="stat-value">{{ citasConfirmadas }}</span>
-            <span class="stat-label">Confirmadas</span>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-info">
-            <span class="stat-value">{{ citasCompletadas }}</span>
-            <span class="stat-label">Completadas</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Filters Bar -->
-      <div class="filters-bar">
-        <div class="filters-group">
-          <span class="filter-label">Ver por:</span>
-          <div class="filter-buttons">
-            <button
-              :class="['filter-btn', { active: viewBy === 'fecha' }]"
-              @click="viewBy = 'fecha'"
-            >
-              Fecha
-            </button>
-            <button
-              :class="['filter-btn', { active: viewBy === 'vehiculo' }]"
-              @click="viewBy = 'vehiculo'"
-            >
-              Vehículo
-            </button>
-          </div>
-        </div>
-        <div class="filters-group">
-          <span class="filter-label">Filtrar estado:</span>
-          <div class="custom-select">
-            <button class="select-btn" @click="toggleStatusDropdown">
-              {{ statusFilter || 'Todos' }} ▼
-            </button>
-            <div v-if="showStatusDropdown" class="dropdown-menu">
-              <div class="dropdown-item" @click="setStatusFilter('')">
-                Todos
-              </div>
-              <div class="dropdown-item" @click="setStatusFilter('Pendiente')">
-                Pendiente
-              </div>
-              <div class="dropdown-item" @click="setStatusFilter('Confirmada')">
-                Confirmada
-              </div>
-              <div class="dropdown-item" @click="setStatusFilter('Completada')">
-                Completada
-              </div>
-              <div class="dropdown-item" @click="setStatusFilter('Cancelada')">
-                Cancelada
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Appointments by Day -->
-      <div
-        v-for="(group, index) in filteredGroupedAppointments"
-        :key="index"
-        class="day-section"
-      >
-        <h2 class="day-title">{{ group.title }}</h2>
-        <div class="table-wrapper">
-          <table class="appointments-table">
-            <thead>
-              <tr>
-                <th>Hora</th>
-                <th>Cliente</th>
-                <th>Vehículo</th>
-                <th>Tipo</th>
-                <th>Estado</th>
-                <th>Ver detalle</th>
-                <th>Reprogramar</th>
-                <th>Cancelar</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr
-                v-for="appointment in group.appointments"
-                :key="appointment.id"
-              >
-                <td>{{ appointment.time }}</td>
-                <td>{{ appointment.client }}</td>
-                <td>{{ appointment.vehicle }}</td>
-                <td>
-                  <span :class="['type-badge', getTipoClass(appointment.tipo)]">
-                    {{ getTipoLabel(appointment.tipo) }}
-                  </span>
-                </td>
-                <td>
-                  <span :class="['status', getStatusClass(appointment.status)]">
-                    {{ appointment.status }}
-                  </span>
-                </td>
-                <td>
-                  <button
-                    class="action-btn view"
-                    @click="viewAppointmentDetail(appointment)"
-                  >
-                    Ver detalle
-                  </button>
-                </td>
-                <td>
-                  <button
-                    class="action-btn reschedule"
-                    :disabled="appointment.status === 'Cancelada'"
-                    @click="openRescheduleModal(appointment)"
-                  >
-                    Reprogramar
-                  </button>
-                </td>
-                <td>
-                  <button
-                    class="action-btn cancel"
-                    :disabled="
-                      appointment.status === 'Cancelada' ||
-                      appointment.status === 'Completada'
-                    "
-                    @click="cancelAppointment(appointment)"
-                  >
-                    Cancelar
-                  </button>
-                </td>
-              </tr>
-              <tr v-if="group.appointments.length === 0">
-                <td colspan="8" class="empty-row">
-                  No hay citas para este día
-                </td>
-              </tr>
-            </tbody>
-          </table>
+        <div>
+          <h1 class="page-title">Agendar Cita</h1>
+          <p class="page-subtitle">
+            Completa el formulario para agendar una cita con el vendedor
+          </p>
         </div>
       </div>
     </div>
 
-    <!-- Modal for Reschedule -->
+    <!-- Main Content -->
+    <div class="content-wrapper">
+      <div class="booking-grid">
+        <!-- FORMULARIO -->
+        <div class="booking-form-card">
+          <form @submit.prevent="submitAppointment">
+            <!-- Vehículo de interés -->
+            <div class="form-group">
+              <label>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M20 7H4C2.9 7 2 7.9 2 9V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V9C22 7.9 21.1 7 20 7Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <path
+                    d="M16 21V5C16 3.9 15.1 3 14 3H10C8.9 3 8 3.9 8 5V21"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                </svg>
+                Vehículo de interés *
+              </label>
+              <div class="vehicle-selector">
+                <div
+                  class="selected-vehicle"
+                  @click="showVehicleSelector = true"
+                >
+                  <div class="vehicle-icon">
+                    {{
+                      selectedVehicle.icon ||
+                      getVehicleIcon(selectedVehicle.type) ||
+                      '🚗'
+                    }}
+                  </div>
+                  <div class="vehicle-info">
+                    <span class="vehicle-title">{{
+                      selectedVehicle.title || 'Seleccionar vehículo'
+                    }}</span>
+                    <span v-if="selectedVehicle.price" class="vehicle-price"
+                      >${{ formatPrice(selectedVehicle.price) }}</span
+                    >
+                  </div>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M6 9L12 15L18 9"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <input v-model="formData.vehicleId" type="hidden" required />
+            </div>
+
+            <!-- Fecha y hora -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <rect
+                      x="3"
+                      y="4"
+                      width="18"
+                      height="18"
+                      rx="2"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <line
+                      x1="8"
+                      y1="2"
+                      x2="8"
+                      y2="6"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <line
+                      x1="16"
+                      y1="2"
+                      x2="16"
+                      y2="6"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                  Fecha preferida *
+                </label>
+                <input
+                  v-model="formData.date"
+                  type="date"
+                  :min="minDate"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M12 6V12L16 14"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                  Hora preferida *
+                </label>
+                <select v-model="formData.time" required>
+                  <option value="">Seleccionar hora</option>
+                  <option value="09:00">09:00 AM</option>
+                  <option value="10:00">10:00 AM</option>
+                  <option value="11:00">11:00 AM</option>
+                  <option value="12:00">12:00 PM</option>
+                  <option value="13:00">01:00 PM</option>
+                  <option value="14:00">02:00 PM</option>
+                  <option value="15:00">03:00 PM</option>
+                  <option value="16:00">04:00 PM</option>
+                  <option value="17:00">05:00 PM</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Información personal -->
+            <div class="form-group">
+              <label>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M20 21V19C20 16.8 18.2 15 16 15H8C5.8 15 4 16.8 4 19V21"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <circle
+                    cx="12"
+                    cy="7"
+                    r="4"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                </svg>
+                Nombre completo *
+              </label>
+              <input
+                v-model="formData.fullName"
+                type="text"
+                placeholder="Ej: Juan Pérez García"
+                required
+              />
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M22 16.92V19C22 20.1 21.1 21 20 21H4C2.9 21 2 20.1 2 19V5C2 3.9 2.9 3 4 3H20C21.1 3 22 3.9 22 5"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M22 7L12 13L2 7"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                  Correo electrónico *
+                </label>
+                <input
+                  v-model="formData.email"
+                  type="email"
+                  placeholder="ejemplo@email.com"
+                  required
+                />
+              </div>
+              <div class="form-group">
+                <label>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M22 16.92V19C22 20.1 21.1 21 20 21H4C2.9 21 2 20.1 2 19V5C2 3.9 2.9 3 4 3H20C21.1 3 22 3.9 22 5"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M22 7L12 13L2 7"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    />
+                  </svg>
+                  Teléfono *
+                </label>
+                <input
+                  v-model="formData.phone"
+                  type="tel"
+                  placeholder="55 1234 5678"
+                  required
+                />
+              </div>
+            </div>
+
+            <!-- Tipo de cita -->
+            <div class="form-group">
+              <label>Tipo de cita *</label>
+              <div class="radio-group">
+                <label class="radio-option">
+                  <input
+                    v-model="formData.appointmentType"
+                    type="radio"
+                    value="test-drive"
+                  />
+                  <span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      />
+                      <circle
+                        cx="12"
+                        cy="12"
+                        r="3"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      />
+                    </svg>
+                    Test Drive
+                  </span>
+                </label>
+                <label class="radio-option">
+                  <input
+                    v-model="formData.appointmentType"
+                    type="radio"
+                    value="inspection"
+                  />
+                  <span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M20 7H4C2.9 7 2 7.9 2 9V19C2 20.1 2.9 21 4 21H20C21.1 21 22 20.1 22 19V9C22 7.9 21.1 7 20 7Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      />
+                      <circle cx="9" cy="12" r="1" fill="currentColor" />
+                      <circle cx="15" cy="12" r="1" fill="currentColor" />
+                    </svg>
+                    Inspección
+                  </span>
+                </label>
+                <label class="radio-option">
+                  <input
+                    v-model="formData.appointmentType"
+                    type="radio"
+                    value="negotiation"
+                  />
+                  <span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                      <path
+                        d="M12 2L15 8.5L22 9.5L17 14L18.5 21L12 17.5L5.5 21L7 14L2 9.5L9 8.5L12 2Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      />
+                    </svg>
+                    Negociación
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Lugar de cita -->
+            <div class="form-group">
+              <label>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <circle
+                    cx="12"
+                    cy="10"
+                    r="3"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                </svg>
+                Lugar de cita *
+              </label>
+              <select v-model="formData.location" required>
+                <option value="">Seleccionar lugar</option>
+                <option value="Concesionaria">Concesionaria AutoSphere</option>
+                <option value="Domicilio">Domicilio del cliente</option>
+                <option value="Público">Lugar público (plaza, café)</option>
+                <option value="Otro">Otro</option>
+              </select>
+            </div>
+
+            <!-- Dirección (condicional) -->
+            <div v-if="formData.location === 'Domicilio'" class="form-group">
+              <label>Dirección completa *</label>
+              <textarea
+                v-model="formData.address"
+                rows="2"
+                placeholder="Calle, número, colonia, ciudad, CP"
+                required
+              ></textarea>
+            </div>
+            <div v-if="formData.location === 'Público'" class="form-group">
+              <label>Lugar de encuentro *</label>
+              <input
+                v-model="formData.publicPlace"
+                type="text"
+                placeholder="Ej: Plaza Satélite, Café Starbucks, etc."
+              />
+            </div>
+
+            <!-- Notas adicionales -->
+            <div class="form-group">
+              <label>Notas adicionales</label>
+              <textarea
+                v-model="formData.notes"
+                rows="3"
+                placeholder="Información adicional que quieras compartir con el vendedor..."
+              ></textarea>
+            </div>
+
+            <!-- Términos y condiciones -->
+            <div class="form-group checkbox-group">
+              <label class="checkbox-label">
+                <input
+                  v-model="formData.termsAccepted"
+                  type="checkbox"
+                  required
+                />
+                <span
+                  >Acepto los
+                  <a href="#" @click.prevent="showTerms"
+                    >términos y condiciones</a
+                  >
+                  y políticas de privacidad *</span
+                >
+              </label>
+            </div>
+
+            <!-- Botones -->
+            <div class="form-actions">
+              <button type="button" class="btn-secondary" @click="goBack">
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                class="btn-primary"
+                :disabled="isSubmitting"
+              >
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M20 6L9 17L4 12"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                </svg>
+                {{ isSubmitting ? 'Agendando...' : 'Agendar Cita' }}
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- COLUMNA DERECHA - Información del vehículo -->
+        <div class="booking-info-card">
+          <!-- Vehículo seleccionado -->
+          <div class="vehicle-preview">
+            <div class="preview-header">
+              <span class="preview-icon">🚗</span>
+              <h3>Vehículo seleccionado</h3>
+            </div>
+            <div v-if="selectedVehicle.id" class="vehicle-detail-preview">
+              <div class="preview-image">
+                <img
+                  :src="selectedVehicle.coverImage"
+                  :alt="selectedVehicle.title"
+                  @error="handleImageError"
+                />
+              </div>
+              <h4>{{ selectedVehicle.title }}</h4>
+              <div class="preview-specs">
+                <span>{{ selectedVehicle.year }}</span>
+                <span>•</span>
+                <span
+                  >{{
+                    formatNumber(
+                      selectedVehicle.mileageKm ||
+                        selectedVehicle.specs?.kilometraje
+                    )
+                  }}
+                  km</span
+                >
+                <span>•</span>
+                <span>{{
+                  selectedVehicle.transmission ||
+                  selectedVehicle.specs?.transmisión
+                }}</span>
+              </div>
+              <div class="preview-price">
+                ${{ formatPrice(selectedVehicle.price) }}
+              </div>
+              <div class="preview-location">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                  <path
+                    d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                  <circle
+                    cx="12"
+                    cy="10"
+                    r="3"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  />
+                </svg>
+                {{
+                  selectedVehicle.location?.city ||
+                  getCityName(selectedVehicle.cityId)
+                }}, {{ selectedVehicle.location?.state || '' }}
+              </div>
+              <div class="preview-type">
+                <span
+                  class="type-badge"
+                  :class="getTypeClass(selectedVehicle.type)"
+                >
+                  {{ selectedVehicle.type }}
+                </span>
+                <span
+                  v-if="isRentalVehicle(selectedVehicle.id)"
+                  class="type-badge rental"
+                >
+                  En Renta
+                </span>
+                <span v-else class="type-badge sale"> En Venta </span>
+              </div>
+            </div>
+            <div v-else class="no-vehicle">
+              <p>Selecciona un vehículo para continuar</p>
+            </div>
+          </div>
+
+          <!-- Consejos para la cita -->
+          <div class="tips-card">
+            <div class="tips-header">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+                <path
+                  d="M12 6V12L16 14"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+              <h3>Consejos para tu cita</h3>
+            </div>
+            <ul class="tips-list">
+              <li>📄 Lleva identificación oficial</li>
+              <li>💰 Si es para compra, lleva tu presupuesto claro</li>
+              <li>🔧 Pregunta por el historial de mantenimiento</li>
+              <li>📸 Toma fotos durante la inspección</li>
+              <li>📝 Revisa bien el contrato antes de firmar</li>
+            </ul>
+          </div>
+
+          <!-- Contacto de soporte -->
+          <div class="contact-card">
+            <div class="contact-header">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M21 15C21 15.5304 20.7893 16.0391 20.4142 16.4142C20.0391 16.7893 19.5304 17 19 17H7L3 21V5C3 4.46957 3.21071 3.96086 3.58579 3.58579C3.96086 3.21071 4.46957 3 5 3H19C19.5304 3 20.0391 3.21071 20.4142 3.58579C20.7893 3.96086 21 4.46957 21 5V15Z"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+              <h3>¿Necesitas ayuda?</h3>
+            </div>
+            <p>Contáctanos al <strong>800-123-4567</strong></p>
+            <p>o envía un correo a <strong>soporte@autosphere.com</strong></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vehicle Selector Modal -->
     <div
-      v-if="isRescheduleModalOpen"
+      v-if="showVehicleSelector"
       class="modal-overlay"
-      @click.self="closeRescheduleModal"
+      @click.self="showVehicleSelector = false"
     >
       <div class="modal-container">
         <div class="modal-header">
-          <h3>Reprogramar cita</h3>
-          <button class="modal-close" @click="closeRescheduleModal">
-            &times;
+          <h3>Seleccionar vehículo</h3>
+          <button class="modal-close" @click="showVehicleSelector = false">
+            ×
           </button>
         </div>
-        <form class="modal-form" @submit.prevent="rescheduleAppointment">
-          <div class="form-group">
-            <label>Cliente</label>
-            <input type="text" :value="rescheduleTarget?.client" disabled />
-          </div>
-          <div class="form-group">
-            <label>Vehículo</label>
-            <input type="text" :value="rescheduleTarget?.vehicle" disabled />
-          </div>
-          <div class="form-row">
-            <div class="form-group">
-              <label>Nueva Fecha *</label>
-              <input
-                v-model="rescheduleData.date"
-                type="date"
-                required
-                :min="minDate"
-              />
-            </div>
-            <div class="form-group">
-              <label>Nueva Hora *</label>
-              <select v-model="rescheduleData.time" required>
-                <option value="">Seleccione una hora</option>
-                <option value="09:00">09:00 AM</option>
-                <option value="10:00">10:00 AM</option>
-                <option value="11:00">11:00 AM</option>
-                <option value="12:00">12:00 PM</option>
-                <option value="13:00">01:00 PM</option>
-                <option value="14:00">02:00 PM</option>
-                <option value="15:00">03:00 PM</option>
-                <option value="16:00">04:00 PM</option>
-                <option value="17:00">05:00 PM</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Motivo de reprogramación</label>
-            <textarea
-              v-model="rescheduleData.reason"
-              rows="2"
-              placeholder="Ej: Conflicto de horario..."
-            ></textarea>
-          </div>
-          <div class="modal-footer">
+        <div class="modal-body">
+          <div class="vehicle-tabs">
             <button
-              type="button"
-              class="btn-cancel"
-              @click="closeRescheduleModal"
+              :class="['vehicle-tab', { active: vehicleTab === 'venta' }]"
+              @click="vehicleTab = 'venta'"
             >
-              Cancelar
+              🚗 Venta ({{ salesVehicles.length }})
             </button>
-            <button type="submit" class="btn-save">Reprogramar</button>
+            <button
+              :class="['vehicle-tab', { active: vehicleTab === 'renta' }]"
+              @click="vehicleTab = 'renta'"
+            >
+              📋 Renta ({{ rentalVehicles.length }})
+            </button>
           </div>
-        </form>
+          <div class="vehicle-search">
+            <input type="text" placeholder="Buscar vehículo..." />
+          </div>
+          <div class="vehicle-list">
+            <div
+              v-for="vehicle in filteredVehicles"
+              :key="vehicle.id"
+              class="vehicle-option"
+              @click="selectVehicle(vehicle)"
+            >
+              <div class="vehicle-option-icon">
+                {{ getVehicleIcon(vehicle.type) }}
+              </div>
+              <div class="vehicle-option-info">
+                <span class="vehicle-option-title">{{ vehicle.title }}</span>
+                <span class="vehicle-option-price"
+                  >${{ formatPrice(vehicle.price) }}</span
+                >
+                <span class="vehicle-option-type"
+                  >{{ vehicle.type }} • {{ vehicle.year }}</span
+                >
+              </div>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M9 18L15 12L9 6"
+                  stroke="currentColor"
+                  stroke-width="2"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
-    <!-- Modal de confirmación de cancelación -->
-    <div
-      v-if="showCancelModal"
-      class="modal-overlay"
-      @click.self="closeCancelModal"
-    >
-      <div class="modal-container modal-small">
-        <div class="modal-header">
-          <h3>Cancelar cita</h3>
-          <button class="modal-close" @click="closeCancelModal">&times;</button>
-        </div>
-        <div class="modal-body">
-          <p>¿Estás seguro de que deseas cancelar esta cita?</p>
-          <p class="cancel-warning">Esta acción no se puede deshacer.</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn-cancel" @click="closeCancelModal">
-            No, volver
-          </button>
-          <button
-            type="button"
-            class="btn-danger"
-            @click="confirmCancelAppointment"
-          >
-            Sí, cancelar cita
-          </button>
-        </div>
-      </div>
+    <!-- Toast Notification -->
+    <div v-if="showToast" class="toast-notification" :class="toastType">
+      <span>{{ toastMessage }}</span>
+      <button class="toast-close" @click="showToast = false">×</button>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'GestionCitas',
-  data() {
-    return {
-      activeTab: 'comprador',
-      viewBy: 'fecha',
-      statusFilter: '',
-      showStatusDropdown: false,
-      isRescheduleModalOpen: false,
-      showCancelModal: false,
-      rescheduleTarget: null,
-      cancelTarget: null,
-      rescheduleData: {
-        date: '',
-        time: '',
-        reason: '',
-      },
-      appointments: {
-        comprador: [
-          {
-            id: 1,
-            client: 'Ana García',
-            vehicle: 'Toyota Corolla 2020',
-            date: '2026-03-16',
-            time: '10:30',
-            status: 'Pendiente',
-            tipo: 'compra',
-            phone: '555-0101',
-            email: 'ana@email.com',
-            notes: 'Interesada en financiamiento',
-            sellerName: 'Juan Pérez',
-            sellerPhone: '555-0102',
-          },
-          {
-            id: 2,
-            client: 'Carlos López',
-            vehicle: 'Honda CR-V 2021',
-            date: '2026-03-16',
-            time: '13:00',
-            status: 'Confirmada',
-            tipo: 'renta',
-            phone: '555-0103',
-            email: 'carlos@email.com',
-            notes: 'Renta por 6 meses',
-            sellerName: 'María Gómez',
-            sellerPhone: '555-0104',
-          },
-        ],
-        vendedor: [
-          {
-            id: 101,
-            client: 'Roberto Martínez',
-            vehicle: 'Nissan Sentra 2020',
-            date: '2026-03-17',
-            time: '09:00',
-            status: 'Pendiente',
-            tipo: 'venta',
-            phone: '555-0201',
-            email: 'roberto@email.com',
-            notes: 'Prueba de manejo',
-            buyerName: 'Roberto Martínez',
-          },
-          {
-            id: 102,
-            client: 'Laura Fernández',
-            vehicle: 'Mazda CX-5 2022',
-            date: '2026-03-18',
-            time: '15:00',
-            status: 'Confirmada',
-            tipo: 'venta',
-            phone: '555-0202',
-            email: 'laura@email.com',
-            notes: 'Interesada en compra directa',
-            buyerName: 'Laura Fernández',
-          },
-        ],
-        rentador: [
-          {
-            id: 201,
-            client: 'Pedro Sánchez',
-            vehicle: 'Kia Rio 2023',
-            date: '2026-03-17',
-            time: '11:00',
-            status: 'Pendiente',
-            tipo: 'renta',
-            phone: '555-0301',
-            email: 'pedro@email.com',
-            notes: 'Renta por 3 meses',
-            renterName: 'Pedro Sánchez',
-          },
-          {
-            id: 202,
-            client: 'Sofía Ramírez',
-            vehicle: 'Ford Mustang 2022',
-            date: '2026-03-19',
-            time: '14:00',
-            status: 'Confirmada',
-            tipo: 'renta',
-            phone: '555-0302',
-            email: 'sofia@email.com',
-            notes: 'Renta por 12 meses',
-            renterName: 'Sofía Ramírez',
-          },
-        ],
-      },
-    };
-  },
-  computed: {
-    currentUser() {
-      // Obtener el rol del usuario logueado desde el store o localStorage
-      return localStorage.getItem('userRole') || 'comprador';
-    },
-    currentAppointments() {
-      return this.appointments[this.activeTab] || [];
-    },
-    totalCitas() {
-      return this.currentAppointments.length;
-    },
-    citasPendientes() {
-      return this.currentAppointments.filter((a) => a.status === 'Pendiente')
-        .length;
-    },
-    citasConfirmadas() {
-      return this.currentAppointments.filter((a) => a.status === 'Confirmada')
-        .length;
-    },
-    citasCompletadas() {
-      return this.currentAppointments.filter((a) => a.status === 'Completada')
-        .length;
-    },
-    filteredAppointments() {
-      let filtered = [...this.currentAppointments];
-      if (this.statusFilter) {
-        filtered = filtered.filter((a) => a.status === this.statusFilter);
-      }
-      return filtered;
-    },
-    groupedAppointments() {
-      const groups = {};
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+<script setup>
+import { ref, computed, onMounted } from 'vue';
+import { useRouter, useRoute } from 'vue-router';
 
-      const tomorrow = new Date(today);
-      tomorrow.setDate(tomorrow.getDate() + 1);
+// IMPORTAR LOS MOCKS DESDE JSON
+import salesDetails from '../../../mocks/catalog/listing-details.json';
+import rentalDetails from '../../../mocks/catalog/rental-details.json';
 
-      const dayAfter = new Date(today);
-      dayAfter.setDate(dayAfter.getDate() + 2);
+const router = useRouter();
+const route = useRoute();
 
-      const formatDate = (date) => {
-        return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
-      };
+// Toast notification
+const showToast = ref(false);
+const toastMessage = ref('');
+const toastType = ref('success');
 
-      this.filteredAppointments.forEach((app) => {
-        const appDate = new Date(app.date);
-        appDate.setHours(0, 0, 0, 0);
-
-        let key;
-        if (appDate.getTime() === today.getTime()) {
-          key = `Hoy - ${formatDate(today)}`;
-        } else if (appDate.getTime() === tomorrow.getTime()) {
-          key = `Mañana - ${formatDate(tomorrow)}`;
-        } else if (appDate.getTime() === dayAfter.getTime()) {
-          key = `Pasado mañana - ${formatDate(dayAfter)}`;
-        } else {
-          key = formatDate(appDate);
-        }
-
-        if (!groups[key]) {
-          groups[key] = [];
-        }
-        groups[key].push(app);
-      });
-
-      const sortedGroups = {};
-      Object.keys(groups)
-        .sort((a, b) => {
-          const dateA = a.split(' - ')[1] || a;
-          const dateB = b.split(' - ')[1] || b;
-          const [dayA, monthA, yearA] = dateA.split('/');
-          const [dayB, monthB, yearB] = dateB.split('/');
-          return (
-            new Date(yearA, monthA - 1, dayA) -
-            new Date(yearB, monthB - 1, dayB)
-          );
-        })
-        .forEach((key) => {
-          sortedGroups[key] = groups[key].sort((a, b) =>
-            a.time.localeCompare(b.time)
-          );
-        });
-
-      return sortedGroups;
-    },
-    filteredGroupedAppointments() {
-      const groups = this.groupedAppointments;
-      return Object.keys(groups).map((key) => ({
-        title: key,
-        appointments: groups[key],
-      }));
-    },
-    minDate() {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = String(today.getMonth() + 1).padStart(2, '0');
-      const day = String(today.getDate()).padStart(2, '0');
-      return `${year}-${month}-${day}`;
-    },
-  },
-  mounted() {
-    // Establecer la pestaña activa según el rol del usuario
-    const userRole = localStorage.getItem('userRole');
-    if (userRole && ['comprador', 'vendedor', 'rentador'].includes(userRole)) {
-      this.activeTab = userRole;
-    }
-  },
-  methods: {
-    getTipoLabel(tipo) {
-      const labels = {
-        compra: 'Compra',
-        venta: 'Venta',
-        renta: 'Renta',
-      };
-      return labels[tipo] || tipo;
-    },
-    getTipoClass(tipo) {
-      const classes = {
-        compra: 'compra',
-        venta: 'venta',
-        renta: 'renta',
-      };
-      return classes[tipo] || '';
-    },
-    getStatusClass(status) {
-      const classes = {
-        Pendiente: 'pending',
-        Confirmada: 'confirmed',
-        Completada: 'completed',
-        Cancelada: 'cancelled',
-      };
-      return classes[status] || 'pending';
-    },
-    toggleStatusDropdown() {
-      this.showStatusDropdown = !this.showStatusDropdown;
-    },
-    setStatusFilter(status) {
-      this.statusFilter = status;
-      this.showStatusDropdown = false;
-    },
-    viewAppointmentDetail(appointment) {
-      // Navegar al detalle según el rol
-      const routeName =
-        this.activeTab === 'vendedor'
-          ? 'seller-appointment-detail'
-          : 'buyer-appointment-detail';
-
-      this.$router.push({
-        name: routeName,
-        params: { id: appointment.id },
-      });
-    },
-    openRescheduleModal(appointment) {
-      this.rescheduleTarget = appointment;
-      this.rescheduleData = {
-        date: appointment.date,
-        time: appointment.time,
-        reason: '',
-      };
-      this.isRescheduleModalOpen = true;
-    },
-    closeRescheduleModal() {
-      this.isRescheduleModalOpen = false;
-      this.rescheduleTarget = null;
-      this.rescheduleData = { date: '', time: '', reason: '' };
-    },
-    rescheduleAppointment() {
-      const appointmentsList = this.appointments[this.activeTab];
-      const index = appointmentsList.findIndex(
-        (a) => a.id === this.rescheduleTarget.id
-      );
-
-      if (index !== -1) {
-        appointmentsList[index] = {
-          ...appointmentsList[index],
-          date: this.rescheduleData.date,
-          time: this.rescheduleData.time,
-          status: 'Pendiente',
-          rescheduleReason: this.rescheduleData.reason,
-        };
-
-        // Forzar actualización reactiva
-        this.appointments[this.activeTab] = [...appointmentsList];
-
-        // Mostrar notificación de éxito
-        alert('Cita reprogramada exitosamente');
-      }
-
-      this.closeRescheduleModal();
-    },
-    cancelAppointment(appointment) {
-      this.cancelTarget = appointment;
-      this.showCancelModal = true;
-    },
-    closeCancelModal() {
-      this.showCancelModal = false;
-      this.cancelTarget = null;
-    },
-    confirmCancelAppointment() {
-      const appointmentsList = this.appointments[this.activeTab];
-      const index = appointmentsList.findIndex(
-        (a) => a.id === this.cancelTarget.id
-      );
-
-      if (index !== -1) {
-        appointmentsList[index] = {
-          ...appointmentsList[index],
-          status: 'Cancelada',
-        };
-
-        this.appointments[this.activeTab] = [...appointmentsList];
-        alert('Cita cancelada exitosamente');
-      }
-
-      this.closeCancelModal();
-    },
-  },
+const showNotification = (message, type = 'success') => {
+  toastMessage.value = message;
+  toastType.value = type;
+  showToast.value = true;
+  setTimeout(() => {
+    showToast.value = false;
+  }, 3000);
 };
+
+// Datos del usuario (simulados - esto debería venir del store)
+
+// Formulario
+const isSubmitting = ref(false);
+const showVehicleSelector = ref(false);
+const vehicleSearch = ref('');
+const vehicleTab = ref('venta');
+
+const formData = ref({
+  vehicleId: '',
+  date: '',
+  time: '',
+  fullName: '',
+  email: '',
+  phone: '',
+  appointmentType: 'test-drive',
+  location: '',
+  address: '',
+  publicPlace: '',
+  notes: '',
+  termsAccepted: false,
+});
+
+// Vehículo seleccionado
+const selectedVehicle = ref({});
+
+// Cargar vehículos desde los mocks
+const salesVehicles = ref([]);
+const rentalVehicles = ref([]);
+
+// Función para mapear los datos de los mocks
+const loadVehicles = () => {
+  // Cargar vehículos de venta (listing-details.json)
+  salesVehicles.value = Object.values(salesDetails).map((item) => ({
+    ...item,
+    source: 'sale',
+    mileageKm: item.mileageKm || item.specs?.kilometraje,
+    transmission: item.transmission || item.specs?.transmisión,
+    fuel: item.fuel || item.specs?.combustible,
+    type: item.type || item.specs?.tipo,
+    year: item.year || item.specs?.año,
+    color: item.color || item.specs?.color,
+  }));
+
+  // Cargar vehículos de renta (rental-details.json)
+  rentalVehicles.value = Object.values(rentalDetails).map((item) => ({
+    ...item,
+    source: 'rental',
+    mileageKm: item.specs?.kilometraje,
+    transmission: item.specs?.transmisión,
+    fuel: item.specs?.combustible,
+    type: item.specs?.tipo,
+    year: item.specs?.año,
+    color: item.specs?.color,
+  }));
+};
+
+// Todos los vehículos combinados
+const allVehicles = computed(() => {
+  if (vehicleTab.value === 'venta') {
+    return salesVehicles.value;
+  } else {
+    return rentalVehicles.value;
+  }
+});
+
+const filteredVehicles = computed(() => {
+  if (!vehicleSearch.value) return allVehicles.value;
+  const search = vehicleSearch.value.toLowerCase();
+  return allVehicles.value.filter(
+    (v) =>
+      v.title.toLowerCase().includes(search) ||
+      v.brand?.toLowerCase().includes(search) ||
+      v.model?.toLowerCase().includes(search) ||
+      v.type?.toLowerCase().includes(search)
+  );
+});
+
+const isRentalVehicle = (id) => {
+  return id && id.startsWith('rt-');
+};
+
+const getVehicleIcon = (type) => {
+  const icons = {
+    SUV: '🚙',
+    Sedán: '🚗',
+    Pickup: '🛻',
+    Hatchback: '🚘',
+    Deportivo: '🏎️',
+  };
+  return icons[type] || '🚗';
+};
+
+const getTypeClass = (type) => {
+  const classes = {
+    SUV: 'suv',
+    Sedán: 'sedan',
+    Pickup: 'pickup',
+    Hatchback: 'hatchback',
+    Deportivo: 'sport',
+  };
+  return classes[type] || 'sedan';
+};
+
+const getCityName = (cityId) => {
+  const cities = {
+    'mx-cdmx': 'Ciudad de México',
+    'mx-gdl': 'Guadalajara',
+    'mx-mty': 'Monterrey',
+    'mx-pue': 'Puebla',
+    'mx-mer': 'Mérida',
+  };
+  return cities[cityId] || cityId;
+};
+
+const minDate = computed(() => {
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  return tomorrow.toISOString().split('T')[0];
+});
+
+// Métodos
+const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price);
+const formatNumber = (num) => new Intl.NumberFormat('es-MX').format(num || 0);
+
+const handleImageError = (e) => {
+  e.target.src = 'https://placehold.co/400x300/2d5179/ffffff?text=AutoSphere';
+};
+
+const selectVehicle = (vehicle) => {
+  selectedVehicle.value = vehicle;
+  formData.value.vehicleId = vehicle.id;
+  showVehicleSelector.value = false;
+  vehicleSearch.value = '';
+};
+
+const goBack = () => {
+  router.back();
+};
+
+const submitAppointment = async () => {
+  if (!formData.value.termsAccepted) {
+    showNotification('Debes aceptar los términos y condiciones', 'error');
+    return;
+  }
+
+  if (!selectedVehicle.value.id) {
+    showNotification('Debes seleccionar un vehículo', 'error');
+    return;
+  }
+
+  isSubmitting.value = true;
+
+  // Construir el objeto de la cita
+  const appointmentData = {
+    id: Date.now(),
+    vehicleId: selectedVehicle.value.id,
+    vehicleTitle: selectedVehicle.value.title,
+    vehiclePrice: selectedVehicle.value.price,
+    date: formData.value.date,
+    time: formData.value.time,
+    appointmentType: formData.value.appointmentType,
+    location: formData.value.location,
+    address: formData.value.address,
+    publicPlace: formData.value.publicPlace,
+    notes: formData.value.notes,
+    client: {
+      name: formData.value.fullName,
+      email: formData.value.email,
+      phone: formData.value.phone,
+    },
+    status: 'pending',
+    statusLabel: 'Pendiente',
+    createdAt: new Date().toISOString(),
+  };
+
+  console.log('Cita agendada:', appointmentData);
+
+  // Simular envío al backend
+  await new Promise((resolve) => setTimeout(resolve, 1500));
+
+  // Guardar en localStorage para persistencia (simulado)
+  const existingAppointments = JSON.parse(
+    localStorage.getItem('appointments') || '[]'
+  );
+  existingAppointments.push(appointmentData);
+  localStorage.setItem('appointments', JSON.stringify(existingAppointments));
+
+  showNotification(
+    'Cita agendada correctamente. Te enviaremos un correo de confirmación.',
+    'success'
+  );
+
+  // Redirigir a "Mis citas"
+  setTimeout(() => {
+    router.push({ name: 'my-appointments' });
+  }, 2000);
+
+  isSubmitting.value = false;
+};
+
+const showTerms = () => {
+  alert(
+    'Términos y condiciones de AutoSphere...\n\n1. Los datos proporcionados serán tratados conforme a nuestra política de privacidad.\n2. Las citas están sujetas a disponibilidad.\n3. El vendedor se compromete a responder en un plazo máximo de 24 horas.'
+  );
+};
+
+// Cargar vehículo desde query params (viene del detalle del vehículo)
+onMounted(() => {
+  // Cargar los vehículos desde los mocks
+  loadVehicles();
+
+  // Verificar si hay datos del vehículo en los query params
+  const vehicleId = route.query.vehicle;
+  const vehicleDataParam = route.query.vehicleData;
+
+  if (vehicleDataParam) {
+    try {
+      const decodedVehicle = JSON.parse(decodeURIComponent(vehicleDataParam));
+      if (decodedVehicle && decodedVehicle.id) {
+        selectedVehicle.value = decodedVehicle;
+        formData.value.vehicleId = decodedVehicle.id;
+      }
+    } catch (error) {
+      console.error('Error al decodificar datos del vehículo:', error);
+    }
+  } else if (vehicleId) {
+    // Buscar en venta o renta
+    let vehicle = salesVehicles.value.find((v) => v.id === vehicleId);
+    if (!vehicle) {
+      vehicle = rentalVehicles.value.find((v) => v.id === vehicleId);
+    }
+    if (vehicle) {
+      selectVehicle(vehicle);
+      // Cambiar la pestaña según el tipo de vehículo
+      if (vehicleId.startsWith('rt-')) {
+        vehicleTab.value = 'renta';
+      } else {
+        vehicleTab.value = 'venta';
+      }
+    }
+  }
+});
 </script>
 
-<style scoped>
-@import './styles.css';
-</style>
+<style scoped src="./styles.css"></style>
