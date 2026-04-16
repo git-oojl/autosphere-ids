@@ -1,21 +1,415 @@
 {
-  "highlightedDates": ["2026-03-16", "2026-03-17", "2026-03-18"],
-  "statusLegend": [
-    {
-      "status": "available",
-      "label": "Disponible"
-    },
-    {
-      "status": "pending",
-      "label": "Pendiente"
-    },
-    {
-      "status": "confirmed",
-      "label": "Confirmada"
-    },
-    {
-      "status": "cancelled",
-      "label": "Cancelada"
+  "comprador": {
+    "appointments": [
+      {
+        "id": 1,
+        "client": "Ana García",
+        "vehicle": "Toyota Corolla 2020",
+        "year": "2020",
+        "date": "2026-03-15",
+        "time": "10:30",
+        "status": "Pendiente",
+        "tipo": "compra",
+        "phone": "555-0101",
+        "email": "ana.garcia@email.com",
+        "seller": {
+          "name": "Juan Pérez",
+          "phone": "555-0102",
+          "email": "juan.perez@email.com"
+        },
+        "notes": "Interesada en financiamiento",
+        "address": "Av. Reforma 123, CDMX"
+      },
+      {
+        "id": 2,
+        "client": "Carlos López",
+        "vehicle": "Honda CR-V 2021",
+        "year": "2021",
+        "date": "2026-03-15",
+        "time": "13:00",
+        "status": "Confirmada",
+        "tipo": "renta",
+        "phone": "555-0103",
+        "email": "carlos.lopez@email.com",
+        "seller": {
+          "name": "María Gómez",
+          "phone": "555-0104",
+          "email": "maria.gomez@email.com"
+        },
+        "notes": "Renta por 6 meses",
+        "address": "Av. Vallarta 456, Guadalajara"
+      },
+      {
+        "id": 3,
+        "client": "Laura Martínez",
+        "vehicle": "Mazda CX-5 2022",
+        "year": "2022",
+        "date": "2026-03-20",
+        "time": "11:00",
+        "status": "Pendiente",
+        "tipo": "compra",
+        "phone": "555-0105",
+        "email": "laura.martinez@email.com",
+        "seller": {
+          "name": "Carlos Méndez",
+          "phone": "555-0106",
+          "email": "carlos.mendez@email.com"
+        },
+        "notes": "Prueba de manejo requerida",
+        "address": "Av. Constitución 789, Monterrey"
+      },
+      {
+        "id": 4,
+        "client": "Fernando Díaz",
+        "vehicle": "BMW X5 2023",
+        "year": "2023",
+        "date": "2026-03-22",
+        "time": "09:00",
+        "status": "Confirmada",
+        "tipo": "compra",
+        "phone": "555-0107",
+        "email": "fernando.diaz@email.com",
+        "seller": {
+          "name": "Ana Ramírez",
+          "phone": "555-0108",
+          "email": "ana.ramirez@email.com"
+        },
+        "notes": "Interesado en versión M Sport",
+        "address": "Av. Insurgentes 234, CDMX"
+      },
+      {
+        "id": 5,
+        "client": "Gabriela Torres",
+        "vehicle": "Kia Rio 2023",
+        "year": "2023",
+        "date": "2026-03-25",
+        "time": "16:00",
+        "status": "Completada",
+        "tipo": "renta",
+        "phone": "555-0109",
+        "email": "gabriela.torres@email.com",
+        "seller": {
+          "name": "Luis Fernández",
+          "phone": "555-0110",
+          "email": "luis.fernandez@email.com"
+        },
+        "notes": "Renta por 3 meses ya finalizada",
+        "address": "Blvd. Atlixco 567, Puebla"
+      },
+      {
+        "id": 6,
+        "client": "Javier Fernández",
+        "vehicle": "Chevrolet Silverado 2022",
+        "year": "2022",
+        "date": "2026-03-28",
+        "time": "14:30",
+        "status": "Cancelada",
+        "tipo": "compra",
+        "phone": "555-0111",
+        "email": "javier.fernandez@email.com",
+        "seller": {
+          "name": "Roberto Gómez",
+          "phone": "555-0112",
+          "email": "roberto.gomez@email.com"
+        },
+        "notes": "Cancelada por el comprador",
+        "address": "Av. Gómez Morín 890, San Pedro"
+      }
+    ],
+    "stats": {
+      "total": 6,
+      "pending": 2,
+      "confirmed": 2,
+      "completed": 1,
+      "cancelled": 1
     }
-  ]
+  },
+  "vendedor": {
+    "appointments": [
+      {
+        "id": 101,
+        "client": "Roberto Martínez",
+        "vehicle": "Nissan Sentra 2020",
+        "year": "2020",
+        "date": "2026-03-17",
+        "time": "09:00",
+        "status": "Pendiente",
+        "tipo": "venta",
+        "phone": "555-0201",
+        "email": "roberto.martinez@email.com",
+        "buyer": {
+          "name": "Roberto Martínez",
+          "phone": "555-0202",
+          "email": "roberto.martinez@email.com"
+        },
+        "notes": "Primera cita, interesado en ver el vehículo",
+        "address": "Av. Universidad 123, CDMX"
+      },
+      {
+        "id": 102,
+        "client": "Laura Fernández",
+        "vehicle": "Mazda CX-5 2022",
+        "year": "2022",
+        "date": "2026-03-18",
+        "time": "15:00",
+        "status": "Confirmada",
+        "tipo": "venta",
+        "phone": "555-0203",
+        "email": "laura.fernandez@email.com",
+        "buyer": {
+          "name": "Laura Fernández",
+          "phone": "555-0204",
+          "email": "laura.fernandez@email.com"
+        },
+        "notes": "Cliente muy interesada, solicita prueba de manejo",
+        "address": "Av. López Mateos 456, Guadalajara"
+      },
+      {
+        "id": 103,
+        "client": "Pedro Sánchez",
+        "vehicle": "Ford Mustang 2022",
+        "year": "2022",
+        "date": "2026-03-19",
+        "time": "11:30",
+        "status": "Pendiente",
+        "tipo": "venta",
+        "phone": "555-0205",
+        "email": "pedro.sanchez@email.com",
+        "buyer": {
+          "name": "Pedro Sánchez",
+          "phone": "555-0206",
+          "email": "pedro.sanchez@email.com"
+        },
+        "notes": "Cliente joven, interesado en financiamiento",
+        "address": "Av. Revolución 789, Puebla"
+      },
+      {
+        "id": 104,
+        "client": "Sofía Ramírez",
+        "vehicle": "Audi Q5 2023",
+        "year": "2023",
+        "date": "2026-03-21",
+        "time": "10:00",
+        "status": "Confirmada",
+        "tipo": "venta",
+        "phone": "555-0207",
+        "email": "sofia.ramirez@email.com",
+        "buyer": {
+          "name": "Sofía Ramírez",
+          "phone": "555-0208",
+          "email": "sofia.ramirez@email.com"
+        },
+        "notes": "Cliente ejecutiva, busca vehículo premium",
+        "address": "Av. Carranza 345, Monterrey"
+      },
+      {
+        "id": 105,
+        "client": "Ricardo Castro",
+        "vehicle": "Volkswagen Jetta 2023",
+        "year": "2023",
+        "date": "2026-03-23",
+        "time": "12:00",
+        "status": "Completada",
+        "tipo": "venta",
+        "phone": "555-0209",
+        "email": "ricardo.castro@email.com",
+        "buyer": {
+          "name": "Ricardo Castro",
+          "phone": "555-0210",
+          "email": "ricardo.castro@email.com"
+        },
+        "notes": "Cita completada, cliente compró el vehículo",
+        "address": "Av. Hidalgo 123, Querétaro"
+      },
+      {
+        "id": 106,
+        "client": "Carmen Sánchez",
+        "vehicle": "Honda Civic 2021",
+        "year": "2021",
+        "date": "2026-03-26",
+        "time": "17:00",
+        "status": "Cancelada",
+        "tipo": "venta",
+        "phone": "555-0211",
+        "email": "carmen.sanchez@email.com",
+        "buyer": {
+          "name": "Carmen Sánchez",
+          "phone": "555-0212",
+          "email": "carmen.sanchez@email.com"
+        },
+        "notes": "Cancelada por falta de respuesta del cliente",
+        "address": "Av. Juárez 456, Toluca"
+      }
+    ],
+    "stats": {
+      "total": 6,
+      "pending": 2,
+      "confirmed": 2,
+      "completed": 1,
+      "cancelled": 1
+    }
+  },
+  "rentador": {
+    "appointments": [
+      {
+        "id": 201,
+        "client": "Pedro Sánchez",
+        "vehicle": "Kia Rio 2023",
+        "year": "2023",
+        "date": "2026-03-17",
+        "time": "11:00",
+        "status": "Pendiente",
+        "tipo": "renta",
+        "phone": "555-0301",
+        "email": "pedro.sanchez@email.com",
+        "renter": {
+          "name": "Pedro Sánchez",
+          "phone": "555-0302",
+          "email": "pedro.sanchez@email.com"
+        },
+        "notes": "Renta por 3 meses, requiere factura",
+        "address": "Av. Tecnológico 123, Monterrey"
+      },
+      {
+        "id": 202,
+        "client": "Sofía Ramírez",
+        "vehicle": "Ford Mustang 2022",
+        "year": "2022",
+        "date": "2026-03-19",
+        "time": "14:00",
+        "status": "Confirmada",
+        "tipo": "renta",
+        "phone": "555-0303",
+        "email": "sofia.ramirez@email.com",
+        "renter": {
+          "name": "Sofía Ramírez",
+          "phone": "555-0304",
+          "email": "sofia.ramirez@email.com"
+        },
+        "notes": "Renta por 12 meses, evento especial",
+        "address": "Av. Las Américas 456, Guadalajara"
+      },
+      {
+        "id": 203,
+        "client": "Luis Torres",
+        "vehicle": "Nissan Versa 2022",
+        "year": "2022",
+        "date": "2026-03-20",
+        "time": "09:30",
+        "status": "Pendiente",
+        "tipo": "renta",
+        "phone": "555-0305",
+        "email": "luis.torres@email.com",
+        "renter": {
+          "name": "Luis Torres",
+          "phone": "555-0306",
+          "email": "luis.torres@email.com"
+        },
+        "notes": "Renta por 1 mes, para uso particular",
+        "address": "Blvd. Aeropuerto 789, CDMX"
+      },
+      {
+        "id": 204,
+        "client": "Mariana López",
+        "vehicle": "Toyota RAV4 2023",
+        "year": "2023",
+        "date": "2026-03-22",
+        "time": "13:00",
+        "status": "Confirmada",
+        "tipo": "renta",
+        "phone": "555-0307",
+        "email": "mariana.lopez@email.com",
+        "renter": {
+          "name": "Mariana López",
+          "phone": "555-0308",
+          "email": "mariana.lopez@email.com"
+        },
+        "notes": "Renta por 6 meses, para viajes de trabajo",
+        "address": "Av. Patria 234, Zapopan"
+      },
+      {
+        "id": 205,
+        "client": "Javier Méndez",
+        "vehicle": "Chevrolet Onix 2021",
+        "year": "2021",
+        "date": "2026-03-24",
+        "time": "15:30",
+        "status": "Completada",
+        "tipo": "renta",
+        "phone": "555-0309",
+        "email": "javier.mendez@email.com",
+        "renter": {
+          "name": "Javier Méndez",
+          "phone": "555-0310",
+          "email": "javier.mendez@email.com"
+        },
+        "notes": "Renta completada, cliente satisfecho",
+        "address": "Av. Universidad 567, Querétaro"
+      },
+      {
+        "id": 206,
+        "client": "Patricia Gómez",
+        "vehicle": "Hyundai Tucson 2022",
+        "year": "2022",
+        "date": "2026-03-27",
+        "time": "10:00",
+        "status": "Cancelada",
+        "tipo": "renta",
+        "phone": "555-0311",
+        "email": "patricia.gomez@email.com",
+        "renter": {
+          "name": "Patricia Gómez",
+          "phone": "555-0312",
+          "email": "patricia.gomez@email.com"
+        },
+        "notes": "Cancelada por cambio de planes del cliente",
+        "address": "Av. Reforma 890, CDMX"
+      },
+      {
+        "id": 207,
+        "client": "Andrés Fernández",
+        "vehicle": "Mazda 3 2023",
+        "year": "2023",
+        "date": "2026-03-29",
+        "time": "12:00",
+        "status": "Pendiente",
+        "tipo": "renta",
+        "phone": "555-0313",
+        "email": "andres.fernandez@email.com",
+        "renter": {
+          "name": "Andrés Fernández",
+          "phone": "555-0314",
+          "email": "andres.fernandez@email.com"
+        },
+        "notes": "Renta por 2 meses, requiere contrato",
+        "address": "Av. López Portillo 123, Cancún"
+      },
+      {
+        "id": 208,
+        "client": "Sofía Ramírez",
+        "vehicle": "Audi Q5 2023",
+        "year": "2023",
+        "date": "2026-03-30",
+        "time": "14:00",
+        "status": "Pendiente",
+        "tipo": "renta",
+        "phone": "555-0315",
+        "email": "sofia.ramirez@email.com",
+        "renter": {
+          "name": "Sofía Ramírez",
+          "phone": "555-0316",
+          "email": "sofia.ramirez@email.com"
+        },
+        "notes": "Renta por 2 meses, requiere contrato",
+        "address": "Av. López Portillo 123, Cancún"
+      }
+    ],
+    "stats": {
+      "total": 7,
+      "pending": 3,
+      "confirmed": 2,
+      "completed": 1,
+      "cancelled": 1
+    }
+  }
 }

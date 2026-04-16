@@ -920,7 +920,7 @@ const contactSeller = () => {
 const scheduleTestDrive = () => {
   // Redirigir al formulario de agendamiento con el ID del vehículo
   router.push({
-    name: 'my-appointments',
+    name: 'my-appointments-with-id',
     query: { vehicle: vehicle.value?.id },
   });
 };
