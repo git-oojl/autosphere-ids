@@ -96,14 +96,11 @@ export default [
       {
         path: 'cuenta/mis-citas',
         name: 'my-appointments',
-        component: () =>
-          import('../../views/appointments/gestion-citas/index.vue'),
+        component: () => import('../../views/appointments/calendar/index.vue'),
         meta: { requiresAuth: true },
       },
-
-      // Con ID opcional (si necesitas pasar parámetros)
       {
-        path: 'cuenta/mis-citas/:id',
+        path: 'mis-citas/:id',
         name: 'my-appointments-with-id',
         component: () =>
           import('../../views/appointments/gestion-citas/index.vue'),
