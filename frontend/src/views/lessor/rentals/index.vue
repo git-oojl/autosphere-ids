@@ -6,36 +6,36 @@
           <div>
             <h1 class="dashboard-title">Dashboard de Arrendador</h1>
             <p class="dashboard-subtitle">
-              Controla tus rentas activas y disponibilidad de flota
+              Controla tu inventario en renta y su disponibilidad publicada
             </p>
           </div>
           <button class="btn-primary" @click="registerVehicle">
-            Registrar vehículo
+            Nuevo anuncio
           </button>
         </div>
 
         <div class="stats-cards">
           <div class="stat-card">
-            <h2 class="stat-title">Rentas activas</h2>
+            <h2 class="stat-title">Publicadas</h2>
             <p class="stat-value">{{ activeRentals.length }}</p>
           </div>
           <div class="stat-card">
-            <h2 class="stat-title">Vehículos totales</h2>
+            <h2 class="stat-title">Total inventario</h2>
             <p class="stat-value">{{ totalVehicles }}</p>
           </div>
           <div class="stat-card">
-            <h2 class="stat-title">Pendientes de cierre</h2>
+            <h2 class="stat-title">No disponibles</h2>
             <p class="stat-value">{{ pendingClosures }}</p>
           </div>
           <div class="stat-card highlight">
-            <h2 class="stat-title">Ingreso mensual</h2>
+            <h2 class="stat-title">Precio promedio por día</h2>
             <p class="stat-value">{{ monthlyRevenue }}</p>
           </div>
         </div>
 
         <div class="section">
           <div class="section-header">
-            <h3 class="section-title">Rentas recientes</h3>
+            <h3 class="section-title">Vehículos en renta</h3>
             <button class="btn-secondary" @click="viewAllRentals">
               Ver todas
             </button>
@@ -45,8 +45,8 @@
               <thead>
                 <tr>
                   <th>Vehículo</th>
-                  <th>Inicio</th>
-                  <th>Fin</th>
+                  <th>Disponible desde</th>
+                  <th>Disponible hasta</th>
                   <th>Estado</th>
                   <th>Acciones</th>
                 </tr>
@@ -61,13 +61,13 @@
                   </td>
                   <td class="action-row">
                     <button class="btn-secondary" @click="editRental(rental)">
-                      Editar
+                      Ver detalle
                     </button>
                     <button
                       class="btn-secondary"
                       @click="closeRental(rental.id)"
                     >
-                      Cerrar
+                      Cerrar renta
                     </button>
                   </td>
                 </tr>
@@ -81,50 +81,57 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { getListings } from '../../../services/catalog.js';
+import { DEMO_RENTAL_OWNER_ID } from '../../../services/demoOwners.js';
 
 const router = useRouter();
+const activeRentals = ref([]);
 
-const activeRentals = ref([
-  {
-    id: 'r-1',
-    vehicle: 'Toyota Corolla 2024',
-    startDate: '2026-02-14',
-    endDate: '2026-03-14',
-    status: 'Activo',
-  },
-  {
-    id: 'r-2',
-    vehicle: 'Honda CR-V 2025',
-    startDate: '2026-04-03',
-    endDate: '2026-04-28',
-    status: 'Por cerrar',
-  },
-  {
-    id: 'r-3',
-    vehicle: 'Nissan Versa 2023',
-    startDate: '2026-05-02',
-    endDate: '2026-05-30',
-    status: 'Activo',
-  },
-]);
+const loadRentals = async () => {
+  const response = await getListings({
+    mode: 'renta',
+    sellerId: DEMO_RENTAL_OWNER_ID,
+    pageSize: 100,
+    includeUnpublished: true,
+  });
+  activeRentals.value = (response?.items || []).map((item) => ({
+    id: item.id,
+    vehicle: item.title,
+    startDate: item.availableFrom,
+    endDate: item.availableTo,
+    status: item.available === false ? 'No disponible' : 'Disponible',
+    pricePerDay: item.pricePerDay || item.price,
+  }));
+};
 
-const totalVehicles = computed(() => activeRentals.value.length + 2);
+onMounted(loadRentals);
+
+const totalVehicles = computed(() => activeRentals.value.length);
 const pendingClosures = computed(
-  () => activeRentals.value.filter((r) => r.status === 'Por cerrar').length
+  () =>
+    activeRentals.value.filter((rental) => rental.status === 'No disponible')
+      .length
 );
 const monthlyRevenue = computed(() => {
-  const total = activeRentals.value.length * 18400;
-  return `$${new Intl.NumberFormat('es-MX').format(total)}`;
+  if (!activeRentals.value.length) return '$0';
+  const average =
+    activeRentals.value.reduce(
+      (sum, rental) => sum + Number(rental.pricePerDay || 0),
+      0
+    ) / activeRentals.value.length;
+  return `$${new Intl.NumberFormat('es-MX').format(Math.round(average))}`;
 });
 
-const formatDate = (date) =>
-  new Date(date).toLocaleDateString('es-MX', {
+const formatDate = (date) => {
+  if (!date) return '—';
+  return new Date(`${date}T00:00:00`).toLocaleDateString('es-MX', {
     day: '2-digit',
     month: '2-digit',
     year: 'numeric',
   });
+};
 
 const registerVehicle = () => router.push({ name: 'create-listing' });
 const viewAllRentals = () => router.push({ name: 'user-rentals' });

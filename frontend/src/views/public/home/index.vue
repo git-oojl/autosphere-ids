@@ -6,7 +6,7 @@
         <h1 class="hero-title">
           Autos en venta con excelentes precios<br />y la mejor calidad
         </h1>
-        <p class="hero-subtitle">Marca y modelo</p>
+        <p class="hero-subtitle"></p>
 
         <!-- SEARCH BOX -->
         <div class="search-container">
@@ -64,8 +64,11 @@
 
     <!-- FEATURED LISTINGS -->
     <section id="cars" class="featured-section">
-      <div class="section-container">
-        <h2 class="section-title">Listados Destacados</h2>
+      <div class="featured-ambient featured-ambient-a"></div>
+      <div class="featured-ambient featured-ambient-b"></div>
+      <div class="section-container featured-shell">
+        <p class="section-eyebrow">Selección destacada</p>
+        <h2 class="section-title">Listados en tendencia</h2>
 
         <div class="cars-grid">
           <div
@@ -80,14 +83,21 @@
                 :alt="car.model"
                 loading="lazy"
               />
-              <div class="car-badge">{{ car.condition || 'CERTIFIED' }}</div>
+              <div class="car-badge">{{ getModeTag(car) }}</div>
+              <div class="car-chip">{{ getPriceHint(car) }}</div>
             </div>
             <div class="car-content">
               <div class="car-header">
                 <span class="car-model">{{ getCarTitle(car) }}</span>
-                <span class="car-price">${{ formatPrice(car.price) }}</span>
+                <span class="car-price">{{ formatListingPrice(car) }}</span>
               </div>
-              <div class="car-year">{{ car.year }}</div>
+              <div class="car-meta-row">
+                <span class="car-year">{{ car.year }}</span>
+                <span class="car-meta-separator">•</span>
+                <span class="car-mode-label">{{
+                  getModeDescription(car)
+                }}</span>
+              </div>
               <div class="car-actions">
                 <button class="btn-view" @click.stop="viewDetail(car.id)">
                   Ver Detalles
@@ -121,38 +131,30 @@
     <section id="about" class="trust-section">
       <div class="section-container">
         <h2 class="trust-title">
-          Descubre por qué más de
-          <span class="highlight">300,000 clientes</span>
-          ya confiaron en AutoSphere
+          Descubre por qué inspira la
+          <span class="highlight">propuesta</span>
+          de AutoSphere
         </h2>
 
         <div class="reviews-grid">
-          <div v-for="review in reviews" :key="review.id" class="review-card">
-            <div class="reviewer-header">
-              <img
-                class="reviewer-avatar"
-                :src="review.avatar"
-                :alt="review.name"
-              />
+          <article
+            v-for="review in reviews"
+            :key="review.id"
+            class="review-card"
+          >
+            <div class="review-source-row">
+              <div class="review-source-badge">{{ review.initials }}</div>
               <div class="reviewer-info">
-                <div class="reviewer-name">{{ review.name }}</div>
-                <div class="reviewer-role">{{ review.role }}</div>
+                <div class="reviewer-name">{{ review.title }}</div>
+                <div class="reviewer-role">{{ review.outlet }}</div>
               </div>
             </div>
-            <p class="review-text">{{ review.text }}</p>
-            <div class="review-stars">
-              <svg
-                v-for="i in 5"
-                :key="i"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path
-                  d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                />
-              </svg>
+            <p class="review-text">“{{ review.text }}”</p>
+            <div class="review-source-meta">
+              <span class="review-source-pill">{{ review.type }}</span>
+              <span class="review-source-link">{{ review.source }}</span>
             </div>
-          </div>
+          </article>
         </div>
       </div>
     </section>
@@ -160,16 +162,12 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
-
-// IMPORTAR DATOS DESDE JSON
-// Ajusta la ruta según la ubicación real de tu archivo listings.json
-import listingsData from '../../../mocks/catalog/listings.json';
+import { getHomePage } from '../../../services/public.js';
 
 const router = useRouter();
 
-// ESTADO
 const searchFilters = ref({
   make: '',
   model: '',
@@ -178,95 +176,116 @@ const searchFilters = ref({
 
 const currentPage = ref(0);
 const perPage = 3;
+const featuredCars = ref([]);
+const reviews = ref([]);
 
-// RESEÑAS (se mantienen igual)
-const reviews = ref([
-  {
-    id: 1,
-    name: 'Mariana L.',
-    role: 'Vendedora',
-    avatar: 'https://i.pravatar.cc/100?img=47',
-    text: 'He confiado en la plataforma perfecta para conectarme con compradores. El proceso de comunicación con los vendedores fue directo y transparente. Fue fácil y me llevó desde el inicio hasta el cierre de la compra.',
-  },
-  {
-    id: 2,
-    name: 'Juan M.',
-    role: 'Comprador',
-    avatar: 'https://i.pravatar.cc/100?img=12',
-    text: 'Publicar mi auto fue súper sencillo. En menos de una hora ya tenía respuestas. La plataforma me guió para agregar todos los detalles. Recibí mensajes de compradores interesados en pocos días y logré vender rápido.',
-  },
-  {
-    id: 3,
-    name: 'Carlos M.',
-    role: 'Comprador',
-    avatar: 'https://i.pravatar.cc/100?img=25',
-    text: 'La verdad me sorprendió lo fácil que fue encontrar el auto que quería. La página tiene buenos filtros para detallar mi búsqueda. Pude contactar al vendedor directamente. El proceso fue rápido y sin complicaciones.',
-  },
-]);
+const loadHome = async () => {
+  const page = await getHomePage();
+  featuredCars.value = page?.featuredListings || [];
+  reviews.value = page?.testimonials || [];
+};
 
-// OBTENER VEHÍCULOS DEL MOCK (solo los publicados)
-const allVehicles = computed(() => {
-  const items = listingsData.items || [];
-  // Filtrar solo los que tienen status 'published'
-  return items.filter((vehicle) => vehicle.status === 'published');
-});
+onMounted(loadHome);
 
-// Obtener marcas únicas para el filtro
+const allVehicles = computed(() => featuredCars.value);
+
 const uniqueBrands = computed(() => {
-  const brands = allVehicles.value.map((v) => v.brand);
+  const brands = allVehicles.value
+    .map((vehicle) => vehicle.brand)
+    .filter(Boolean);
   return [...new Set(brands)].sort();
 });
 
-// Obtener modelos únicos para el filtro
 const uniqueModels = computed(() => {
-  const models = allVehicles.value.map((v) => v.model);
+  const models = allVehicles.value
+    .filter((vehicle) => {
+      return (
+        !searchFilters.value.make || vehicle.brand === searchFilters.value.make
+      );
+    })
+    .map((vehicle) => vehicle.model)
+    .filter(Boolean);
   return [...new Set(models)].sort();
 });
 
-// Filtrar vehículos según los filtros de búsqueda
+watch(
+  () => searchFilters.value.make,
+  (nextBrand) => {
+    if (!nextBrand) return;
+    const modelStillValid = allVehicles.value.some(
+      (vehicle) =>
+        vehicle.brand === nextBrand &&
+        vehicle.model === searchFilters.value.model
+    );
+    if (!modelStillValid) {
+      searchFilters.value.model = '';
+    }
+  }
+);
+
 const filteredCars = computed(() => {
   let result = [...allVehicles.value];
 
   if (searchFilters.value.make) {
-    result = result.filter((v) => v.brand === searchFilters.value.make);
+    result = result.filter(
+      (vehicle) => vehicle.brand === searchFilters.value.make
+    );
   }
+
   if (searchFilters.value.model) {
-    result = result.filter((v) => v.model === searchFilters.value.model);
+    result = result.filter(
+      (vehicle) => vehicle.model === searchFilters.value.model
+    );
   }
 
   if (searchFilters.value.year) {
     result = result.filter(
-      (v) => String(v.year) === String(searchFilters.value.year)
+      (vehicle) => String(vehicle.year) === String(searchFilters.value.year)
     );
   }
 
   return result;
 });
 
-// Vehículos mostrados en la página actual (paginación)
 const displayedCars = computed(() => {
   const start = currentPage.value * perPage;
   return filteredCars.value.slice(start, start + perPage);
 });
 
-// HELPERS
-const formatPrice = (price) => {
-  return new Intl.NumberFormat('es-MX').format(price);
+const formatPrice = (price) =>
+  new Intl.NumberFormat('es-MX').format(price || 0);
+
+const formatListingPrice = (car) => {
+  if (car?.mode === 'rental') {
+    return `$${formatPrice(car.pricePerDay || car.price)}/día`;
+  }
+  return `$${formatPrice(car?.price)}`;
 };
+
+const getPriceHint = (car) => {
+  if (car?.mode === 'rental') {
+    return 'Tarifa diaria';
+  }
+  return 'Precio de venta';
+};
+
+const getModeTag = (car) => (car?.mode === 'rental' ? 'Renta' : 'Venta');
+const getModeDescription = (car) =>
+  car?.mode === 'rental' ? 'Disponible para renta' : 'Publicación en venta';
 
 const getOptimizedImageUrl = (url) => {
   if (!url) return 'https://placehold.co/800x600/2d5179/ffffff?text=AutoSphere';
-  if (url.includes('unsplash.com'))
+  if (url.includes('unsplash.com')) {
     return `${url}?w=800&h=600&fit=crop&auto=format&q=80`;
+  }
   return url;
 };
 
-// Obtener título del vehículo (marca + modelo)
 const getCarTitle = (car) => {
-  return `${car.brand} ${car.model} ${car.year}`;
+  if (!car) return 'Vehículo AutoSphere';
+  return car.title || `${car.brand} ${car.model} ${car.year}`;
 };
 
-// MÉTODOS
 const nextPage = () => {
   const totalPages = Math.ceil(filteredCars.value.length / perPage);
   if (totalPages > 0) {
@@ -275,15 +294,18 @@ const nextPage = () => {
 };
 
 const handleSearch = () => {
-  if (filteredCars.value.length > 0) {
-    router.push({
-      name: 'public-listing-detail',
-      params: { id: filteredCars.value[0].id },
-    });
-    return;
-  }
+  const query = {
+    ...(searchFilters.value.make ? { brand: searchFilters.value.make } : {}),
+    ...(searchFilters.value.model ? { q: searchFilters.value.model } : {}),
+    ...(searchFilters.value.year
+      ? { minYear: searchFilters.value.year, maxYear: searchFilters.value.year }
+      : {}),
+  };
 
-  router.push({ name: 'public-catalog', query: searchFilters.value });
+  router.push({
+    name: 'public-catalog',
+    query,
+  });
 };
 
 const viewCarDetail = (carId) => {
@@ -293,16 +315,13 @@ const viewCarDetail = (carId) => {
   });
 };
 
-const viewDetail = (carId) => {
+const viewDetail = viewCarDetail;
+
+const contactSeller = (carId) => {
   router.push({
     name: 'public-listing-detail',
     params: { id: carId },
   });
-};
-
-const contactSeller = (carId) => {
-  console.log('Contactar vendedor:', carId);
-  alert(`Contactando al vendedor del vehículo ${carId}`);
 };
 </script>
 

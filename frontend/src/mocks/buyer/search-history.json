@@ -2,21 +2,24 @@
   "items": [
     {
       "id": "sh-001",
-      "query": "SUV · Automático · 4x4 · CDMX",
-      "timestamp": "2026-03-10T19:22:00",
-      "resultCount": 24
+      "query": "Mazda CX-5",
+      "timestamp": "2026-03-16T19:22:00",
+      "resultCount": 1,
+      "filtersSummary": "Venta · SUV"
     },
     {
       "id": "sh-002",
-      "query": "Mazda 2021 · menos de $500,000",
-      "timestamp": "2026-03-11T12:10:00",
-      "resultCount": 8
+      "query": "Toyota Corolla",
+      "timestamp": "2026-03-15T12:10:00",
+      "resultCount": 1,
+      "filtersSummary": "Venta · Sedán"
     },
     {
       "id": "sh-003",
-      "query": "Pickup · Diésel · Monterrey",
-      "timestamp": "2026-03-12T08:41:00",
-      "resultCount": 15
+      "query": "Nissan Versa",
+      "timestamp": "2026-03-14T08:41:00",
+      "resultCount": 1,
+      "filtersSummary": "Renta · Ciudad de México"
     }
   ]
 }

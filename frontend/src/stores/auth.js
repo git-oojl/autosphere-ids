@@ -1,4 +1,3 @@
-// stores/auth.js
 import { computed, ref } from 'vue';
 import { defineStore } from 'pinia';
 
@@ -25,18 +24,22 @@ export const useAuthStore = defineStore('auth', () => {
   const isAuthenticated = ref(Boolean(persisted));
   const accessToken = ref(persisted?.token ?? null);
   const user = ref(persisted?.user ?? null);
-  // Ahora roles será un array con un solo string: 'user' o 'admin'
   const roles = ref(Array.isArray(persisted?.roles) ? persisted.roles : []);
 
-  // Getters simplificados
   const isGuest = computed(() => !isAuthenticated.value);
-  const isUser = computed(() => isAuthenticated.value && !isAdmin.value);
   const isAdmin = computed(() => roles.value.includes('admin'));
-
-  // Para saber si puede publicar anuncios (cualquier usuario autenticado que no sea admin? o admin también puede? Lo dejamos como true para usuarios)
-  const canListVehicles = computed(
-    () => isAuthenticated.value && !isAdmin.value
-  ); // o isUser
+  const isUser = computed(() => isAuthenticated.value && !isAdmin.value);
+  const primaryRole = computed(() =>
+    isAdmin.value ? 'admin' : isUser.value ? 'user' : 'guest'
+  );
+  const capabilitySurfaces = computed(() =>
+    isUser.value
+      ? ['buyer', 'seller', 'lessor']
+      : isAdmin.value
+        ? ['admin']
+        : []
+  );
+  const canListVehicles = computed(() => isUser.value);
 
   function persistSession() {
     if (!IS_DEV || !canUseLocalStorage()) return;
@@ -85,7 +88,14 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function hasRole(role) {
-    return roles.value.includes(role);
+    if (role === 'guest') return isGuest.value;
+    if (role === 'user') return isUser.value;
+    if (role === 'admin') return isAdmin.value;
+    return capabilitySurfaces.value.includes(role);
+  }
+
+  function hasAnyRole(nextRoles = []) {
+    return nextRoles.some((role) => hasRole(role));
   }
 
   return {
@@ -96,11 +106,14 @@ export const useAuthStore = defineStore('auth', () => {
     isGuest,
     isUser,
     isAdmin,
+    primaryRole,
+    capabilitySurfaces,
     canListVehicles,
     startSession,
     clearSession,
     setUser,
     setRoles,
     hasRole,
+    hasAnyRole,
   };
 });

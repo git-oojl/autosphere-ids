@@ -327,45 +327,77 @@
         </div>
       </div>
 
-      <!-- PLANES DE PAGO (solo para venta y no en modo edición) -->
-      <div v-if="!isRental && !isEditMode" class="payment-plans-card">
-        <!-- ... contenido existente ... -->
+      <div class="info-callout-card" :class="{ 'rental-info-card': isRental }">
+        <h3 class="section-title">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M12 8v8M8 12h8" />
+            <circle cx="12" cy="12" r="10" />
+          </svg>
+          {{ isRental ? 'Condiciones de renta' : 'Lo que debes saber' }}
+        </h3>
+        <div class="callout-grid">
+          <div class="callout-item">
+            <span class="callout-label">{{
+              isRental ? 'Tarifa diaria' : 'Precio publicado'
+            }}</span>
+            <strong>
+              ${{
+                formatPrice(
+                  isRental ? vehicle.rentalSpecs?.pricePerDay : vehicle.price
+                )
+              }}
+              <span v-if="isRental">/día</span>
+            </strong>
+          </div>
+          <div class="callout-item">
+            <span class="callout-label">{{
+              isRental ? 'Disponibilidad' : 'Mensualidad estimada'
+            }}</span>
+            <strong>
+              {{
+                isRental
+                  ? vehicle.rentalSpecs?.available
+                    ? 'Disponible'
+                    : 'No disponible'
+                  : monthlyPayment
+                    ? `$${formatPrice(monthlyPayment)}/mes`
+                    : 'Consulta planes'
+              }}
+            </strong>
+          </div>
+          <div class="callout-item">
+            <span class="callout-label">{{
+              isRental ? 'Tarifa semanal' : 'Ubicación'
+            }}</span>
+            <strong>
+              {{
+                isRental
+                  ? `$${formatPrice(vehicle.rentalSpecs?.pricePerWeek)}/sem`
+                  : vehicleLocation
+              }}
+            </strong>
+          </div>
+          <div class="callout-item">
+            <span class="callout-label">{{
+              isRental ? 'Tarifa mensual' : 'Condición'
+            }}</span>
+            <strong>
+              {{
+                isRental
+                  ? `$${formatPrice(vehicle.rentalSpecs?.pricePerMonth)}/mes`
+                  : vehicleBadge
+              }}
+            </strong>
+          </div>
+        </div>
       </div>
 
-      <!-- INFO DE RENTA (solo para renta y no en modo edición) -->
-      <div
-        v-if="isRental && vehicle.rentalSpecs && !isEditMode"
-        class="rental-info-card"
-      >
-        <!-- ... contenido existente ... -->
-      </div>
-
-      <!-- Details Accordion -->
-      <button class="expand-toggle" @click="showDetails = !showDetails">
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <circle cx="12" cy="12" r="10" />
-          <path d="M12 8v8M8 12h8" />
-        </svg>
-        {{ showDetails ? 'Ocultar detalles' : 'Ver más detalles del vehículo' }}
-        <svg
-          class="chevron"
-          :class="{ rotated: showDetails }"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M6 9l6 6 6-6" />
-        </svg>
-      </button>
-
-      <!-- Expandable Details (con campos editables) -->
-      <div class="details-panel" :class="{ open: showDetails }">
+      <div class="details-panel open">
         <!-- Vehicle Info (editable) -->
         <div class="info-section">
           <h3 class="section-title">
@@ -463,7 +495,7 @@
               </div>
             </div>
           </div>
-          <div v-else class="features-grid">
+          <div v-if="vehicleFeatures.length" class="features-grid">
             <div
               v-for="feature in vehicleFeatures"
               :key="feature"
@@ -475,6 +507,9 @@
               {{ feature }}
             </div>
           </div>
+          <p v-else class="empty-copy">
+            Esta publicación todavía no muestra características visibles.
+          </p>
         </div>
 
         <!-- Seller Info (solo lectura en modo edición) -->
@@ -516,24 +551,24 @@
                 </div>
               </div>
               <div class="seller-rating">
-                <div class="stars">
-                  <svg
-                    v-for="i in 5"
-                    :key="i"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
+                <template v-if="sellerRatingNumber">
+                  <div class="stars">
+                    <svg
+                      v-for="i in 5"
+                      :key="i"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                      />
+                    </svg>
+                  </div>
+                  <span
+                    >{{ sellerRatingNumber }} • {{ sellerReviewSummary }}</span
                   >
-                    <path
-                      d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
-                    />
-                  </svg>
-                </div>
-                <span
-                  >{{ sellerRating }} •
-                  {{
-                    vehicle.sellerProfile?.responseTime || 'Respuesta rápida'
-                  }}</span
-                >
+                </template>
+                <span v-else>{{ sellerReviewSummary }}</span>
               </div>
               <div class="seller-location">
                 <svg
@@ -548,6 +583,14 @@
                   <circle cx="12" cy="10" r="3" />
                 </svg>
                 {{ vehicleLocation }}
+              </div>
+              <div class="cta-buttons" style="margin-top: 1rem">
+                <button class="btn-secondary" @click="openSellerProfile">
+                  Ver perfil público
+                </button>
+                <button class="btn-primary" @click="openSellerInventory">
+                  Ver otros anuncios
+                </button>
               </div>
             </div>
           </div>
@@ -614,9 +657,49 @@
           </div>
         </div>
 
-        <!-- Reseñas (solo lectura en modo edición) -->
-        <div v-if="!isEditMode" class="reviews-section info-section">
-          <!-- ... contenido existente ... -->
+        <div
+          v-if="!isEditMode && sellerReviews.length"
+          class="reviews-section info-section"
+        >
+          <div class="section-header-inline">
+            <h3 class="section-title">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                />
+              </svg>
+              Opiniones sobre {{ sellerName }}
+            </h3>
+            <button class="link-button" @click="openSellerProfile">
+              Ver más en el perfil
+            </button>
+          </div>
+          <div class="review-preview-grid">
+            <article
+              v-for="review in previewSellerReviews"
+              :key="review.id"
+              class="review-preview-card"
+            >
+              <div class="review-preview-head">
+                <div class="review-avatar">
+                  {{ reviewInitial(review.authorName) }}
+                </div>
+                <div>
+                  <strong>{{ review.authorName }}</strong>
+                  <small
+                    >{{ review.rating }}/5 ·
+                    {{ formatReviewDate(review.createdAt) }}</small
+                  >
+                </div>
+              </div>
+              <p>{{ truncateReview(review.text) }}</p>
+            </article>
+          </div>
         </div>
       </div>
     </div>
@@ -632,14 +715,26 @@
 <script setup>
 import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { getListingById } from '../../../services/catalog.js';
+import { getPublicProfileReviews } from '../../../services/profiles.js';
+import {
+  isVehicleSaved,
+  removeSavedVehicleById,
+  saveVehicleById,
+} from '../../../services/buyer.js';
 
 const route = useRoute();
 const router = useRouter();
 
-// Toast notification
 const showToast = ref(false);
 const toastMessage = ref('');
 const toastType = ref('success');
+const vehicle = ref(null);
+const sellerReviews = ref([]);
+const currentImageIndex = ref(0);
+const isFavorite = ref(false);
+const editableVehicle = ref({});
+const newFeature = ref('');
 
 const showNotification = (message, type = 'success') => {
   toastMessage.value = message;
@@ -650,135 +745,13 @@ const showNotification = (message, type = 'success') => {
   }, 3000);
 };
 
-// Determinar si estamos en modo edición
-const isEditMode = computed(() => {
-  return route.query.edit === 'true';
-});
+const isEditMode = computed(() => route.query.edit === 'true');
+const isRental = computed(
+  () =>
+    vehicle.value?.mode === 'rental' ||
+    String(route.params.id || '').startsWith('rt-')
+);
 
-// Estado editable del vehículo
-const editableVehicle = ref({});
-
-// Nueva característica temporal
-const newFeature = ref('');
-
-// Inicializar datos editables cuando se carga el vehículo
-const initEditableVehicle = () => {
-  if (vehicle.value) {
-    editableVehicle.value = {
-      id: vehicle.value.id,
-      title: `${vehicle.value.brand} ${vehicle.value.model} ${vehicle.value.year}`,
-      brand: vehicle.value.brand,
-      model: vehicle.value.model,
-      year: vehicle.value.year,
-      price: vehicle.value.price,
-      mileageKm:
-        vehicle.value.mileageKm || vehicle.value.specs?.kilometraje || 0,
-      fuel:
-        vehicle.value.fuel || vehicle.value.specs?.combustible || 'Gasolina',
-      transmission:
-        vehicle.value.transmission ||
-        vehicle.value.specs?.transmisión ||
-        'Automática',
-      color: vehicle.value.color || vehicle.value.specs?.color || '',
-      description: vehicle.value.description || '',
-      features: [...(vehicle.value.features || [])],
-      location: {
-        city: vehicle.value.location?.city || getCityName(vehicle.value.cityId),
-        state:
-          vehicle.value.location?.state ||
-          getStateFromCity(vehicle.value.cityId),
-        addressLabel: vehicle.value.location?.addressLabel || '',
-      },
-    };
-  }
-};
-
-// Items editables para la información del vehículo
-const editableInfoItems = computed(() => [
-  {
-    label: 'Marca',
-    value: editableVehicle.value.brand,
-    editable: isEditMode.value,
-    type: 'text',
-  },
-  {
-    label: 'Modelo',
-    value: editableVehicle.value.model,
-    editable: isEditMode.value,
-    type: 'text',
-  },
-  {
-    label: 'Año',
-    value: editableVehicle.value.year,
-    editable: isEditMode.value,
-    type: 'number',
-  },
-  {
-    label: 'Color',
-    value: editableVehicle.value.color,
-    editable: isEditMode.value,
-    type: 'text',
-  },
-]);
-
-// Métodos para características editables
-const addFeature = () => {
-  if (newFeature.value.trim()) {
-    editableVehicle.value.features.push(newFeature.value.trim());
-    newFeature.value = '';
-  }
-};
-
-const removeFeature = (index) => {
-  editableVehicle.value.features.splice(index, 1);
-};
-
-// Guardar cambios
-const saveChanges = () => {
-  // Aquí iría la lógica para guardar en el backend
-  console.log('Guardando cambios:', editableVehicle.value);
-  showNotification('Anuncio actualizado correctamente', 'success');
-
-  // Opcional: Redirigir a la vista normal después de guardar
-  setTimeout(() => {
-    router.push({
-      path: `/listados/${vehicle.value.id}`,
-      query: { edit: 'false' },
-    });
-  }, 1500);
-};
-
-// Cancelar edición
-const cancelEdit = () => {
-  if (confirm('¿Cancelar edición? Los cambios no guardados se perderán.')) {
-    router.push({
-      path: `/listados/${vehicle.value.id}`,
-      query: { edit: 'false' },
-    });
-  }
-};
-
-// IMPORTAR DATOS DESDE JSON
-import salesDetails from '../../../mocks/catalog/listing-details.json';
-import rentalDetails from '../../../mocks/catalog/rental-details.json';
-
-// STATE
-const currentImageIndex = ref(0);
-const showDetails = ref(false);
-const isFavorite = ref(false);
-
-// DEFAULT DATA
-const defaultDescription =
-  'Vehículo en excelente condición, mantenimiento al día. Ideal para ciudad y carretera.';
-const defaultFeatures = [
-  'Aire acondicionado',
-  'Dirección hidráulica',
-  'Vidrios eléctricos',
-  'Bluetooth',
-  'Sistema de audio',
-];
-
-// HELPERS
 const getOptimizedImageUrl = (url, w = 1200, h = 800) => {
   if (!url)
     return 'https://placehold.co/1200x800/2d5179/ffffff?text=AutoSphere';
@@ -786,7 +759,6 @@ const getOptimizedImageUrl = (url, w = 1200, h = 800) => {
     return `${url}?w=${w}&h=${h}&fit=crop&auto=format&q=80`;
   return url;
 };
-
 const getOptimizedThumbnailUrl = (url) => getOptimizedImageUrl(url, 200, 150);
 
 const getCityName = (cityId) => {
@@ -797,7 +769,7 @@ const getCityName = (cityId) => {
     'mx-pue': 'Puebla',
     'mx-mer': 'Mérida',
   };
-  return cities[cityId] || cityId;
+  return cities[cityId] || cityId || 'Ciudad por confirmar';
 };
 
 const getStateFromCity = (cityId) => {
@@ -811,74 +783,156 @@ const getStateFromCity = (cityId) => {
   return states[cityId] || 'México';
 };
 
-// DETERMINAR SI ES RENTA O VENTA
-const isRental = computed(() => {
-  const id = route.params.id;
-  return id && id.startsWith('rt-');
+const initEditableVehicle = () => {
+  if (!vehicle.value) return;
+  editableVehicle.value = {
+    id: vehicle.value.id,
+    title: vehicle.value.title,
+    brand: vehicle.value.brand,
+    model: vehicle.value.model,
+    year: vehicle.value.year,
+    price: vehicle.value.price,
+    mileageKm: vehicle.value.mileageKm || vehicle.value.specs?.kilometraje || 0,
+    fuel: vehicle.value.fuel || vehicle.value.specs?.combustible || 'Gasolina',
+    transmission:
+      vehicle.value.transmission ||
+      vehicle.value.specs?.transmisión ||
+      'Automática',
+    color: vehicle.value.color || vehicle.value.specs?.color || '',
+    description: vehicle.value.description || '',
+    features: [...(vehicle.value.features || [])],
+    location: {
+      city: vehicle.value.location?.city || getCityName(vehicle.value.cityId),
+      state:
+        vehicle.value.location?.state || getStateFromCity(vehicle.value.cityId),
+      addressLabel: vehicle.value.location?.addressLabel || '',
+    },
+  };
+};
+
+const displayVehicleInfo = computed(() => {
+  if (isEditMode.value) {
+    return editableVehicle.value || {};
+  }
+
+  return {
+    brand: vehicle.value?.brand || '—',
+    model: vehicle.value?.model || '—',
+    year: vehicle.value?.year || '—',
+    color: vehicle.value?.color || vehicle.value?.specs?.color || '—',
+  };
 });
 
-// OBTENER VEHÍCULO DE LA FUENTE CORRECTA
-const vehicle = computed(() => {
-  const id = route.params.id;
-  if (!id) return null;
-  return isRental.value ? rentalDetails[id] || null : salesDetails[id] || null;
-});
-
-watch(
-  () => route.params.id,
-  () => {
-    if (!vehicle.value) {
-      router.replace('/vehiculos');
-    } else {
-      initEditableVehicle();
-    }
+const editableInfoItems = computed(() => [
+  {
+    label: 'Marca',
+    value: displayVehicleInfo.value.brand,
+    editable: isEditMode.value,
+    type: 'text',
   },
-  { immediate: true }
-);
+  {
+    label: 'Modelo',
+    value: displayVehicleInfo.value.model,
+    editable: isEditMode.value,
+    type: 'text',
+  },
+  {
+    label: 'Año',
+    value: displayVehicleInfo.value.year,
+    editable: isEditMode.value,
+    type: 'number',
+  },
+  {
+    label: 'Color',
+    value: displayVehicleInfo.value.color,
+    editable: isEditMode.value,
+    type: 'text',
+  },
+]);
 
 const thumbnailImages = computed(
-  () => vehicle.value?.gallery || [vehicle.value?.coverImage]
+  () => vehicle.value?.gallery || [vehicle.value?.coverImage].filter(Boolean)
 );
 const vehicleBadge = computed(() => {
-  if (isRental.value) return 'Disponible para renta';
-  return vehicle.value?.condition || 'Certificado';
+  if (isRental.value)
+    return vehicle.value?.available === false
+      ? 'Renta ocupada'
+      : 'Disponible para renta';
+  return vehicle.value?.condition || 'Publicado';
 });
-const vehicleFeatures = computed(() =>
-  isEditMode.value
-    ? editableVehicle.value.features
-    : vehicle.value?.features || defaultFeatures
-);
+const vehicleFeatures = computed(() => {
+  if (isEditMode.value) return editableVehicle.value.features || [];
+  const features = vehicle.value?.features || [];
+  if (features.length) return features;
+  return [];
+});
+const defaultDescription = computed(() => {
+  if (!vehicle.value) return 'Descripción no disponible.';
+  return isRental.value
+    ? 'Vehículo disponible para renta con gestión desde AutoSphere y revisión previa a la entrega.'
+    : 'Publicación disponible para compra con cita de revisión y seguimiento desde AutoSphere.';
+});
 const vehicleLocation = computed(() => {
+  if (!vehicle.value) return 'Ubicación por confirmar';
   if (isEditMode.value) {
     return `${editableVehicle.value.location.city}, ${editableVehicle.value.location.state}`;
   }
-  if (vehicle.value?.location?.city && vehicle.value?.location?.state) {
+  if (vehicle.value.location?.city && vehicle.value.location?.state) {
     return `${vehicle.value.location.city}, ${vehicle.value.location.state}`;
   }
-  return `${getCityName(vehicle.value?.cityId)}, ${getStateFromCity(vehicle.value?.cityId)}`;
+  return (
+    vehicle.value.cityLabel ||
+    `${getCityName(vehicle.value.cityId)}, ${getStateFromCity(vehicle.value.cityId)}`
+  );
 });
 
-// URL dinámica para el embed de Google Maps
+const locationCoordinates = computed(() => {
+  const lat = Number(vehicle.value?.location?.lat);
+  const lng = Number(vehicle.value?.location?.lng);
+  if (Number.isFinite(lat) && Number.isFinite(lng)) {
+    return { lat, lng };
+  }
+  return null;
+});
+
+const mapQuery = computed(() => {
+  if (locationCoordinates.value) {
+    return `${locationCoordinates.value.lat},${locationCoordinates.value.lng}`;
+  }
+
+  return vehicle.value?.location?.addressLabel
+    ? `${vehicle.value.location.addressLabel}, ${vehicleLocation.value}, México`
+    : `${vehicleLocation.value}, México`;
+});
+
 const googleMapsEmbedUrl = computed(() => {
-  const address = encodeURIComponent(
-    vehicle.value?.location?.addressLabel
-      ? `${vehicle.value.location.addressLabel}, ${vehicleLocation.value}, México`
-      : `${vehicleLocation.value}, México`
-  );
-  return `https://maps.google.com/maps?q=${address}&output=embed&hl=es&z=14`;
+  const query = encodeURIComponent(mapQuery.value);
+  return `https://maps.google.com/maps?q=${query}&output=embed&hl=es&z=15`;
 });
 
 const sellerName = computed(
   () =>
+    vehicle.value?.sellerDisplayName ||
     vehicle.value?.sellerProfile?.displayName ||
-    (isRental.value ? 'AutoSphere Rentals' : 'AutoSphere Certified')
+    'Perfil AutoSphere'
 );
-const sellerRating = computed(
-  () => vehicle.value?.sellerProfile?.rating || 4.8
+const sellerRatingNumber = computed(
+  () => vehicle.value?.sellerProfile?.ratingAverage ?? null
 );
+const sellerReviewSummary = computed(() => {
+  if (sellerRatingNumber.value) {
+    return sellerReviews.value.length
+      ? `${sellerReviews.value.length} opiniones publicadas`
+      : 'Opiniones disponibles';
+  }
+  return sellerReviews.value.length
+    ? `${sellerReviews.value.length} opiniones publicadas`
+    : 'Perfil sin opiniones publicadas';
+});
 const sellerVerified = computed(
-  () => vehicle.value?.sellerProfile?.verified !== false
+  () => vehicle.value?.sellerProfile?.verified === true
 );
+const previewSellerReviews = computed(() => sellerReviews.value.slice(0, 2));
 const monthlyPayment = computed(() => {
   if (!vehicle.value?.price || isRental.value) return null;
   const rate = 0.12 / 12;
@@ -890,52 +944,131 @@ const monthlyPayment = computed(() => {
 });
 const currentImage = computed(() => {
   const gallery = thumbnailImages.value;
-  const img = gallery[currentImageIndex.value] || vehicle.value?.coverImage;
-  return getOptimizedImageUrl(img, 1200, 800);
+  const image = gallery[currentImageIndex.value] || vehicle.value?.coverImage;
+  return getOptimizedImageUrl(image, 1200, 800);
 });
 
-// METHODS
+const addFeature = () => {
+  if (!newFeature.value.trim()) return;
+  editableVehicle.value.features.push(newFeature.value.trim());
+  newFeature.value = '';
+};
+
+const removeFeature = (index) => {
+  editableVehicle.value.features.splice(index, 1);
+};
+
+const saveChanges = () => {
+  showNotification(
+    'La edición se mantiene en la superficie interna del vendedor. Vuelve a tus publicaciones para continuar.',
+    'info'
+  );
+  router.push({
+    name: 'seller-listing-detail',
+    params: { id: route.params.id },
+  });
+};
+
+const cancelEdit = () => {
+  router.push({
+    name: 'seller-listing-detail',
+    params: { id: route.params.id },
+  });
+};
+
 const selectImage = (index) => {
   currentImageIndex.value = index;
 };
 const nextImage = () => {
   const gallery = thumbnailImages.value;
-  currentImageIndex.value = (currentImageIndex.value + 1) % gallery.length;
+  currentImageIndex.value = gallery.length
+    ? (currentImageIndex.value + 1) % gallery.length
+    : 0;
 };
 const prevImage = () => {
   const gallery = thumbnailImages.value;
-  currentImageIndex.value =
-    currentImageIndex.value === 0
+  currentImageIndex.value = gallery.length
+    ? currentImageIndex.value === 0
       ? gallery.length - 1
-      : currentImageIndex.value - 1;
+      : currentImageIndex.value - 1
+    : 0;
 };
-const toggleFavorite = () => {
-  isFavorite.value = !isFavorite.value;
+const toggleFavorite = async () => {
+  if (!vehicle.value?.id) return;
+
+  if (isFavorite.value) {
+    await removeSavedVehicleById(vehicle.value.id);
+    isFavorite.value = false;
+    showNotification('Vehículo removido de guardados', 'success');
+    return;
+  }
+
+  await saveVehicleById(vehicle.value.id);
+  isFavorite.value = true;
+  showNotification('Vehículo agregado a guardados', 'success');
 };
-const contactSeller = () => {
-  alert(
-    `Contactando a ${sellerName.value}...\nTeléfono: 800-123-4567\nEmail: ${isRental.value ? 'rentas@autosphere.com' : 'ventas@autosphere.com'}`
-  );
-};
-const scheduleTestDrive = () => {
-  // Redirigir al formulario de agendamiento con el ID del vehículo
+
+const openSellerProfile = () => {
+  if (!vehicle.value?.sellerId) return;
   router.push({
-    name: 'my-appointments-with-id',
-    query: { vehicle: vehicle.value?.id },
+    name: 'public-user-profile',
+    params: { id: vehicle.value.sellerId },
   });
 };
 
-const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price);
-const formatNumber = (num) => new Intl.NumberFormat('es-MX').format(num);
+const openSellerInventory = () => {
+  if (!vehicle.value?.sellerId) return;
+  router.push({
+    name: 'public-catalog',
+    query: {
+      sellerId: vehicle.value.sellerId,
+      ...(isRental.value ? { mode: 'renta' } : {}),
+    },
+  });
+};
+
+const contactSeller = openSellerProfile;
+
+const scheduleTestDrive = () => {
+  router.push({
+    name: 'public-appointment-booking',
+    params: { id: vehicle.value?.id },
+  });
+};
+
+const formatPrice = (price) =>
+  new Intl.NumberFormat('es-MX').format(price || 0);
+const formatNumber = (num) => new Intl.NumberFormat('es-MX').format(num || 0);
+const formatReviewDate = (value) =>
+  new Date(value).toLocaleDateString('es-MX', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 
 const openMaps = () => {
   const address = encodeURIComponent(
-    vehicle.value?.location?.addressLabel ||
-      `Av. Ejemplo #123, ${vehicleLocation.value}`
+    vehicle.value?.location?.addressLabel || `${vehicleLocation.value}`
   );
   window.open(`https://www.google.com/maps/search/${address}`, '_blank');
 };
 
+const loadListing = async () => {
+  const listing = await getListingById(route.params.id);
+  if (!listing) {
+    router.replace({ name: 'utility-not-found' });
+    return;
+  }
+  vehicle.value = listing;
+  isFavorite.value = await isVehicleSaved(listing.id);
+  sellerReviews.value = listing.sellerId
+    ? await getPublicProfileReviews(listing.sellerId)
+    : [];
+  currentImageIndex.value = 0;
+  initEditableVehicle();
+};
+
+watch(() => route.params.id, loadListing, { immediate: true });
 onMounted(() => {
   currentImageIndex.value = 0;
 });

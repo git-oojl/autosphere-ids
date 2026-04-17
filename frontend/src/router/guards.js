@@ -3,18 +3,29 @@ import { useAuthStore } from '../stores/auth';
 export function registerRouterGuards(router) {
   router.beforeEach((to, from, next) => {
     const auth = useAuthStore();
-    const requiresAuth = to.meta.requiresAuth;
-    const requiresAdmin = to.meta.requiresAdmin;
+    const requiresAuth = to.matched.some((record) => record.meta?.requiresAuth);
+    const requiresGuest = to.matched.some(
+      (record) => record.meta?.requiresGuest
+    );
+    const roleRequirements = to.matched
+      .flatMap((record) => record.meta?.roles || [])
+      .filter(Boolean);
 
-    // Si la ruta requiere autenticación y el usuario no está autenticado
+    if (requiresGuest && auth.isAuthenticated) {
+      next({ name: auth.isAdmin ? 'admin-dashboard' : 'user-dashboard' });
+      return;
+    }
+
     if (requiresAuth && !auth.isAuthenticated) {
-      next('/login');
+      next({ name: 'auth-login', query: { redirect: to.fullPath } });
+      return;
     }
-    // Si la ruta requiere ser admin y el usuario no es admin
-    else if (requiresAdmin && !auth.isAdmin) {
-      next('/');
-    } else {
-      next();
+
+    if (roleRequirements.length > 0 && !auth.hasAnyRole(roleRequirements)) {
+      next({ name: 'utility-forbidden' });
+      return;
     }
+
+    next();
   });
 }

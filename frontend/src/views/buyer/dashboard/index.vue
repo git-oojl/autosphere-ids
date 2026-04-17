@@ -614,13 +614,17 @@
 <script setup>
 import { computed, ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import listingsData from '../../../mocks/catalog/listings.json';
 import {
   getBuyerDashboard,
   getSavedVehicles,
   getSearchHistory,
 } from '../../../services/buyer.js';
-import { getBuyerAppointments } from '../../../services/appointments.js';
+import {
+  cancelAppointment,
+  getBuyerAppointments,
+  rescheduleAppointment,
+} from '../../../services/appointments.js';
+import { getListingById } from '../../../services/catalog.js';
 
 const router = useRouter();
 const BUYER_ID = 'u-buyer-001';
@@ -636,9 +640,8 @@ const dashboardData = ref({
 const appointments = ref([]);
 const savedVehicles = ref([]);
 const searchHistory = ref([]);
-const offersCount = ref(2);
-
-const allListings = listingsData.items || [];
+const offersCount = ref(0);
+const listingsMap = ref({});
 
 const modals = ref({ detail: false, reschedule: false, cancel: false });
 const selectedAppt = ref(null);
@@ -703,21 +706,34 @@ async function loadPanel() {
 
     dashboardData.value = dash;
     savedVehicles.value = savedRes?.items || [];
-    searchHistory.value = (histRes?.items || []).map((h) => ({
-      id: h.id,
-      query: h.query,
-      date: formatSearchDate(h.timestamp),
-      resultsCount: '—',
+    searchHistory.value = (histRes?.items || []).map((item) => ({
+      id: item.id,
+      query: item.query,
+      date: formatSearchDate(item.timestamp),
+      resultsCount: item.resultCount ?? '—',
     }));
     appointments.value = Array.isArray(appts) ? appts : [];
+
+    const listingIds = [
+      ...new Set(
+        appointments.value.map((item) => item.listingId).filter(Boolean)
+      ),
+    ];
+    const entries = await Promise.all(
+      listingIds.map(async (id) => [id, await getListingById(id)])
+    );
+    listingsMap.value = Object.fromEntries(entries);
 
     dashboardData.value.summary = {
       ...dashboardData.value.summary,
       savedVehicles: savedVehicles.value.length,
-      upcomingAppointments: appointments.value.filter((a) =>
-        ['pending', 'confirmed', 'rescheduled'].includes(a.status)
+      upcomingAppointments: appointments.value.filter((item) =>
+        ['pending', 'confirmed', 'rescheduled'].includes(item.status)
       ).length,
     };
+    offersCount.value = appointments.value.filter(
+      (item) => item.status === 'pending'
+    ).length;
   } catch (e) {
     console.error('loadPanel', e);
   }
@@ -744,7 +760,7 @@ const getImageUrl = (url) => {
   return url;
 };
 
-const getVehicle = (listingId) => allListings.find((v) => v.id === listingId);
+const getVehicle = (listingId) => listingsMap.value[listingId] || null;
 
 const getVehicleTitle = (appt) =>
   appt?.listingTitle ||
@@ -773,7 +789,7 @@ const goToDetail = (id) => {
   router.push({ name: 'public-listing-detail', params: { id } });
 };
 const goToCatalog = () => router.push({ name: 'public-catalog' });
-const goToAppointments = () => router.push({ name: 'user-appointments' });
+const goToAppointments = () => router.push({ name: 'my-appointments' });
 const goToSavedVehicles = () => router.push({ name: 'buyer-saved-vehicles' });
 const goToSearchHistory = () => router.push({ name: 'buyer-search-history' });
 
@@ -786,7 +802,10 @@ const removeSearch = (index) => {
 };
 
 const stubSaveSearch = () => {
-  showToast('Búsqueda guardada en tu perfil (demo).', 'success');
+  showToast(
+    'La búsqueda queda visible en tu historial; el guardado persistente se conectará desde backend.',
+    'info'
+  );
 };
 
 const openModal = (appt) => {
@@ -806,19 +825,17 @@ const openCancel = (appt) => {
   modals.value.cancel = true;
 };
 
-const confirmReschedule = () => {
+const confirmReschedule = async () => {
   if (!rescheduleForm.value.date || !rescheduleForm.value.time) {
     showToast('Por favor selecciona fecha y hora.', 'warn');
     return;
   }
-  const idx = appointments.value.findIndex(
-    (a) => a.id === selectedAppt.value.id
-  );
-  if (idx !== -1) {
-    appointments.value[idx].date = rescheduleForm.value.date;
-    appointments.value[idx].time = rescheduleForm.value.time;
-    appointments.value[idx].status = 'rescheduled';
-  }
+  await rescheduleAppointment(selectedAppt.value.id, {
+    date: rescheduleForm.value.date,
+    time: rescheduleForm.value.time,
+    notes: rescheduleForm.value.notes,
+  });
+  await loadPanel();
   modals.value.reschedule = false;
   rescheduleForm.value = { date: '', time: '', notes: '' };
   showToast(
@@ -827,15 +844,16 @@ const confirmReschedule = () => {
   );
 };
 
-const confirmCancel = () => {
+const confirmCancel = async () => {
   if (!cancelForm.value.reason) {
     showToast('Por favor selecciona un motivo.', 'warn');
     return;
   }
-  const idx = appointments.value.findIndex(
-    (a) => a.id === selectedAppt.value.id
-  );
-  if (idx !== -1) appointments.value[idx].status = 'cancelled';
+  await cancelAppointment(selectedAppt.value.id, {
+    reason: cancelForm.value.reason,
+    notes: cancelForm.value.notes,
+  });
+  await loadPanel();
   modals.value.cancel = false;
   cancelForm.value = { reason: '', notes: '' };
   showToast('Cita cancelada. El vendedor fue notificado.', 'danger');

@@ -287,7 +287,7 @@ const buyersFAQs = ref([
     id: 'b1',
     question: '¿Cómo busco un vehículo en AutoSphere?',
     answer:
-      'Utiliza nuestros filtros avanzados en la página de catálogo para buscar por marca, modelo, año, precio, ubicación y más. También puedes guardar búsquedas y recibir alertas cuando aparezcan vehículos que coincidan con tus criterios.',
+      'Utiliza los filtros del catálogo para buscar por marca, modelo, año, precio, ubicación y más. También puedes revisar y repetir tus búsquedas recientes desde tu cuenta.',
   },
   {
     id: 'b2',
@@ -305,13 +305,13 @@ const buyersFAQs = ref([
     id: 'b4',
     question: '¿AutoSphere ofrece financiamiento?',
     answer:
-      'Actualmente no ofrecemos financiamiento directo, pero estamos trabajando con instituciones financieras para próximamente ofrecer opciones de crédito automotriz a nuestros usuarios.',
+      'No. En esta versión AutoSphere no ofrece financiamiento directo dentro de la plataforma.',
   },
   {
     id: 'b5',
     question: '¿Cómo contacto al vendedor?',
     answer:
-      'Una vez que encuentres un vehículo de tu interés, puedes contactar al vendedor mediante nuestro sistema de mensajería integrado, WhatsApp o llamada telefónica según las preferencias del vendedor.',
+      'Desde el detalle del vehículo puedes abrir el perfil público del anunciante y usar el flujo de cita para continuar con el contacto.',
   },
 ]);
 
@@ -320,7 +320,7 @@ const sellersFAQs = ref([
     id: 's1',
     question: '¿Cómo publico mi vehículo?',
     answer:
-      'Crea una cuenta, haz clic en "Publicar anuncio", completa el formulario con los datos de tu vehículo, agrega fotos de calidad y publica. Tu anuncio será visible para miles de compradores potenciales.',
+      'Crea una cuenta, haz clic en "Publicar vehículo", completa el formulario con los datos del vehículo y revisa el resultado desde Mis publicaciones.',
   },
   {
     id: 's2',

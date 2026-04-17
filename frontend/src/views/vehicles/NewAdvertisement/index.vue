@@ -1546,9 +1546,9 @@ const submitListing = () => {
     isSubmitting.value = false;
     const type = formData.value.listingType === 'sale' ? 'venta' : 'renta';
     alert(
-      `¡Anuncio de ${type} publicado exitosamente!\n\nVehículo: ${formData.value.brand} ${formData.value.model} ${formData.value.year}\n\nTu anuncio estará visible en el catálogo en breve.`
+      `¡Anuncio de ${type} preparado correctamente!\n\nVehículo: ${formData.value.brand} ${formData.value.model} ${formData.value.year}\n\nAhora puedes revisarlo desde Mis publicaciones.`
     );
-    router.push('/mis-anuncios');
+    router.push({ name: 'user-listings' });
   }, 2000);
 };
 </script>

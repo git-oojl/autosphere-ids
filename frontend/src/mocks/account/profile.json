@@ -4,5 +4,9 @@
   "email": "mariana@example.com",
   "phone": "+52 55 5555 0101",
   "city": "Ciudad de México",
-  "avatarUrl": "https://images.unsplash.com/photo-1494790108377-be9c29b29330"
+  "state": "Ciudad de México",
+  "bio": "Uso AutoSphere para guardar opciones, agendar citas y seguir el estado de mis publicaciones cuando vendo.",
+  "avatarUrl": null,
+  "memberSince": "2024-01-16",
+  "avatarPreset": "mar"
 }

@@ -35,16 +35,67 @@
           Admin Dashboard
         </button>
       </div>
+
+      <div class="view-path-card">
+        <span class="view-path-label">Vista actual</span>
+        <code class="view-path-value">{{ currentViewDirectory }}</code>
+        <small class="view-path-route">{{ route.fullPath }}</small>
+      </div>
     </div>
   </details>
 </template>
 
 <script setup>
+import { computed } from 'vue';
 import { useAuthStore } from '../../stores/auth';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 const auth = useAuthStore();
+const route = useRoute();
 const router = useRouter();
+
+const currentViewDirectory = computed(() => {
+  const matchedRecords = [...route.matched].reverse();
+
+  for (const record of matchedRecords) {
+    const viewSource = record.components?.default ?? record.component ?? null;
+    const resolvedPath = resolveViewDirectory(viewSource);
+
+    if (resolvedPath) {
+      return resolvedPath;
+    }
+  }
+
+  return 'Vista no resuelta';
+});
+
+function resolveViewDirectory(viewSource) {
+  if (!viewSource) return null;
+
+  if (typeof viewSource === 'function') {
+    const source = viewSource.toString();
+    const match = source.match(/import\((['"`])(.+?)\1\)/);
+
+    if (!match?.[2]) return null;
+
+    return normalizeViewPath(match[2]);
+  }
+
+  if (typeof viewSource === 'object' && typeof viewSource.__file === 'string') {
+    return normalizeViewPath(viewSource.__file);
+  }
+
+  return null;
+}
+
+function normalizeViewPath(rawPath) {
+  return rawPath
+    .replace(/\\/g, '/')
+    .replace(/^src\//, 'src/')
+    .replace(/^\.\.\/\.\.\//, 'src/')
+    .replace(/\/index\.vue$/, '')
+    .replace(/\.vue$/, '');
+}
 
 function setGuest() {
   auth.clearSession();
@@ -121,6 +172,31 @@ function goTo(path) {
 }
 .button-grid button:hover {
   outline: 2px solid #60a5fa;
+}
+
+.view-path-card {
+  display: grid;
+  gap: 6px;
+  padding: 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.view-path-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.68);
+}
+.view-path-value {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  white-space: normal;
+  word-break: break-word;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+.view-path-route {
+  color: rgba(255, 255, 255, 0.72);
 }
 @media (max-width: 640px) {
   .button-grid {
