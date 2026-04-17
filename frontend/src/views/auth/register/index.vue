@@ -381,6 +381,8 @@
             Creando cuenta...
           </span>
         </button>
+        <p v-if="submitMessage" class="success-message">{{ submitMessage }}</p>
+        <p v-if="submitError" class="error-message">{{ submitError }}</p>
       </form>
 
       <!-- Footer -->
@@ -399,11 +401,10 @@
 <script setup>
 import { ref, reactive, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { register } from '../../../services/auth.js';
 
-// Obtener instancia del router
 const router = useRouter();
 
-// Estado reactivo del formulario
 const formData = reactive({
   fullName: '',
   email: '',
@@ -418,8 +419,9 @@ const showConfirmPassword = ref(false);
 const acceptTerms = ref(false);
 const isLoading = ref(false);
 const passwordError = ref('');
+const submitMessage = ref('');
+const submitError = ref('');
 
-// Validar que las contraseñas coincidan
 watch(
   () => formData.confirmPassword,
   (newValue) => {
@@ -445,7 +447,6 @@ watch(
   }
 );
 
-// Alternar visibilidad de contraseña
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value;
 };
@@ -454,54 +455,44 @@ const toggleConfirmPasswordVisibility = () => {
   showConfirmPassword.value = !showConfirmPassword.value;
 };
 
-// Manejar envío del formulario
 const handleRegister = async () => {
-  // Validar que las contraseñas coincidan
+  submitMessage.value = '';
+  submitError.value = '';
+
   if (formData.password !== formData.confirmPassword) {
     passwordError.value = 'Las contraseñas no coinciden';
-    return;
-  }
-
-  // Validar que se haya seleccionado un rol
-  if (!formData.role) {
-    alert('Por favor selecciona un tipo de cuenta');
     return;
   }
 
   isLoading.value = true;
 
   try {
-    console.log('Intentando registrar usuario:', {
-      fullName: formData.fullName,
+    const response = await register({
+      name: formData.fullName,
       email: formData.email,
       phone: formData.phone,
-      role: formData.role,
-      acceptTerms: acceptTerms.value,
+      password: formData.password,
+      roles: ['buyer'],
     });
 
-    // Simulación de petición API
-    await new Promise((resolve) => setTimeout(resolve, 2000));
+    submitMessage.value =
+      response?.message ||
+      'Cuenta registrada en el entorno mock. El siguiente paso real será la validación por backend.';
 
-    console.log('Registro exitoso');
-
-    // Redirigir según el rol
-    if (formData.role === 'vendedor') {
-      router.push('/dashboard-vendedor');
-    } else {
-      router.push('/dashboard-comprador');
-    }
+    await router.push({
+      name: 'auth-verify-email',
+      query: {
+        status: 'pending',
+        email: formData.email,
+      },
+    });
   } catch (error) {
-    console.error('Error en el registro:', error);
+    submitError.value = 'No fue posible completar el registro.';
   } finally {
     isLoading.value = false;
   }
 };
 
-// Mostrar términos y condiciones
-// const showTerms = (e) => {
-// //   e.preventDefault();
-router.push('/registro');
-// };
 </script>
 
 <style scoped src="./styles.css"></style>

@@ -1227,3 +1227,43 @@
   line-height: 1;
   color: #3b82f6;
 }
+
+
+.admin-security .page-header {
+  background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+}
+
+.admin-security .btn-secondary {
+  border-color: #cbd5e1;
+  background: #f8fafc;
+}
+
+.admin-ops-card {
+  border-color: #cbd5e1;
+  background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+}
+
+.admin-ops-list {
+  display: grid;
+  gap: 12px;
+}
+
+.admin-ops-item {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.admin-ops-item strong {
+  color: #1e3a5f;
+  font-size: 13px;
+}
+
+.admin-ops-item span {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.45;
+}

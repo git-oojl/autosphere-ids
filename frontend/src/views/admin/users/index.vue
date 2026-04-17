@@ -659,9 +659,12 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-
-// IMPORTAR EL MOCK DESDE JSON
-import usersMock from '../../../mocks/admin/users.json';
+import {
+  getAdminUsers,
+  saveAdminUser,
+  updateUserStatus,
+  deleteAdminUser,
+} from '../../../services/admin.js';
 
 const router = useRouter();
 
@@ -673,23 +676,7 @@ const stats = ref({
   landlords: 0,
 });
 
-// USERS: Usar los datos importados del JSON
-const users = ref(
-  usersMock.items.map((item) => ({
-    id: item.id,
-    name: item.name,
-    email: item.email,
-    phone: item.phone,
-    location: item.location,
-    role: item.role,
-    status: item.status,
-    verified: item.verified,
-    registeredAt: item.registeredAt,
-    lastLogin: item.lastLogin,
-    listingsCount: item.listingsCount,
-    avatar: item.avatar,
-  }))
-);
+const users = ref([]);
 
 // Filters
 const searchTerm = ref('');
@@ -800,6 +787,12 @@ const visiblePages = computed(() => {
   }
   return pages;
 });
+
+const loadUsers = async () => {
+  const response = await getAdminUsers();
+  users.value = response?.items || [];
+  updateStats();
+};
 
 // Methods
 const goBack = () => {
@@ -917,54 +910,23 @@ const closeUserModal = () => {
   selectedUser.value = null;
 };
 
-const saveUser = () => {
+const saveUser = async () => {
   if (!userForm.value.name || !userForm.value.email) {
     alert('Por favor completa los campos requeridos');
     return;
   }
 
-  const newId = `u-${userForm.value.role}-${Date.now()}`;
+  await saveAdminUser({
+    ...userForm.value,
+    verified: userForm.value.verified === 'true',
+    registeredAt: isEditing.value ? undefined : new Date().toISOString().split('T')[0],
+    lastLogin: isEditing.value ? undefined : null,
+    listingsCount: isEditing.value ? undefined : 0,
+    avatar: null,
+  });
 
-  if (isEditing.value) {
-    // Edit existing user
-    const index = users.value.findIndex((u) => u.id === userForm.value.id);
-    if (index !== -1) {
-      users.value[index] = {
-        ...users.value[index],
-        name: userForm.value.name,
-        email: userForm.value.email,
-        phone: userForm.value.phone,
-        location: userForm.value.location,
-        role: userForm.value.role,
-        status: userForm.value.status,
-        verified: userForm.value.verified === 'true',
-      };
-      alert(`Usuario ${userForm.value.name} actualizado correctamente`);
-    }
-  } else {
-    // Create new user
-    const newUser = {
-      id: newId,
-      name: userForm.value.name,
-      email: userForm.value.email,
-      phone: userForm.value.phone,
-      location: userForm.value.location,
-      role: userForm.value.role,
-      status: 'active',
-      verified: userForm.value.verified === 'true',
-      registeredAt: new Date().toISOString().split('T')[0],
-      lastLogin: null,
-      listingsCount: 0,
-      avatar: null,
-    };
-    users.value.unshift(newUser);
-    alert(`Usuario ${userForm.value.name} creado correctamente`);
-    if (userForm.value.password) {
-      alert(`Contraseña temporal: ${userForm.value.password}`);
-    }
-  }
   closeUserModal();
-  updateStats();
+  await loadUsers();
 };
 
 const viewUser = (user) => {
@@ -990,24 +952,19 @@ const restoreUser = (user) => {
   showSuspendModal.value = true;
 };
 
-const confirmSuspendRestore = () => {
+const confirmSuspendRestore = async () => {
   if (selectedUser.value) {
-    const index = users.value.findIndex((u) => u.id === selectedUser.value.id);
-    if (index !== -1) {
-      if (suspendAction.value === 'suspend') {
-        users.value[index].status = 'suspended';
-        alert(
-          `Usuario ${selectedUser.value.name} suspendido${suspendReason.value ? `: ${suspendReason.value}` : ''}`
-        );
-      } else {
-        users.value[index].status = 'active';
-        alert(`Usuario ${selectedUser.value.name} restaurado correctamente`);
-      }
-    }
+    await updateUserStatus(
+      selectedUser.value.id,
+      suspendAction.value === 'suspend' ? 'suspended' : 'active',
+      suspendAction.value === 'suspend' && suspendReason.value
+        ? { suspensionReason: suspendReason.value }
+        : {}
+    );
   }
   showSuspendModal.value = false;
   selectedUser.value = null;
-  updateStats();
+  await loadUsers();
 };
 
 const deleteUser = (user) => {
@@ -1015,22 +972,18 @@ const deleteUser = (user) => {
   showDeleteModal.value = true;
 };
 
-const confirmDelete = () => {
+const confirmDelete = async () => {
   if (selectedUser.value) {
-    const index = users.value.findIndex((u) => u.id === selectedUser.value.id);
-    if (index !== -1) {
-      users.value.splice(index, 1);
-      alert(`Usuario ${selectedUser.value.name} eliminado`);
-    }
+    await deleteAdminUser(selectedUser.value.id);
   }
   showDeleteModal.value = false;
   selectedUser.value = null;
-  updateStats();
+  await loadUsers();
 };
 
 // Initialize
-onMounted(() => {
-  updateStats();
+onMounted(async () => {
+  await loadUsers();
 });
 </script>
 

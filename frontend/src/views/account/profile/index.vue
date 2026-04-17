@@ -1,5 +1,5 @@
 <template>
-  <div class="profile-page">
+  <div class="profile-page" :class="{ 'admin-profile': auth.isAdmin }">
     <div class="profile-hero">
       <br /><br /><br />
       <div class="hero-bg-pattern"></div>
@@ -72,8 +72,11 @@
             Usar avatar base
           </button>
           <p v-if="isEditing" class="avatar-help">
-            Puedes subir una foto o elegir uno de los estilos base para la
-            cuenta.
+            {{
+              auth.isAdmin
+                ? 'Mantén esta cuenta sobria: usa solo una imagen o avatar base reconocible para operación interna.'
+                : 'Puedes subir una foto o elegir uno de los estilos base para la cuenta.'
+            }}
           </p>
         </div>
 
@@ -107,6 +110,14 @@
             >
               {{ surface }}
             </span>
+          </div>
+          <div v-if="auth.isAdmin" class="admin-account-note">
+            <span class="admin-note-chip">Cuenta administrativa</span>
+            <p>
+              Esta cuenta prioriza identificación interna, contacto de
+              recuperación y accesos operativos. No funciona como perfil público
+              del catálogo.
+            </p>
           </div>
         </div>
 
@@ -162,9 +173,19 @@
                 </svg>
               </div>
               <div>
-                <h2 class="card-title">Información personal</h2>
+                <h2 class="card-title">
+                  {{
+                    auth.isAdmin
+                      ? 'Cuenta administrativa'
+                      : 'Información personal'
+                  }}
+                </h2>
                 <p class="card-subtitle">
-                  Así te verán otros usuarios en la plataforma.
+                  {{
+                    auth.isAdmin
+                      ? 'Mantén solo los datos internos necesarios para identificar y recuperar esta cuenta.'
+                      : 'Así te verán otros usuarios en la plataforma.'
+                  }}
                 </p>
               </div>
             </div>
@@ -448,7 +469,7 @@
 
             <div class="field-group full-width">
               <label class="field-label">
-                Biografía
+                {{ auth.isAdmin ? 'Nota interna' : 'Biografía' }}
                 <span
                   class="char-count"
                   :class="{ warn: form.bio.length > 220 }"
@@ -462,7 +483,7 @@
                 <textarea
                   v-model="form.bio"
                   class="field-textarea"
-                  placeholder="Cuéntanos un poco sobre ti…"
+                  :placeholder="auth.isAdmin ? 'Anotación breve para identificar esta cuenta…' : 'Cuéntanos un poco sobre ti…'"
                   :readonly="!isEditing"
                   rows="3"
                   maxlength="250"
@@ -522,9 +543,15 @@
                 </svg>
               </div>
               <div>
-                <h2 class="card-title">Notificaciones</h2>
+                <h2 class="card-title">
+                  {{ auth.isAdmin ? 'Avisos administrativos' : 'Notificaciones' }}
+                </h2>
                 <p class="card-subtitle">
-                  Preferencias básicas de comunicación para citas y actividad.
+                  {{
+                    auth.isAdmin
+                      ? 'Preferencias básicas para actividad operativa y seguimiento interno.'
+                      : 'Preferencias básicas de comunicación para citas y actividad.'
+                  }}
                 </p>
               </div>
             </div>
@@ -554,6 +581,42 @@
       </div>
 
       <div class="side-column">
+        <div v-if="auth.isAdmin" class="side-card admin-focus-card">
+          <div class="side-card-header">
+            <div class="card-icon blue admin-focus-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path d="M12 3l7 4v5c0 5-3.5 8.5-7 9-3.5-.5-7-4-7-9V7l7-4z" />
+                <path d="M9 12l2 2 4-4" />
+              </svg>
+            </div>
+            <div>
+              <h3 class="card-title sm">Contexto admin</h3>
+              <p class="card-subtitle">
+                Un perfil más sobrio para acceso interno y control operativo.
+              </p>
+            </div>
+          </div>
+          <div class="admin-focus-list">
+            <div class="admin-focus-item">
+              <strong>Uso interno</strong>
+              <span>El perfil no funciona como vitrina pública ni ficha comercial.</span>
+            </div>
+            <div class="admin-focus-item">
+              <strong>Recuperación prioritaria</strong>
+              <span>Correo y teléfono deben mantenerse vigentes para soporte y acceso.</span>
+            </div>
+            <div class="admin-focus-item">
+              <strong>Accesos de control</strong>
+              <span>Los atajos de esta cuenta se orientan a dashboard, usuarios y citas.</span>
+            </div>
+          </div>
+        </div>
+
         <div class="side-card">
           <div class="side-card-header">
             <div class="card-icon amber">
@@ -567,8 +630,8 @@
               </svg>
             </div>
             <div>
-              <h3 class="card-title sm">Perfil completado</h3>
-              <p class="card-subtitle">{{ completionPct }}% completo</p>
+              <h3 class="card-title sm">{{ auth.isAdmin ? 'Cuenta administrativa' : 'Perfil completado' }}</h3>
+              <p class="card-subtitle">{{ completionPct }}% {{ auth.isAdmin ? 'listo para operación' : 'completo' }}</p>
             </div>
           </div>
 
@@ -618,7 +681,7 @@
             <div>
               <h3 class="card-title sm">Accesos rápidos</h3>
               <p class="card-subtitle">
-                Superficies disponibles para esta cuenta.
+                {{ auth.isAdmin ? 'Accesos disponibles para esta cuenta administrativa.' : 'Superficies disponibles para esta cuenta.' }}
               </p>
             </div>
           </div>
@@ -669,6 +732,10 @@
                 <span class="chip-dot"></span>
                 Activa
               </span>
+            </div>
+            <div v-if="auth.isAdmin" class="account-row">
+              <span class="account-label">Visibilidad</span>
+              <span class="account-value">Interna / administrativa</span>
             </div>
             <div class="account-row">
               <span class="account-label">Capacidades</span>
@@ -730,26 +797,49 @@ const isEditing = ref(false);
 const isSaving = ref(false);
 const banner = ref({ visible: false, type: 'success', message: '' });
 
-const notifications = ref([
-  {
-    key: 'appointments',
-    title: 'Citas',
-    desc: 'Recordatorios y cambios de estado.',
-    enabled: true,
-  },
-  {
-    key: 'listingActivity',
-    title: 'Actividad de publicaciones',
-    desc: 'Consultas y visitas relevantes.',
-    enabled: true,
-  },
-  {
-    key: 'marketing',
-    title: 'Novedades AutoSphere',
-    desc: 'Comunicaciones generales de producto.',
-    enabled: false,
-  },
-]);
+const notifications = ref(
+  auth.isAdmin
+    ? [
+        {
+          key: 'moderation',
+          title: 'Actividad operativa',
+          desc: 'Cambios relevantes en agenda y supervisión administrativa.',
+          enabled: true,
+        },
+        {
+          key: 'users',
+          title: 'Movimientos de cuentas',
+          desc: 'Altas y cambios importantes en usuarios gestionados.',
+          enabled: true,
+        },
+        {
+          key: 'product',
+          title: 'Avisos de producto',
+          desc: 'Comunicaciones internas útiles para la operación.',
+          enabled: false,
+        },
+      ]
+    : [
+        {
+          key: 'appointments',
+          title: 'Citas',
+          desc: 'Recordatorios y cambios de estado.',
+          enabled: true,
+        },
+        {
+          key: 'listingActivity',
+          title: 'Actividad de publicaciones',
+          desc: 'Consultas y visitas relevantes.',
+          enabled: true,
+        },
+        {
+          key: 'marketing',
+          title: 'Novedades AutoSphere',
+          desc: 'Comunicaciones generales de producto.',
+          enabled: false,
+        },
+      ]
+);
 
 const mexicanStates = [
   'Aguascalientes',
@@ -840,7 +930,7 @@ const authModelLabel = computed(() =>
       : 'Invitado'
 );
 const capabilityLabels = computed(() => {
-  if (auth.isAdmin) return ['Administración'];
+  if (auth.isAdmin) return ['Administración', 'Uso interno'];
   const labels = [];
   if (auth.hasRole('buyer')) labels.push('Comprador');
   if (auth.hasRole('seller')) labels.push('Vendedor');
@@ -858,26 +948,50 @@ const hasChanges = computed(
   () => JSON.stringify(form.value) !== JSON.stringify(originalForm.value)
 );
 
-const completionSteps = computed(() => [
-  {
-    key: 'name',
-    label: 'Nombre completo',
-    done: !!(form.value.firstName && form.value.lastName),
-  },
-  { key: 'email', label: 'Correo principal', done: !!form.value.email },
-  { key: 'phone', label: 'Teléfono agregado', done: !!form.value.phone },
-  {
-    key: 'avatar',
-    label: 'Avatar configurado',
-    done: !!(form.value.avatarUrl || form.value.avatarPreset),
-  },
-  { key: 'bio', label: 'Biografía escrita', done: !!form.value.bio },
-  {
-    key: 'location',
-    label: 'Ubicación definida',
-    done: !!(form.value.city && form.value.state),
-  },
-]);
+const completionSteps = computed(() => {
+  if (auth.isAdmin) {
+    return [
+      {
+        key: 'name',
+        label: 'Nombre de la cuenta',
+        done: !!(form.value.firstName && form.value.lastName),
+      },
+      { key: 'email', label: 'Correo operativo', done: !!form.value.email },
+      { key: 'phone', label: 'Teléfono vigente', done: !!form.value.phone },
+      {
+        key: 'avatar',
+        label: 'Identificador visual',
+        done: !!(form.value.avatarUrl || form.value.avatarPreset),
+      },
+      {
+        key: 'bio',
+        label: 'Nota interna breve',
+        done: !!form.value.bio,
+      },
+    ];
+  }
+
+  return [
+    {
+      key: 'name',
+      label: 'Nombre completo',
+      done: !!(form.value.firstName && form.value.lastName),
+    },
+    { key: 'email', label: 'Correo principal', done: !!form.value.email },
+    { key: 'phone', label: 'Teléfono agregado', done: !!form.value.phone },
+    {
+      key: 'avatar',
+      label: 'Avatar configurado',
+      done: !!(form.value.avatarUrl || form.value.avatarPreset),
+    },
+    { key: 'bio', label: 'Biografía escrita', done: !!form.value.bio },
+    {
+      key: 'location',
+      label: 'Ubicación definida',
+      done: !!(form.value.city && form.value.state),
+    },
+  ];
+});
 const completionPct = computed(() =>
   Math.round(
     (completionSteps.value.filter((step) => step.done).length /
@@ -885,14 +999,22 @@ const completionPct = computed(() =>
       100
   )
 );
-const quickStats = computed(() => [
-  { value: capabilityLabels.value.length, label: 'Superficies activas' },
-  { value: `${completionPct.value}%`, label: 'Perfil completo' },
-  {
-    value: new Date(profile.memberSince).getFullYear(),
-    label: 'Miembro desde',
-  },
-]);
+const quickStats = computed(() =>
+  auth.isAdmin
+    ? [
+        { value: 'Admin', label: 'Modelo de acceso' },
+        { value: menuItems.value.length, label: 'Atajos de control' },
+        { value: `${completionPct.value}%`, label: 'Cuenta lista' },
+      ]
+    : [
+        { value: capabilityLabels.value.length, label: 'Superficies activas' },
+        { value: `${completionPct.value}%`, label: 'Perfil completo' },
+        {
+          value: new Date(profile.memberSince).getFullYear(),
+          label: 'Miembro desde',
+        },
+      ]
+);
 
 const menuItems = computed(() => {
   if (auth.isAdmin) {

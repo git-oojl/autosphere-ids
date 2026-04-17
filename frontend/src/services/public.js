@@ -58,3 +58,21 @@ export async function getContactPage() {
 export async function getFaqPage() {
   return resolveMock(faqContent);
 }
+
+
+export async function submitContactForm(payload = {}) {
+  // TODO: replace with POST /api/public/contact.
+  return resolveMock({
+    ok: true,
+    ticketId: `contact-${Date.now()}`,
+    message: 'Mensaje recibido en el entorno mock',
+    submittedAt: new Date().toISOString(),
+    payload: {
+      name: payload.name || '',
+      email: payload.email || '',
+      phone: payload.phone || '',
+      subject: payload.subject || '',
+      message: payload.message || '',
+    },
+  });
+}

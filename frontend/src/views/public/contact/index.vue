@@ -90,6 +90,9 @@
           <p class="form-subtitle">
             Completa el formulario y nos pondremos en contacto contigo
           </p>
+          <p v-if="submitState.message" :class="['form-feedback', submitState.type]">
+            {{ submitState.message }}
+          </p>
 
           <form class="contact-form" @submit.prevent="submitForm">
             <div class="form-row">
@@ -338,10 +341,12 @@
 
 <script setup>
 import { ref } from 'vue';
+import { submitContactForm } from '../../../services/public.js';
 
 const isSubmitting = ref(false);
+const submitState = ref({ type: 'success', message: '' });
 
-const formData = ref({
+const makeInitialForm = () => ({
   name: '',
   email: '',
   phone: '',
@@ -350,26 +355,28 @@ const formData = ref({
   privacy: false,
 });
 
+const formData = ref(makeInitialForm());
+
 const submitForm = async () => {
   isSubmitting.value = true;
+  submitState.value = { type: 'success', message: '' };
 
-  // Simular envío
-  setTimeout(() => {
-    console.log('Formulario enviado:', formData.value);
-    alert('¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.');
-
-    // Reset form
-    formData.value = {
-      name: '',
-      email: '',
-      phone: '',
-      subject: '',
-      message: '',
-      privacy: false,
+  try {
+    await submitContactForm({ ...formData.value });
+    submitState.value = {
+      type: 'success',
+      message:
+        'Tu mensaje quedó registrado en la cola mock de contacto. En Wave 2 este paso irá al endpoint público real.',
     };
-
+    formData.value = makeInitialForm();
+  } catch (error) {
+    submitState.value = {
+      type: 'error',
+      message: 'No fue posible registrar tu mensaje. Intenta nuevamente.',
+    };
+  } finally {
     isSubmitting.value = false;
-  }, 2000);
+  }
 };
 
 const callPhone = () => {
@@ -381,4 +388,24 @@ const sendEmail = () => {
 };
 </script>
 
-<style scoped src="./styles.css"></style>
+<style scoped src="./styles.css">
+.form-feedback {
+  margin: 0 0 20px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.form-feedback.success {
+  background: rgba(16, 185, 129, 0.12);
+  color: #065f46;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.form-feedback.error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #991b1b;
+  border: 1px solid rgba(239, 68, 68, 0.18);
+}
+</style>

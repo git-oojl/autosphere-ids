@@ -7,9 +7,9 @@
         Confirma el estado actual del correo y mantiene continuidad hacia el
         acceso o el inicio.
       </p>
-      <div class="status success">
+      <div :class="['status', statusClass]">
         <strong>{{ message }}</strong>
-        <span>Ya puedes continuar con tu acceso o volver al inicio.</span>
+        <span>{{ detail }}</span>
       </div>
       <div class="actions">
         <button @click="router.push({ name: 'auth-login' })">
@@ -24,16 +24,39 @@
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { verifyEmail } from '../../../services/auth.js';
 
 const route = useRoute();
 const router = useRouter();
-const message = computed(() =>
-  route.query.status === 'pending'
-    ? 'Tu cuenta quedó pendiente de validación manual.'
-    : 'Tu correo fue validado correctamente en el entorno actual.'
+const status = ref(route.query.status === 'pending' ? 'pending' : 'success');
+const message = ref('Validando estado del correo...');
+const detail = ref('');
+
+const statusClass = computed(() =>
+  status.value === 'error' ? 'error' : status.value === 'pending' ? 'pending' : 'success'
 );
+
+onMounted(async () => {
+  if (route.query.status === 'pending') {
+    message.value = 'Tu cuenta quedó pendiente de validación manual.';
+    detail.value =
+      'El frontend ya quedó detrás del seam de verificación. En Wave 2 este paso consultará el endpoint real.';
+    return;
+  }
+
+  try {
+    const response = await verifyEmail({ token: route.query.token || null });
+    status.value = 'success';
+    message.value = response?.message || 'Tu correo fue validado correctamente en el entorno actual.';
+    detail.value = 'Ya puedes continuar con tu acceso o volver al inicio.';
+  } catch (error) {
+    status.value = 'error';
+    message.value = 'No fue posible validar el correo.';
+    detail.value = 'Reintenta desde el enlace de verificación o vuelve a iniciar sesión.';
+  }
+});
 </script>
 
 <style scoped>
@@ -66,6 +89,14 @@ const message = computed(() =>
 .status.success {
   background: #dcfce7;
   color: #166534;
+}
+.status.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+.status.error {
+  background: #fee2e2;
+  color: #991b1b;
 }
 .actions {
   display: flex;

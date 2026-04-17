@@ -1183,3 +1183,71 @@
     max-width: none;
   }
 }
+
+
+.admin-profile .profile-hero {
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%);
+}
+
+.admin-profile .avatar-ring {
+  background: linear-gradient(135deg, #94a3b8, #334155);
+}
+
+.admin-account-note {
+  margin-top: 16px;
+  max-width: 540px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: rgba(15, 23, 42, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.admin-account-note p {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.admin-note-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.admin-focus-card {
+  border-color: #cbd5e1;
+  background: linear-gradient(180deg, #f8fbff 0%, #ffffff 100%);
+}
+
+.admin-focus-list {
+  display: grid;
+  gap: 12px;
+  padding: 0 24px 24px;
+}
+
+.admin-focus-item {
+  display: grid;
+  gap: 4px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+}
+
+.admin-focus-item strong {
+  color: #1e3a5f;
+  font-size: 13px;
+}
+
+.admin-focus-item span {
+  color: #64748b;
+  font-size: 13px;
+  line-height: 1.45;
+}

@@ -593,10 +593,15 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import {
+  getAdminModerationListings,
+  approveAdminModerationListing,
+  rejectAdminModerationListing,
+  deleteAdminModerationListing,
+} from '../../../services/admin.js';
 
 const router = useRouter();
 
-// Stats
 const stats = ref({
   pending: 0,
   approved: 0,
@@ -604,213 +609,35 @@ const stats = ref({
   total: 0,
 });
 
-// Current tab
 const currentTab = ref('pending');
-
-// Filters
 const searchTerm = ref('');
 const typeFilter = ref('all');
 const sortBy = ref('date_desc');
 const currentPage = ref(1);
 const itemsPerPage = 9;
+const listings = ref([]);
 
-// Listings data
-const listings = ref([
-  {
-    id: 1,
-    title: 'Porsche 911 Carrera 2022',
-    price: 2850000,
-    seller: 'Carlos Méndez',
-    sellerEmail: 'carlos.mendez@email.com',
-    sellerPhone: '55 1234 5678',
-    year: 2022,
-    mileage: 8500,
-    transmission: 'Automático',
-    fuel: 'Gasolina',
-    color: 'Rojo',
-    description:
-      'Porsche 911 Carrera en excelentes condiciones, único dueño, servicio completo en agencia. Incluye techo solar, asientos de piel, sistema de sonido Bose.',
-    features: [
-      'Aire acondicionado',
-      'Vidrios eléctricos',
-      'Cámara reversa',
-      'Sensores de estacionamiento',
-      'Asientos de piel',
-      'Techo solar',
-    ],
-    views: 245,
-    imageIcon: '🏎️',
-    status: 'pending',
-    type: 'vehiculo',
-    createdAt: '2024-03-20T10:30:00',
-  },
-  {
-    id: 2,
-    title: 'BMW X5 M Competition 2023',
-    price: 1980000,
-    seller: 'Ana Ramírez',
-    sellerEmail: 'ana.ramirez@email.com',
-    sellerPhone: '55 8765 4321',
-    year: 2023,
-    mileage: 3200,
-    transmission: 'Automático',
-    fuel: 'Gasolina',
-    color: 'Negro',
-    description:
-      'BMW X5 M Competition, equipamiento completo, garantía extendida, factura original.',
-    features: [
-      'Aire acondicionado',
-      'Vidrios eléctricos',
-      'Cámara 360°',
-      'Asientos calefactables',
-      'Apple CarPlay',
-      'Techo panorámico',
-    ],
-    views: 189,
-    imageIcon: '🚙',
-    status: 'pending',
-    type: 'vehiculo',
-    createdAt: '2024-03-19T15:20:00',
-  },
-  {
-    id: 3,
-    title: 'Mercedes-Benz Clase S 2024',
-    price: 3250000,
-    seller: 'Luis Fernández',
-    sellerEmail: 'luis.fernandez@email.com',
-    sellerPhone: '55 1122 3344',
-    year: 2024,
-    mileage: 500,
-    transmission: 'Automático',
-    fuel: 'Híbrido',
-    color: 'Blanco',
-    description:
-      'Mercedes-Benz Clase S 2024, el último modelo, tecnología de punta, asientos de masaje, sistema de iluminación ambiental.',
-    features: [
-      'Aire acondicionado',
-      'Vidrios eléctricos',
-      'Asientos de masaje',
-      'Sistema de sonido Burmester',
-      'Asistente de manejo',
-      'Iluminación ambiental',
-    ],
-    views: 312,
-    imageIcon: '🚗',
-    status: 'pending',
-    type: 'vehiculo',
-    createdAt: '2024-03-18T09:15:00',
-  },
-  {
-    id: 4,
-    title: 'Audi RS7 Sportback 2022',
-    price: 2150000,
-    seller: 'Mario González',
-    sellerEmail: 'mario.gonzalez@email.com',
-    sellerPhone: '55 9988 7766',
-    year: 2022,
-    mileage: 15000,
-    transmission: 'Automático',
-    fuel: 'Gasolina',
-    color: 'Gris',
-    description:
-      'Audi RS7 en perfecto estado, motor V8 biturbo, tracción quattro, interior en cuero.',
-    features: [
-      'Aire acondicionado',
-      'Vidrios eléctricos',
-      'Quattro',
-      'Sistema de sonido premium',
-      'Asientos deportivos',
-      'Techo solar',
-    ],
-    views: 167,
-    imageIcon: '🏎️',
-    status: 'approved',
-    type: 'vehiculo',
-    createdAt: '2024-03-15T11:00:00',
-  },
-  {
-    id: 5,
-    title: 'Tesla Model S Plaid',
-    price: 2350000,
-    seller: 'Sofía Ramírez',
-    sellerEmail: 'sofia.ramirez@email.com',
-    sellerPhone: '55 4433 2211',
-    year: 2023,
-    mileage: 8000,
-    transmission: 'Automático',
-    fuel: 'Eléctrico',
-    color: 'Azul',
-    description:
-      'Tesla Model S Plaid, autonomía de 600km, aceleración 0-100 en 2.1 segundos, autopilot incluido.',
-    features: [
-      'Aire acondicionado',
-      'Vidrios eléctricos',
-      'Autopilot',
-      'Pantalla 17"',
-      'Carga rápida',
-      'Sonido premium',
-    ],
-    views: 423,
-    imageIcon: '🔋',
-    status: 'rejected',
-    type: 'vehiculo',
-    createdAt: '2024-03-14T14:30:00',
-  },
-  {
-    id: 6,
-    title: 'Chevrolet Silverado 2023 (Renta)',
-    price: 35000,
-    seller: 'Roberto Gómez',
-    sellerEmail: 'roberto.gomez@email.com',
-    sellerPhone: '55 6677 8899',
-    year: 2023,
-    mileage: 25000,
-    transmission: 'Automático',
-    fuel: 'Gasolina',
-    color: 'Negro',
-    description:
-      'Camioneta Chevrolet Silverado disponible para renta mensual. Ideal para trabajo o familia.',
-    features: [
-      'Aire acondicionado',
-      'Vidrios eléctricos',
-      'Cámara reversa',
-      'Caja de carga',
-      'Remolque',
-    ],
-    views: 98,
-    imageIcon: '🚛',
-    status: 'pending',
-    type: 'renta',
-    createdAt: '2024-03-20T08:00:00',
-  },
-]);
-
-// Computed
 const filteredListings = computed(() => {
   let filtered = [...listings.value];
 
-  // Filter by tab
   if (currentTab.value !== 'all') {
     filtered = filtered.filter((l) => l.status === currentTab.value);
   }
 
-  // Filter by search term
   if (searchTerm.value) {
     const term = searchTerm.value.toLowerCase();
     filtered = filtered.filter(
       (l) =>
         l.title.toLowerCase().includes(term) ||
-        l.seller.toLowerCase().includes(term) ||
-        l.id.toString().includes(term)
+        String(l.seller || '').toLowerCase().includes(term) ||
+        String(l.id).toLowerCase().includes(term)
     );
   }
 
-  // Filter by type
   if (typeFilter.value !== 'all') {
     filtered = filtered.filter((l) => l.type === typeFilter.value);
   }
 
-  // Sort
   switch (sortBy.value) {
     case 'date_desc':
       filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -855,7 +682,6 @@ const visiblePages = computed(() => {
   return pages;
 });
 
-// Modal states
 const showRejectModal = ref(false);
 const showDetailsModal = ref(false);
 const showDeleteModal = ref(false);
@@ -865,7 +691,12 @@ const rejectForm = ref({
   comments: '',
 });
 
-// Methods
+const loadListings = async () => {
+  const response = await getAdminModerationListings();
+  listings.value = response?.items || [];
+  updateStats();
+};
+
 const goBack = () => {
   router.push('/admin');
 };
@@ -896,15 +727,9 @@ const getStatusText = (status) => {
 };
 
 const updateStats = () => {
-  stats.value.pending = listings.value.filter(
-    (l) => l.status === 'pending'
-  ).length;
-  stats.value.approved = listings.value.filter(
-    (l) => l.status === 'approved'
-  ).length;
-  stats.value.rejected = listings.value.filter(
-    (l) => l.status === 'rejected'
-  ).length;
+  stats.value.pending = listings.value.filter((l) => l.status === 'pending').length;
+  stats.value.approved = listings.value.filter((l) => l.status === 'approved').length;
+  stats.value.rejected = listings.value.filter((l) => l.status === 'rejected').length;
   stats.value.total = listings.value.length;
 };
 
@@ -920,18 +745,13 @@ const clearFilters = () => {
   currentPage.value = 1;
 };
 
-const refreshListings = () => {
-  updateStats();
-  alert('Lista de anuncios actualizada');
+const refreshListings = async () => {
+  await loadListings();
 };
 
-const approveListing = (listing) => {
-  const index = listings.value.findIndex((l) => l.id === listing.id);
-  if (index !== -1) {
-    listings.value[index].status = 'approved';
-    alert(`Anuncio "${listing.title}" aprobado correctamente`);
-    updateStats();
-  }
+const approveListing = async (listing) => {
+  await approveAdminModerationListing(listing.id);
+  await loadListings();
 };
 
 const openRejectModal = (listing) => {
@@ -945,19 +765,12 @@ const closeRejectModal = () => {
   selectedListing.value = null;
 };
 
-const confirmReject = () => {
+const confirmReject = async () => {
   if (selectedListing.value) {
-    const index = listings.value.findIndex(
-      (l) => l.id === selectedListing.value.id
-    );
-    if (index !== -1) {
-      listings.value[index].status = 'rejected';
-      const message = `Anuncio "${selectedListing.value.title}" rechazado.\nMotivo: ${rejectForm.value.reason || 'No especificado'}`;
-      alert(message);
-    }
+    await rejectAdminModerationListing(selectedListing.value.id, rejectForm.value);
   }
   closeRejectModal();
-  updateStats();
+  await loadListings();
 };
 
 const viewDetails = (listing) => {
@@ -975,24 +788,17 @@ const deleteListing = (listing) => {
   showDeleteModal.value = true;
 };
 
-const confirmDelete = () => {
+const confirmDelete = async () => {
   if (selectedListing.value) {
-    const index = listings.value.findIndex(
-      (l) => l.id === selectedListing.value.id
-    );
-    if (index !== -1) {
-      listings.value.splice(index, 1);
-      alert(`Anuncio "${selectedListing.value.title}" eliminado`);
-    }
+    await deleteAdminModerationListing(selectedListing.value.id);
   }
   showDeleteModal.value = false;
   selectedListing.value = null;
-  updateStats();
+  await loadListings();
 };
 
-// Initialize
-onMounted(() => {
-  updateStats();
+onMounted(async () => {
+  await loadListings();
 });
 </script>
 

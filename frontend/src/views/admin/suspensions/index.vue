@@ -492,9 +492,13 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-
-// IMPORTAR EL MOCK DESDE JSON
-import suspensionsMock from '../../../mocks/admin/suspensions.json';
+import {
+  getAdminSuspensions,
+  getAdminSuspensionFormOptions,
+  saveAdminSuspension,
+  reinstateAdminSuspension,
+  deleteAdminSuspension,
+} from '../../../services/admin.js';
 
 const router = useRouter();
 
@@ -506,37 +510,9 @@ const stats = ref({
   reinstatedThisMonth: 0,
 });
 
-// SUSPENSIONES: Usar los datos importados del JSON en lugar de hardcodeados
-const suspensions = ref(
-  suspensionsMock.items.map((item) => ({
-    id: item.id,
-    userId: item.userId,
-    userName: item.userName,
-    email: item.userEmail,
-    reason: item.reason,
-    description: item.description,
-    suspensionDate: item.suspensionDate,
-    duration: item.duration,
-    reinstatementDate: item.reinstatementDate,
-    status: item.status,
-  }))
-);
+const suspensions = ref([]);
 
-// Active users for suspension form (también podrías importarlo desde otro mock)
-const activeUsers = ref([
-  {
-    id: 'u-seller-010',
-    name: 'Usuario Nuevo',
-    email: 'nuevo@email.com',
-    role: 'seller',
-  },
-  {
-    id: 'u-seller-011',
-    name: 'Otro Usuario',
-    email: 'otro@email.com',
-    role: 'buyer',
-  },
-]);
+const activeUsers = ref([]);
 
 // Filters
 const searchTerm = ref('');
@@ -597,6 +573,19 @@ const filteredSuspensions = computed(() => {
 
   return filtered;
 });
+
+const loadSuspensions = async () => {
+  const [suspensionsResponse, optionsResponse] = await Promise.all([
+    getAdminSuspensions(),
+    getAdminSuspensionFormOptions(),
+  ]);
+  suspensions.value = (suspensionsResponse?.items || []).map((item) => ({
+    ...item,
+    email: item.email || item.userEmail || '',
+  }));
+  activeUsers.value = optionsResponse?.activeUsers || [];
+  updateStats();
+};
 
 // Update stats
 const updateStats = () => {
@@ -707,7 +696,7 @@ const editSuspension = (suspension) => {
   showSuspendModal.value = true;
 };
 
-const saveSuspension = () => {
+const saveSuspension = async () => {
   if (!suspendForm.value.userId || !suspendForm.value.reason) {
     alert('Por favor completa todos los campos requeridos');
     return;
@@ -716,50 +705,23 @@ const saveSuspension = () => {
   const user = activeUsers.value.find((u) => u.id === suspendForm.value.userId);
   if (!user) return;
 
-  if (editingSuspension.value && selectedSuspension.value) {
-    // Edit existing suspension
-    const index = suspensions.value.findIndex(
-      (s) => s.id === selectedSuspension.value.id
-    );
-    if (index !== -1) {
-      suspensions.value[index] = {
-        ...suspensions.value[index],
-        reason: suspendForm.value.reason,
-        description: suspendForm.value.description,
-        duration: suspendForm.value.duration,
-        reinstatementDate:
-          suspendForm.value.duration !== 'Permanente'
-            ? suspendForm.value.reinstatementDate
-            : null,
-        status:
-          suspendForm.value.duration === 'Permanente' ? 'permanent' : 'active',
-      };
-    }
-    alert('Suspensión actualizada correctamente');
-  } else {
-    // Create new suspension
-    const newSuspension = {
-      id: `sp-${Date.now()}`,
-      userId: user.id,
-      userName: user.name,
-      email: user.email,
-      reason: suspendForm.value.reason,
-      description: suspendForm.value.description,
-      suspensionDate: new Date().toISOString().split('T')[0],
-      duration: suspendForm.value.duration,
-      reinstatementDate:
-        suspendForm.value.duration !== 'Permanente'
-          ? suspendForm.value.reinstatementDate
-          : null,
-      status:
-        suspendForm.value.duration === 'Permanente' ? 'permanent' : 'active',
-    };
-    suspensions.value.unshift(newSuspension);
-    alert(`Usuario ${user.name} suspendido correctamente`);
-  }
+  await saveAdminSuspension({
+    id: editingSuspension.value && selectedSuspension.value ? selectedSuspension.value.id : undefined,
+    userId: user.id,
+    userName: user.name,
+    email: user.email,
+    reason: suspendForm.value.reason,
+    description: suspendForm.value.description,
+    duration: suspendForm.value.duration,
+    reinstatementDate:
+      suspendForm.value.duration !== 'Permanente'
+        ? suspendForm.value.reinstatementDate
+        : null,
+    status: suspendForm.value.duration === 'Permanente' ? 'permanent' : 'active',
+  });
 
-  updateStats();
   closeSuspendModal();
+  await loadSuspensions();
 };
 
 const reinstateUser = (suspension) => {
@@ -767,22 +729,13 @@ const reinstateUser = (suspension) => {
   showReinstateModal.value = true;
 };
 
-const confirmReinstate = () => {
+const confirmReinstate = async () => {
   if (selectedSuspension.value) {
-    const index = suspensions.value.findIndex(
-      (s) => s.id === selectedSuspension.value.id
-    );
-    if (index !== -1) {
-      suspensions.value[index].status = 'expired';
-      suspensions.value[index].reinstatementDate = new Date()
-        .toISOString()
-        .split('T')[0];
-      alert(`Usuario ${selectedSuspension.value.userName} ha sido reintegrado`);
-    }
+    await reinstateAdminSuspension(selectedSuspension.value.id);
   }
   showReinstateModal.value = false;
   selectedSuspension.value = null;
-  updateStats();
+  await loadSuspensions();
 };
 
 const deleteSuspension = (suspension) => {
@@ -790,19 +743,13 @@ const deleteSuspension = (suspension) => {
   showDeleteModal.value = true;
 };
 
-const confirmDelete = () => {
+const confirmDelete = async () => {
   if (selectedSuspension.value) {
-    const index = suspensions.value.findIndex(
-      (s) => s.id === selectedSuspension.value.id
-    );
-    if (index !== -1) {
-      suspensions.value.splice(index, 1);
-      alert(`Registro de suspensión eliminado`);
-    }
+    await deleteAdminSuspension(selectedSuspension.value.id);
   }
   showDeleteModal.value = false;
   selectedSuspension.value = null;
-  updateStats();
+  await loadSuspensions();
 };
 
 const closeSuspendModal = () => {
@@ -816,8 +763,8 @@ const toggleHistory = () => {
 };
 
 // Initialize
-onMounted(() => {
-  updateStats();
+onMounted(async () => {
+  await loadSuspensions();
 });
 </script>
 

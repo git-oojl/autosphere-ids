@@ -343,12 +343,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-
-// IMPORTAR LOS MOCKS DESDE JSON
-import brandsMock from '../../../mocks/admin/brands.json';
-import modelsMock from '../../../mocks/admin/models.json';
-import typesMock from '../../../mocks/admin/vehicle-types.json';
-import locationsMock from '../../../mocks/admin/locations.json';
+import {
+  getAdminCatalogCollections,
+  saveAdminCatalogItem,
+  deleteAdminCatalogItem,
+} from '../../../services/admin.js';
 
 const router = useRouter();
 
@@ -363,62 +362,13 @@ const stats = ref({
   locations: 0,
 });
 
-// Datos desde JSON
-const brands = ref(
-  brandsMock.items.map((item) => ({
-    id: item.id,
-    name: item.name,
-    description: item.description,
-    country: item.country,
-    founded: item.founded,
-    logo: item.logo,
-    active: item.active,
-    count: item.count,
-  }))
-);
+const brands = ref([]);
 
-const models = ref(
-  modelsMock.items.map((item) => ({
-    id: item.id,
-    name: item.name,
-    brandId: item.brandId,
-    brandName: item.brandName,
-    generation: item.generation,
-    bodyType: item.bodyType,
-    active: item.active,
-    count: item.count,
-  }))
-);
+const models = ref([]);
 
-const types = ref(
-  typesMock.items.map((item) => ({
-    id: item.id,
-    name: item.name,
-    description: item.description,
-    icon: item.icon,
-    active: item.active,
-    count: item.count,
-  }))
-);
+const types = ref([]);
 
-const locations = ref(
-  locationsMock.items.map((item) => ({
-    id: item.id,
-    name: item.name,
-    type: item.type,
-    address: item.address,
-    city: item.city,
-    state: item.state,
-    postalCode: item.postalCode,
-    lat: item.lat,
-    lng: item.lng,
-    phone: item.phone,
-    email: item.email,
-    schedule: item.schedule,
-    active: item.active,
-    listingsCount: item.listingsCount,
-  }))
-);
+const locations = ref([]);
 
 // Filters
 const searchTerm = ref('');
@@ -499,6 +449,15 @@ const visiblePages = computed(() => {
   }
   return pages;
 });
+
+const loadCatalog = async () => {
+  const response = await getAdminCatalogCollections();
+  brands.value = response?.brands || [];
+  models.value = response?.models || [];
+  types.value = response?.types || [];
+  locations.value = response?.locations || [];
+  updateStats();
+};
 
 // Methods
 const goBack = () => {
@@ -591,147 +550,26 @@ const closeItemModal = () => {
   selectedItem.value = null;
 };
 
-const saveItem = () => {
+const saveItem = async () => {
   if (!itemForm.value.name) {
     alert('Por favor ingresa un nombre');
     return;
   }
 
-  switch (currentTab.value) {
-    case 'brands': {
-      if (isEditing.value && itemForm.value.id) {
-        const index = brands.value.findIndex((b) => b.id === itemForm.value.id);
-        if (index !== -1) {
-          brands.value[index] = {
-            ...brands.value[index],
-            name: itemForm.value.name,
-            description: itemForm.value.description,
-          };
-          alert('Marca actualizada correctamente');
-        }
-      } else {
-        const newId = `${currentTab.value.slice(0, 2)}-${Date.now()}`;
-        brands.value.push({
-          id: newId,
-          name: itemForm.value.name,
-          description: itemForm.value.description,
-          country: 'No especificado',
-          founded: null,
-          logo: '🏭',
-          active: true,
-          count: 0,
-        });
-        alert('Marca agregada correctamente');
-      }
-      break;
-    }
-
-    case 'models': {
-      if (!itemForm.value.brandId) {
-        alert('Por favor selecciona una marca');
-        return;
-      }
-      const brand = brands.value.find((b) => b.id === itemForm.value.brandId);
-      if (isEditing.value && itemForm.value.id) {
-        const index = models.value.findIndex((m) => m.id === itemForm.value.id);
-        if (index !== -1) {
-          models.value[index] = {
-            ...models.value[index],
-            name: itemForm.value.name,
-            brandId: itemForm.value.brandId,
-            brandName: brand?.name,
-          };
-          alert('Modelo actualizado correctamente');
-        }
-      } else {
-        const newId = `${currentTab.value.slice(0, 2)}-${Date.now()}`;
-        models.value.push({
-          id: newId,
-          name: itemForm.value.name,
-          brandId: itemForm.value.brandId,
-          brandName: brand?.name,
-          generation: '',
-          bodyType: '',
-          active: true,
-          count: 0,
-        });
-        alert('Modelo agregado correctamente');
-      }
-      break;
-    }
-
-    case 'types': {
-      if (isEditing.value && itemForm.value.id) {
-        const index = types.value.findIndex((t) => t.id === itemForm.value.id);
-        if (index !== -1) {
-          types.value[index] = {
-            ...types.value[index],
-            name: itemForm.value.name,
-            description: itemForm.value.description,
-          };
-          alert('Tipo de vehículo actualizado correctamente');
-        }
-      } else {
-        const newId = `${currentTab.value.slice(0, 2)}-${Date.now()}`;
-        types.value.push({
-          id: newId,
-          name: itemForm.value.name,
-          description: itemForm.value.description,
-          icon: '📋',
-          active: true,
-          count: 0,
-        });
-        alert('Tipo de vehículo agregado correctamente');
-      }
-      break;
-    }
-
-    case 'locations': {
-      if (isEditing.value && itemForm.value.id) {
-        const index = locations.value.findIndex(
-          (l) => l.id === itemForm.value.id
-        );
-        if (index !== -1) {
-          locations.value[index] = {
-            ...locations.value[index],
-            name: itemForm.value.name,
-            address: itemForm.value.address,
-            city: itemForm.value.city,
-            state: itemForm.value.state,
-            lat: itemForm.value.lat ? parseFloat(itemForm.value.lat) : null,
-            lng: itemForm.value.lng ? parseFloat(itemForm.value.lng) : null,
-          };
-          alert('Ubicación actualizada correctamente');
-        }
-      } else {
-        const newId = `${currentTab.value.slice(0, 2)}-${Date.now()}`;
-        locations.value.push({
-          id: newId,
-          name: itemForm.value.name,
-          type: 'concesionaria',
-          address: itemForm.value.address,
-          city: itemForm.value.city,
-          state: itemForm.value.state,
-          postalCode: '',
-          lat: itemForm.value.lat ? parseFloat(itemForm.value.lat) : null,
-          lng: itemForm.value.lng ? parseFloat(itemForm.value.lng) : null,
-          phone: null,
-          email: null,
-          schedule: null,
-          active: true,
-          listingsCount: 0,
-        });
-        alert('Ubicación agregada correctamente');
-      }
-      break;
-    }
-
-    default:
-      break;
-  }
+  await saveAdminCatalogItem(currentTab.value, {
+    id: itemForm.value.id,
+    name: itemForm.value.name,
+    description: itemForm.value.description || '',
+    brandId: itemForm.value.brandId || '',
+    address: itemForm.value.address || '',
+    city: itemForm.value.city || '',
+    state: itemForm.value.state || '',
+    lat: itemForm.value.lat || '',
+    lng: itemForm.value.lng || '',
+  });
 
   closeItemModal();
-  updateStats();
+  await loadCatalog();
 };
 
 const deleteItem = (item) => {
@@ -739,66 +577,19 @@ const deleteItem = (item) => {
   showDeleteModal.value = true;
 };
 
-const confirmDelete = () => {
-  if (!selectedItem.value) return;
-
-  switch (currentTab.value) {
-    case 'brands': {
-      const brandIndex = brands.value.findIndex(
-        (b) => b.id === selectedItem.value.id
-      );
-      if (brandIndex !== -1) {
-        brands.value.splice(brandIndex, 1);
-        alert(`Marca "${selectedItem.value.name}" eliminada`);
-      }
-      break;
-    }
-
-    case 'models': {
-      const modelIndex = models.value.findIndex(
-        (m) => m.id === selectedItem.value.id
-      );
-      if (modelIndex !== -1) {
-        models.value.splice(modelIndex, 1);
-        alert(`Modelo "${selectedItem.value.name}" eliminado`);
-      }
-      break;
-    }
-
-    case 'types': {
-      const typeIndex = types.value.findIndex(
-        (t) => t.id === selectedItem.value.id
-      );
-      if (typeIndex !== -1) {
-        types.value.splice(typeIndex, 1);
-        alert(`Tipo "${selectedItem.value.name}" eliminado`);
-      }
-      break;
-    }
-
-    case 'locations': {
-      const locationIndex = locations.value.findIndex(
-        (l) => l.id === selectedItem.value.id
-      );
-      if (locationIndex !== -1) {
-        locations.value.splice(locationIndex, 1);
-        alert(`Ubicación "${selectedItem.value.name}" eliminada`);
-      }
-      break;
-    }
-
-    default:
-      break;
+const confirmDelete = async () => {
+  if (selectedItem.value) {
+    await deleteAdminCatalogItem(currentTab.value, selectedItem.value.id);
   }
 
   showDeleteModal.value = false;
   selectedItem.value = null;
-  updateStats();
+  await loadCatalog();
 };
 
 // Initialize
-onMounted(() => {
-  updateStats();
+onMounted(async () => {
+  await loadCatalog();
 });
 </script>
 
