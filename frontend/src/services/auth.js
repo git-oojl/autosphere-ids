@@ -1,7 +1,15 @@
-import devSessions from '../mocks/auth/dev-sessions.json';
-import sessionTemplate from '../mocks/auth/session.json';
-import authUsers from '../mocks/auth/users.json';
-import { resolveMock } from './mockResponse.js';
+import http from './http.js';
+
+const REAL_DEV_CREDENTIALS = {
+  user: {
+    email: 'user@autosphere.local',
+    password: 'User123!',
+  },
+  admin: {
+    email: 'admin@autosphere.local',
+    password: 'Admin123!',
+  },
+};
 
 function makeGuestSession() {
   return {
@@ -12,102 +20,52 @@ function makeGuestSession() {
   };
 }
 
-function buildSessionForUser(user, token = 'mock-access-token') {
-  if (!user) {
-    return makeGuestSession();
-  }
-
-  return {
-    ...sessionTemplate,
-    isAuthenticated: true,
-    accessToken: token,
-    user,
-    roles: user.roles || [],
-  };
-}
-
 export async function login(credentials = {}) {
-  // TODO: replace with POST /api/auth/login.
-  const matchedUser =
-    authUsers.find((user) => {
-      if (credentials.email) {
-        return (
-          user.email.toLowerCase() === credentials.email.trim().toLowerCase()
-        );
-      }
-
-      if (credentials.role) {
-        return user.roles.includes(credentials.role);
-      }
-
-      return user.id === 'u-buyer-001';
-    }) || authUsers[0];
-
-  return resolveMock(
-    buildSessionForUser(matchedUser, `mock-token-${matchedUser.id}`)
-  );
+  const { data } = await http.post('/auth/login', credentials);
+  return data;
 }
 
 export async function logout() {
-  // TODO: replace with POST /api/auth/logout.
-  return resolveMock({ ok: true });
+  const { data } = await http.post('/auth/logout');
+  return data;
 }
 
 export async function getCurrentSession() {
-  // TODO: replace with GET /api/me.
-  return resolveMock(sessionTemplate);
+  const { data } = await http.get('/me');
+  return data;
 }
 
 export async function getAvailableDevSessions() {
-  // TODO: replace with local-only dev helper or remove entirely once backend auth exists.
-  return resolveMock(devSessions);
+  return {
+    guest: { label: 'Invitado' },
+    user: { label: 'Usuario demo real' },
+    admin: { label: 'Administrador demo real' },
+  };
 }
 
 export async function createDevSession(role = 'guest') {
-  const config = devSessions[role] ?? null;
+  if (role === 'guest') return makeGuestSession();
 
-  if (!config) {
-    return resolveMock(makeGuestSession());
-  }
-
-  const user = authUsers.find((item) => item.id === config.userId) || null;
-  return resolveMock(buildSessionForUser(user, config.token));
+  const credentials = REAL_DEV_CREDENTIALS[role] || REAL_DEV_CREDENTIALS.user;
+  return login(credentials);
 }
 
 export async function getAuthUsers() {
-  // TODO: replace with GET /api/admin/users or auth provider directory lookup.
-  return resolveMock(authUsers);
+  const { data } = await http.get('/admin/users');
+  return data?.items || [];
 }
 
 export async function register(payload = {}) {
-  // TODO: replace with POST /api/auth/register.
-  return resolveMock({
-    ok: true,
-    message: 'Registro simulado',
-    user: {
-      id: payload.id || 'u-pending-001',
-      name: payload.name || 'Usuario pendiente',
-      email: payload.email || '',
-      roles: payload.roles || ['buyer'],
-      status: 'pending_verification',
-    },
-  });
+  const { data } = await http.post('/auth/register', payload);
+  return data;
 }
 
 export async function requestPasswordReset(payload = {}) {
-  // TODO: replace with POST /api/auth/forgot-password.
-  return resolveMock({
-    ok: true,
-    email: payload.email || '',
-    message: 'Solicitud de recuperación simulada',
-  });
+  const { data } = await http.post('/auth/forgot-password', payload);
+  return data;
 }
 
 export async function verifyEmail(payload = {}) {
-  // TODO: replace with POST /api/auth/verify-email.
-  return resolveMock({
-    ok: true,
-    token: payload.token || null,
-    message: 'Correo verificado en entorno mock',
-  });
+  const { data } = await http.post('/auth/verify-email', payload);
+  return data;
 }

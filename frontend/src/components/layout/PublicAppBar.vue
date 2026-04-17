@@ -325,6 +325,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '../../stores/auth';
+import { logout } from '../../services/auth.js';
 
 const router = useRouter();
 const route = useRoute();
@@ -385,7 +386,10 @@ function goSearch() {
   });
 }
 
-function handleLogout() {
+async function handleLogout() {
+  try {
+    await logout();
+  } catch {}
   auth.clearSession();
   showUserMenu.value = false;
   router.push({ name: 'public-home' });

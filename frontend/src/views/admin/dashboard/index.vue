@@ -284,7 +284,7 @@
             </div>
             <h4 class="module-title">Catálogos</h4>
             <p class="module-desc">Gestiona marcas, modelos y ubicaciones</p>
-            <div class="module-badge">12 marcas | 45 modelos</div>
+            <div class="module-badge">{{ catalogBadge }}</div>
             <span class="module-action">Gestionar →</span>
           </div>
         </div>
@@ -327,7 +327,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getAdminDashboard } from '../../../services/admin.js';
 
@@ -340,6 +340,17 @@ const stats = ref({
   pendingReports: 0,
   pendingModeration: 0,
   suspendedUsers: 0,
+  catalogSummary: {
+    brands: 0,
+    models: 0,
+    types: 0,
+    locations: 0,
+  },
+});
+
+const catalogBadge = computed(() => {
+  const summary = stats.value.catalogSummary || {};
+  return `${summary.brands || 0} marcas | ${summary.models || 0} modelos`;
 });
 
 const currentDate = ref('');

@@ -1581,18 +1581,20 @@ const submitListing = async () => {
       await createListing({
         ...payload,
         type: 'venta',
+        images: uploadedImages.value.map((item) => item.file),
       });
     } else {
       await registerRental({
         ...payload,
         vehicleLabel: payload.title,
         status: 'scheduled',
+        images: uploadedImages.value.map((item) => item.file),
       });
     }
 
     setFeedback(
       'success',
-      `Anuncio de ${formData.value.listingType === 'sale' ? 'venta' : 'renta'} preparado correctamente en el seam mock. En Wave 2 este formulario enviará el payload al backend real.`
+      `Anuncio de ${formData.value.listingType === 'sale' ? 'venta' : 'renta'} creado correctamente.`
     );
     router.push({ name: 'user-listings' });
   } catch (error) {

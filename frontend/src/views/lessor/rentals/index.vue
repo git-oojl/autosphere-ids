@@ -84,15 +84,16 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getListings } from '../../../services/catalog.js';
-import { DEMO_RENTAL_OWNER_ID } from '../../../services/demoOwners.js';
+import { useAuthStore } from '../../../stores/auth.js';
 
 const router = useRouter();
+const auth = useAuthStore();
 const activeRentals = ref([]);
 
 const loadRentals = async () => {
   const response = await getListings({
     mode: 'renta',
-    sellerId: DEMO_RENTAL_OWNER_ID,
+    sellerId: auth.user?.id,
     pageSize: 100,
     includeUnpublished: true,
   });

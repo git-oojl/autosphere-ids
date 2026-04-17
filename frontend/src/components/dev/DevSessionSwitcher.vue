@@ -47,6 +47,7 @@
 
 <script setup>
 import { computed } from 'vue';
+import { createDevSession } from '../../services/auth.js';
 import { useAuthStore } from '../../stores/auth';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -102,20 +103,22 @@ function setGuest() {
   router.push('/');
 }
 
-function setUser() {
+async function setUser() {
+  const session = await createDevSession('user');
   auth.startSession({
-    nextUser: { id: 101, name: 'Usuario Demo', email: 'user@demo.com' },
-    nextRoles: ['user'], // único rol
-    token: 'dev-token',
+    nextUser: session?.user || null,
+    nextRoles: session?.roles || [],
+    token: session?.accessToken || null,
   });
-  router.push('/'); // o a donde quieras
+  router.push('/');
 }
 
-function setAdmin() {
+async function setAdmin() {
+  const session = await createDevSession('admin');
   auth.startSession({
-    nextUser: { id: 999, name: 'Admin', email: 'admin@autosphere.com' },
-    nextRoles: ['admin'],
-    token: 'admin-token',
+    nextUser: session?.user || null,
+    nextRoles: session?.roles || [],
+    token: session?.accessToken || null,
   });
   router.push('/admin');
 }

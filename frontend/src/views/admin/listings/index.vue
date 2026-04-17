@@ -756,7 +756,14 @@ const filteredListings = computed(() => {
 
   // Filter by status
   if (statusFilter.value !== 'all') {
-    filtered = filtered.filter((l) => l.status === statusFilter.value);
+    const statusBuckets = {
+      active: ['active', 'published', 'approved'],
+      pending: ['pending', 'draft'],
+      sold: ['sold'],
+      paused: ['paused', 'archived', 'unavailable'],
+    };
+    const accepted = statusBuckets[statusFilter.value] || [statusFilter.value];
+    filtered = filtered.filter((l) => accepted.includes(l.status));
   }
 
   // Filter by category
@@ -840,8 +847,13 @@ const formatDate = (date) => {
 const getStatusText = (status) => {
   const statuses = {
     active: 'Activo',
+    published: 'Activo',
+    approved: 'Activo',
     pending: 'Pendiente',
+    draft: 'Borrador',
     paused: 'Pausado',
+    archived: 'Archivado',
+    unavailable: 'No disponible',
     sold: 'Vendido',
   };
   return statuses[status] || status;
@@ -871,12 +883,8 @@ const getVehicleIcon = (category) => {
 
 const updateStats = () => {
   stats.value.total = listings.value.length;
-  stats.value.active = listings.value.filter(
-    (l) => l.status === 'active'
-  ).length;
-  stats.value.pending = listings.value.filter(
-    (l) => l.status === 'pending'
-  ).length;
+  stats.value.active = listings.value.filter((l) => ['active', 'published', 'approved'].includes(l.status)).length;
+  stats.value.pending = listings.value.filter((l) => ['pending', 'draft'].includes(l.status)).length;
   stats.value.sold = listings.value.filter((l) => l.status === 'sold').length;
 };
 

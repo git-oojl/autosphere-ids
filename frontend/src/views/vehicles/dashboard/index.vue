@@ -1457,13 +1457,11 @@ import {
   getListingFeaturedPercent,
   getListings,
 } from '../../../services/catalog.js';
-import {
-  DEMO_RENTAL_OWNER_ID,
-  DEMO_SALE_OWNER_ID,
-} from '../../../services/demoOwners.js';
+import { useAuthStore } from '../../../stores/auth.js';
 import QuickActionGlyph from '../../../components/dashboard/QuickActionGlyph.vue';
 
 const router = useRouter();
+const auth = useAuthStore();
 
 const openListingEditModal = (id, mode = 'venta') =>
   router.push({
@@ -1834,16 +1832,16 @@ const landlordData = ref({
 
 async function loadSellerData() {
   const [appointments, sales, featuredSales] = await Promise.all([
-    getSellerAppointments('u-seller-001'),
+    getSellerAppointments(auth.user?.id),
     getListings({
       mode: 'venta',
-      sellerId: DEMO_SALE_OWNER_ID,
+      sellerId: auth.user?.id,
       pageSize: 100,
       includeUnpublished: true,
     }),
     getFeaturedListings({
       mode: 'venta',
-      sellerId: DEMO_SALE_OWNER_ID,
+      sellerId: auth.user?.id,
       limit: 3,
     }),
   ]);
@@ -1934,13 +1932,13 @@ async function loadLandlordData() {
     getAppointmentCalendar(),
     getListings({
       mode: 'renta',
-      sellerId: DEMO_RENTAL_OWNER_ID,
+      sellerId: auth.user?.id,
       pageSize: 100,
       includeUnpublished: true,
     }),
     getFeaturedListings({
       mode: 'renta',
-      sellerId: DEMO_RENTAL_OWNER_ID,
+      sellerId: auth.user?.id,
       limit: 3,
     }),
   ]);

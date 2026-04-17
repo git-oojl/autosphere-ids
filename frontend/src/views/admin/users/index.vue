@@ -724,7 +724,7 @@ const filteredUsers = computed(() => {
 
   // Filter by role
   if (roleFilter.value !== 'all') {
-    filtered = filtered.filter((u) => u.role === roleFilter.value);
+    filtered = filtered.filter((u) => (u.surfaces || [u.role]).includes(roleFilter.value));
   }
 
   // Filter by status
@@ -827,6 +827,8 @@ const getRoleText = (role) => {
     buyer: 'Comprador',
     seller: 'Vendedor',
     landlord: 'Arrendador',
+    lessor: 'Arrendador',
+    admin: 'Administrador',
   };
   return roles[role] || role;
 };
@@ -855,11 +857,9 @@ const getAvatarColor = (name) => {
 
 const updateStats = () => {
   stats.value.total = users.value.length;
-  stats.value.buyers = users.value.filter((u) => u.role === 'buyer').length;
-  stats.value.sellers = users.value.filter((u) => u.role === 'seller').length;
-  stats.value.landlords = users.value.filter(
-    (u) => u.role === 'landlord'
-  ).length;
+  stats.value.buyers = users.value.filter((u) => (u.surfaces || [u.role]).includes('buyer')).length;
+  stats.value.sellers = users.value.filter((u) => (u.surfaces || [u.role]).includes('seller')).length;
+  stats.value.landlords = users.value.filter((u) => (u.surfaces || [u.role]).includes('landlord')).length;
 };
 
 const setRoleFilter = (role) => {

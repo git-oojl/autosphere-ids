@@ -2,6 +2,8 @@ import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 import App from './App.vue';
 import router from './router';
+import { useAuthStore } from './stores/auth.js';
+import { getCurrentSession } from './services/auth.js';
 import './style.css';
 
 // Vuetify
@@ -23,4 +25,25 @@ app.use(pinia);
 app.use(router);
 app.use(vuetify);
 
-app.mount('#app');
+const auth = useAuthStore(pinia);
+const bootstrap = async () => {
+  if (!auth.accessToken) {
+    app.mount('#app');
+    return;
+  }
+
+  try {
+    const session = await getCurrentSession();
+    auth.startSession({
+      nextUser: session?.user || null,
+      nextRoles: session?.roles || [],
+      token: auth.accessToken,
+    });
+  } catch {
+    auth.clearSession();
+  } finally {
+    app.mount('#app');
+  }
+};
+
+bootstrap();

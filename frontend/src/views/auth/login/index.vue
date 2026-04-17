@@ -241,12 +241,16 @@
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue';
-import { useRouter } from 'vue-router';
+import { reactive, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { login } from '../../../services/auth.js';
+import { useAuthStore } from '../../../stores/auth.js';
+import { extractErrorMessage } from '../../../services/apiUtils.js';
 
 const router = useRouter();
+const route = useRoute();
+const auth = useAuthStore();
 
-// Estado reactivo del formulario
 const formData = reactive({
   email: '',
   password: '',
@@ -256,49 +260,45 @@ const showPassword = ref(false);
 const rememberMe = ref(false);
 const isLoading = ref(false);
 
-// Alternar visibilidad de contraseña
 const togglePasswordVisibility = () => {
   showPassword.value = !showPassword.value;
 };
 
-// Manejar focus de inputs
-const handleFocus = (field) => {
-  console.log(`Campo ${field} enfocado`);
-};
+const handleFocus = () => {};
+const handleBlur = () => {};
 
-// Manejar blur de inputs
-const handleBlur = (field) => {
-  console.log(`Campo ${field} desenfocado`);
-};
-
-// Manejar envío del formulario
 const handleLogin = async () => {
   isLoading.value = true;
 
   try {
-    console.log('Intentando iniciar sesión con:', {
+    const session = await login({
       email: formData.email,
       password: formData.password,
       rememberMe: rememberMe.value,
     });
 
-    // Simulación de petición API
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    auth.startSession({
+      nextUser: session?.user || null,
+      nextRoles: session?.roles || [],
+      token: session?.accessToken || null,
+    });
 
-    // Redirigir según el rol (ejemplo)
-    // router.push('/dashboard')
-    console.log('Login exitoso');
+    const redirect = String(route.query.redirect || '');
+    if (redirect) {
+      router.push(redirect);
+      return;
+    }
+
+    router.push({ name: auth.isAdmin ? 'admin-dashboard' : 'user-dashboard' });
   } catch (error) {
-    console.error('Error en el login:', error);
+    window.alert(extractErrorMessage(error, 'No fue posible iniciar sesión.'));
   } finally {
     isLoading.value = false;
   }
 };
 
-// Manejar recuperación de contraseña
 const handleForgotPassword = () => {
-  console.log('Recuperar contraseña');
-  router.push('recuperar-contrasena');
+  router.push('/recuperar-contrasena');
 };
 </script>
 

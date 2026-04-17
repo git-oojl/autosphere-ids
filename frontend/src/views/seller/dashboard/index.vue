@@ -566,12 +566,10 @@ import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getSellerAppointments } from '../../../services/appointments.js';
 import { getListings } from '../../../services/catalog.js';
-import {
-  DEMO_RENTAL_OWNER_ID,
-  DEMO_SALE_OWNER_ID,
-} from '../../../services/demoOwners.js';
+import { useAuthStore } from '../../../stores/auth.js';
 
 const router = useRouter();
+const auth = useAuthStore();
 
 const currentTime = computed(() =>
   new Date().toLocaleTimeString('es-MX', {
@@ -600,16 +598,16 @@ const statusTextMap = {
 
 const loadSellerData = async () => {
   const [appointments, saleListings, rentalListings] = await Promise.all([
-    getSellerAppointments('u-seller-001'),
+    getSellerAppointments(auth.user?.id),
     getListings({
       mode: 'venta',
-      sellerId: DEMO_SALE_OWNER_ID,
+      sellerId: auth.user?.id,
       pageSize: 100,
       includeUnpublished: true,
     }),
     getListings({
       mode: 'renta',
-      sellerId: DEMO_RENTAL_OWNER_ID,
+      sellerId: auth.user?.id,
       pageSize: 100,
       includeUnpublished: true,
     }),

@@ -1,30 +1,21 @@
-import profileSeed from '../mocks/account/profile.json';
-import securitySeed from '../mocks/account/security.json';
-import { resolveMock } from './mockResponse.js';
-
-let profileState = { ...profileSeed };
+import http from './http.js';
 
 export async function getProfile() {
-  return resolveMock(profileState);
+  const { data } = await http.get('/account/profile');
+  return data;
 }
 
 export async function updateProfile(payload = {}) {
-  profileState = {
-    ...profileState,
-    ...payload,
-  };
-
-  return resolveMock(profileState);
+  const { data } = await http.patch('/account/profile', payload);
+  return data;
 }
 
 export async function getSecuritySettings() {
-  return resolveMock(securitySeed);
+  const { data } = await http.get('/account/security');
+  return data;
 }
 
 export async function updatePassword(payload = {}) {
-  return resolveMock({
-    ok: true,
-    changedAt: new Date().toISOString(),
-    ...payload,
-  });
+  const { data } = await http.patch('/account/password', payload);
+  return data;
 }

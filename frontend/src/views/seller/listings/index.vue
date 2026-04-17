@@ -758,13 +758,11 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getListingById, getListings } from '../../../services/catalog.js';
 import { updateListing as updateSellerListing } from '../../../services/seller.js';
-import {
-  DEMO_RENTAL_OWNER_ID,
-  DEMO_SALE_OWNER_ID,
-} from '../../../services/demoOwners.js';
+import { useAuthStore } from '../../../stores/auth.js';
 
 const router = useRouter();
 const route = useRoute();
+const auth = useAuthStore();
 
 const FILTER_OPTIONS = {
   sale: ['all', 'published', 'draft', 'archived', 'sold'],
@@ -795,8 +793,7 @@ const normalizeListingType = (value) =>
   value === 'rental' ? 'rental' : 'sale';
 const normalizeFilter = (mode, value) =>
   FILTER_OPTIONS[mode].includes(value) ? value : 'all';
-const resolveOwnerId = (mode) =>
-  mode === 'rental' ? DEMO_RENTAL_OWNER_ID : DEMO_SALE_OWNER_ID;
+const resolveOwnerId = () => auth.user?.id || null;
 
 function createEmptyDraft() {
   return {
@@ -956,13 +953,13 @@ const loadCounts = async () => {
   const [saleResponse, rentalResponse] = await Promise.all([
     getListings({
       mode: 'venta',
-      sellerId: DEMO_SALE_OWNER_ID,
+      sellerId: resolveOwnerId(),
       pageSize: 100,
       includeUnpublished: true,
     }),
     getListings({
       mode: 'renta',
-      sellerId: DEMO_RENTAL_OWNER_ID,
+      sellerId: resolveOwnerId(),
       pageSize: 100,
       includeUnpublished: true,
     }),
@@ -980,7 +977,7 @@ const loadListings = async () => {
   try {
     const response = await getListings({
       mode: listingType.value === 'sale' ? 'venta' : 'renta',
-      sellerId: resolveOwnerId(listingType.value),
+      sellerId: resolveOwnerId(),
       status: selectedFilter.value === 'all' ? undefined : selectedFilter.value,
       q: searchQuery.value.trim() || undefined,
       page: currentPage.value,
