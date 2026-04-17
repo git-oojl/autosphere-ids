@@ -619,7 +619,11 @@ import {
   getSavedVehicles,
   getSearchHistory,
 } from '../../../services/buyer.js';
-import { cancelAppointment, getBuyerAppointments, rescheduleAppointment } from '../../../services/appointments.js';
+import {
+  cancelAppointment,
+  getBuyerAppointments,
+  rescheduleAppointment,
+} from '../../../services/appointments.js';
 import { getListingById } from '../../../services/catalog.js';
 
 const router = useRouter();
@@ -710,16 +714,26 @@ async function loadPanel() {
     }));
     appointments.value = Array.isArray(appts) ? appts : [];
 
-    const listingIds = [...new Set(appointments.value.map((item) => item.listingId).filter(Boolean))];
-    const entries = await Promise.all(listingIds.map(async (id) => [id, await getListingById(id)]));
+    const listingIds = [
+      ...new Set(
+        appointments.value.map((item) => item.listingId).filter(Boolean)
+      ),
+    ];
+    const entries = await Promise.all(
+      listingIds.map(async (id) => [id, await getListingById(id)])
+    );
     listingsMap.value = Object.fromEntries(entries);
 
     dashboardData.value.summary = {
       ...dashboardData.value.summary,
       savedVehicles: savedVehicles.value.length,
-      upcomingAppointments: appointments.value.filter((item) => ['pending', 'confirmed', 'rescheduled'].includes(item.status)).length,
+      upcomingAppointments: appointments.value.filter((item) =>
+        ['pending', 'confirmed', 'rescheduled'].includes(item.status)
+      ).length,
     };
-    offersCount.value = appointments.value.filter((item) => item.status === 'pending').length;
+    offersCount.value = appointments.value.filter(
+      (item) => item.status === 'pending'
+    ).length;
   } catch (e) {
     console.error('loadPanel', e);
   }
@@ -788,7 +802,10 @@ const removeSearch = (index) => {
 };
 
 const stubSaveSearch = () => {
-  showToast('La búsqueda queda visible en tu historial; el guardado persistente se conectará desde backend.', 'info');
+  showToast(
+    'La búsqueda queda visible en tu historial; el guardado persistente se conectará desde backend.',
+    'info'
+  );
 };
 
 const openModal = (appt) => {
@@ -821,7 +838,10 @@ const confirmReschedule = async () => {
   await loadPanel();
   modals.value.reschedule = false;
   rescheduleForm.value = { date: '', time: '', notes: '' };
-  showToast('Cita reagendada correctamente. El vendedor fue notificado.', 'success');
+  showToast(
+    'Cita reagendada correctamente. El vendedor fue notificado.',
+    'success'
+  );
 };
 
 const confirmCancel = async () => {

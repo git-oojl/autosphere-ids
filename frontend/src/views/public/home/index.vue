@@ -6,7 +6,7 @@
         <h1 class="hero-title">
           Autos en venta con excelentes precios<br />y la mejor calidad
         </h1>
-        <p class="hero-subtitle">Marca y modelo</p>
+        <p class="hero-subtitle"></p>
 
         <!-- SEARCH BOX -->
         <div class="search-container">
@@ -94,7 +94,9 @@
               <div class="car-meta-row">
                 <span class="car-year">{{ car.year }}</span>
                 <span class="car-meta-separator">•</span>
-                <span class="car-mode-label">{{ getModeDescription(car) }}</span>
+                <span class="car-mode-label">{{
+                  getModeDescription(car)
+                }}</span>
               </div>
               <div class="car-actions">
                 <button class="btn-view" @click.stop="viewDetail(car.id)">
@@ -135,7 +137,11 @@
         </h2>
 
         <div class="reviews-grid">
-          <article v-for="review in reviews" :key="review.id" class="review-card">
+          <article
+            v-for="review in reviews"
+            :key="review.id"
+            class="review-card"
+          >
             <div class="review-source-row">
               <div class="review-source-badge">{{ review.initials }}</div>
               <div class="reviewer-info">
@@ -184,14 +190,18 @@ onMounted(loadHome);
 const allVehicles = computed(() => featuredCars.value);
 
 const uniqueBrands = computed(() => {
-  const brands = allVehicles.value.map((vehicle) => vehicle.brand).filter(Boolean);
+  const brands = allVehicles.value
+    .map((vehicle) => vehicle.brand)
+    .filter(Boolean);
   return [...new Set(brands)].sort();
 });
 
 const uniqueModels = computed(() => {
   const models = allVehicles.value
     .filter((vehicle) => {
-      return !searchFilters.value.make || vehicle.brand === searchFilters.value.make;
+      return (
+        !searchFilters.value.make || vehicle.brand === searchFilters.value.make
+      );
     })
     .map((vehicle) => vehicle.model)
     .filter(Boolean);
@@ -204,7 +214,8 @@ watch(
     if (!nextBrand) return;
     const modelStillValid = allVehicles.value.some(
       (vehicle) =>
-        vehicle.brand === nextBrand && vehicle.model === searchFilters.value.model
+        vehicle.brand === nextBrand &&
+        vehicle.model === searchFilters.value.model
     );
     if (!modelStillValid) {
       searchFilters.value.model = '';
@@ -216,11 +227,15 @@ const filteredCars = computed(() => {
   let result = [...allVehicles.value];
 
   if (searchFilters.value.make) {
-    result = result.filter((vehicle) => vehicle.brand === searchFilters.value.make);
+    result = result.filter(
+      (vehicle) => vehicle.brand === searchFilters.value.make
+    );
   }
 
   if (searchFilters.value.model) {
-    result = result.filter((vehicle) => vehicle.model === searchFilters.value.model);
+    result = result.filter(
+      (vehicle) => vehicle.model === searchFilters.value.model
+    );
   }
 
   if (searchFilters.value.year) {
@@ -237,7 +252,8 @@ const displayedCars = computed(() => {
   return filteredCars.value.slice(start, start + perPage);
 });
 
-const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price || 0);
+const formatPrice = (price) =>
+  new Intl.NumberFormat('es-MX').format(price || 0);
 
 const formatListingPrice = (car) => {
   if (car?.mode === 'rental') {
@@ -281,7 +297,9 @@ const handleSearch = () => {
   const query = {
     ...(searchFilters.value.make ? { brand: searchFilters.value.make } : {}),
     ...(searchFilters.value.model ? { q: searchFilters.value.model } : {}),
-    ...(searchFilters.value.year ? { minYear: searchFilters.value.year, maxYear: searchFilters.value.year } : {}),
+    ...(searchFilters.value.year
+      ? { minYear: searchFilters.value.year, maxYear: searchFilters.value.year }
+      : {}),
   };
 
   router.push({

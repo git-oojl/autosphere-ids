@@ -342,7 +342,9 @@
         </h3>
         <div class="callout-grid">
           <div class="callout-item">
-            <span class="callout-label">{{ isRental ? 'Tarifa diaria' : 'Precio publicado' }}</span>
+            <span class="callout-label">{{
+              isRental ? 'Tarifa diaria' : 'Precio publicado'
+            }}</span>
             <strong>
               ${{
                 formatPrice(
@@ -353,7 +355,9 @@
             </strong>
           </div>
           <div class="callout-item">
-            <span class="callout-label">{{ isRental ? 'Disponibilidad' : 'Mensualidad estimada' }}</span>
+            <span class="callout-label">{{
+              isRental ? 'Disponibilidad' : 'Mensualidad estimada'
+            }}</span>
             <strong>
               {{
                 isRental
@@ -367,7 +371,9 @@
             </strong>
           </div>
           <div class="callout-item">
-            <span class="callout-label">{{ isRental ? 'Tarifa semanal' : 'Ubicación' }}</span>
+            <span class="callout-label">{{
+              isRental ? 'Tarifa semanal' : 'Ubicación'
+            }}</span>
             <strong>
               {{
                 isRental
@@ -377,7 +383,9 @@
             </strong>
           </div>
           <div class="callout-item">
-            <span class="callout-label">{{ isRental ? 'Tarifa mensual' : 'Condición' }}</span>
+            <span class="callout-label">{{
+              isRental ? 'Tarifa mensual' : 'Condición'
+            }}</span>
             <strong>
               {{
                 isRental
@@ -499,7 +507,9 @@
               {{ feature }}
             </div>
           </div>
-          <p v-else class="empty-copy">Esta publicación todavía no muestra características visibles.</p>
+          <p v-else class="empty-copy">
+            Esta publicación todavía no muestra características visibles.
+          </p>
         </div>
 
         <!-- Seller Info (solo lectura en modo edición) -->
@@ -554,7 +564,9 @@
                       />
                     </svg>
                   </div>
-                  <span>{{ sellerRatingNumber }} • {{ sellerReviewSummary }}</span>
+                  <span
+                    >{{ sellerRatingNumber }} • {{ sellerReviewSummary }}</span
+                  >
                 </template>
                 <span v-else>{{ sellerReviewSummary }}</span>
               </div>
@@ -645,23 +657,44 @@
           </div>
         </div>
 
-        <div v-if="!isEditMode && sellerReviews.length" class="reviews-section info-section">
+        <div
+          v-if="!isEditMode && sellerReviews.length"
+          class="reviews-section info-section"
+        >
           <div class="section-header-inline">
             <h3 class="section-title">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path
+                  d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                />
               </svg>
               Opiniones sobre {{ sellerName }}
             </h3>
-            <button class="link-button" @click="openSellerProfile">Ver más en el perfil</button>
+            <button class="link-button" @click="openSellerProfile">
+              Ver más en el perfil
+            </button>
           </div>
           <div class="review-preview-grid">
-            <article v-for="review in previewSellerReviews" :key="review.id" class="review-preview-card">
+            <article
+              v-for="review in previewSellerReviews"
+              :key="review.id"
+              class="review-preview-card"
+            >
               <div class="review-preview-head">
-                <div class="review-avatar">{{ reviewInitial(review.authorName) }}</div>
+                <div class="review-avatar">
+                  {{ reviewInitial(review.authorName) }}
+                </div>
                 <div>
                   <strong>{{ review.authorName }}</strong>
-                  <small>{{ review.rating }}/5 · {{ formatReviewDate(review.createdAt) }}</small>
+                  <small
+                    >{{ review.rating }}/5 ·
+                    {{ formatReviewDate(review.createdAt) }}</small
+                  >
                 </div>
               </div>
               <p>{{ truncateReview(review.text) }}</p>
@@ -713,11 +746,17 @@ const showNotification = (message, type = 'success') => {
 };
 
 const isEditMode = computed(() => route.query.edit === 'true');
-const isRental = computed(() => vehicle.value?.mode === 'rental' || String(route.params.id || '').startsWith('rt-'));
+const isRental = computed(
+  () =>
+    vehicle.value?.mode === 'rental' ||
+    String(route.params.id || '').startsWith('rt-')
+);
 
 const getOptimizedImageUrl = (url, w = 1200, h = 800) => {
-  if (!url) return 'https://placehold.co/1200x800/2d5179/ffffff?text=AutoSphere';
-  if (url.includes('unsplash.com')) return `${url}?w=${w}&h=${h}&fit=crop&auto=format&q=80`;
+  if (!url)
+    return 'https://placehold.co/1200x800/2d5179/ffffff?text=AutoSphere';
+  if (url.includes('unsplash.com'))
+    return `${url}?w=${w}&h=${h}&fit=crop&auto=format&q=80`;
   return url;
 };
 const getOptimizedThumbnailUrl = (url) => getOptimizedImageUrl(url, 200, 150);
@@ -755,13 +794,17 @@ const initEditableVehicle = () => {
     price: vehicle.value.price,
     mileageKm: vehicle.value.mileageKm || vehicle.value.specs?.kilometraje || 0,
     fuel: vehicle.value.fuel || vehicle.value.specs?.combustible || 'Gasolina',
-    transmission: vehicle.value.transmission || vehicle.value.specs?.transmisión || 'Automática',
+    transmission:
+      vehicle.value.transmission ||
+      vehicle.value.specs?.transmisión ||
+      'Automática',
     color: vehicle.value.color || vehicle.value.specs?.color || '',
     description: vehicle.value.description || '',
     features: [...(vehicle.value.features || [])],
     location: {
       city: vehicle.value.location?.city || getCityName(vehicle.value.cityId),
-      state: vehicle.value.location?.state || getStateFromCity(vehicle.value.cityId),
+      state:
+        vehicle.value.location?.state || getStateFromCity(vehicle.value.cityId),
       addressLabel: vehicle.value.location?.addressLabel || '',
     },
   };
@@ -781,15 +824,40 @@ const displayVehicleInfo = computed(() => {
 });
 
 const editableInfoItems = computed(() => [
-  { label: 'Marca', value: displayVehicleInfo.value.brand, editable: isEditMode.value, type: 'text' },
-  { label: 'Modelo', value: displayVehicleInfo.value.model, editable: isEditMode.value, type: 'text' },
-  { label: 'Año', value: displayVehicleInfo.value.year, editable: isEditMode.value, type: 'number' },
-  { label: 'Color', value: displayVehicleInfo.value.color, editable: isEditMode.value, type: 'text' },
+  {
+    label: 'Marca',
+    value: displayVehicleInfo.value.brand,
+    editable: isEditMode.value,
+    type: 'text',
+  },
+  {
+    label: 'Modelo',
+    value: displayVehicleInfo.value.model,
+    editable: isEditMode.value,
+    type: 'text',
+  },
+  {
+    label: 'Año',
+    value: displayVehicleInfo.value.year,
+    editable: isEditMode.value,
+    type: 'number',
+  },
+  {
+    label: 'Color',
+    value: displayVehicleInfo.value.color,
+    editable: isEditMode.value,
+    type: 'text',
+  },
 ]);
 
-const thumbnailImages = computed(() => vehicle.value?.gallery || [vehicle.value?.coverImage].filter(Boolean));
+const thumbnailImages = computed(
+  () => vehicle.value?.gallery || [vehicle.value?.coverImage].filter(Boolean)
+);
 const vehicleBadge = computed(() => {
-  if (isRental.value) return vehicle.value?.available === false ? 'Renta ocupada' : 'Disponible para renta';
+  if (isRental.value)
+    return vehicle.value?.available === false
+      ? 'Renta ocupada'
+      : 'Disponible para renta';
   return vehicle.value?.condition || 'Publicado';
 });
 const vehicleFeatures = computed(() => {
@@ -812,7 +880,10 @@ const vehicleLocation = computed(() => {
   if (vehicle.value.location?.city && vehicle.value.location?.state) {
     return `${vehicle.value.location.city}, ${vehicle.value.location.state}`;
   }
-  return vehicle.value.cityLabel || `${getCityName(vehicle.value.cityId)}, ${getStateFromCity(vehicle.value.cityId)}`;
+  return (
+    vehicle.value.cityLabel ||
+    `${getCityName(vehicle.value.cityId)}, ${getStateFromCity(vehicle.value.cityId)}`
+  );
 });
 
 const locationCoordinates = computed(() => {
@@ -839,23 +910,36 @@ const googleMapsEmbedUrl = computed(() => {
   return `https://maps.google.com/maps?q=${query}&output=embed&hl=es&z=15`;
 });
 
-const sellerName = computed(() => vehicle.value?.sellerDisplayName || vehicle.value?.sellerProfile?.displayName || 'Perfil AutoSphere');
-const sellerRatingNumber = computed(() => vehicle.value?.sellerProfile?.ratingAverage ?? null);
+const sellerName = computed(
+  () =>
+    vehicle.value?.sellerDisplayName ||
+    vehicle.value?.sellerProfile?.displayName ||
+    'Perfil AutoSphere'
+);
+const sellerRatingNumber = computed(
+  () => vehicle.value?.sellerProfile?.ratingAverage ?? null
+);
 const sellerReviewSummary = computed(() => {
   if (sellerRatingNumber.value) {
     return sellerReviews.value.length
       ? `${sellerReviews.value.length} opiniones publicadas`
       : 'Opiniones disponibles';
   }
-  return sellerReviews.value.length ? `${sellerReviews.value.length} opiniones publicadas` : 'Perfil sin opiniones publicadas';
+  return sellerReviews.value.length
+    ? `${sellerReviews.value.length} opiniones publicadas`
+    : 'Perfil sin opiniones publicadas';
 });
-const sellerVerified = computed(() => vehicle.value?.sellerProfile?.verified === true);
+const sellerVerified = computed(
+  () => vehicle.value?.sellerProfile?.verified === true
+);
 const previewSellerReviews = computed(() => sellerReviews.value.slice(0, 2));
 const monthlyPayment = computed(() => {
   if (!vehicle.value?.price || isRental.value) return null;
   const rate = 0.12 / 12;
   const months = 48;
-  const payment = (vehicle.value.price * rate * Math.pow(1 + rate, months)) / (Math.pow(1 + rate, months) - 1);
+  const payment =
+    (vehicle.value.price * rate * Math.pow(1 + rate, months)) /
+    (Math.pow(1 + rate, months) - 1);
   return Math.round(payment);
 });
 const currentImage = computed(() => {
@@ -875,12 +959,21 @@ const removeFeature = (index) => {
 };
 
 const saveChanges = () => {
-  showNotification('La edición se mantiene en la superficie interna del vendedor. Vuelve a tus publicaciones para continuar.', 'info');
-  router.push({ name: 'seller-listing-detail', params: { id: route.params.id } });
+  showNotification(
+    'La edición se mantiene en la superficie interna del vendedor. Vuelve a tus publicaciones para continuar.',
+    'info'
+  );
+  router.push({
+    name: 'seller-listing-detail',
+    params: { id: route.params.id },
+  });
 };
 
 const cancelEdit = () => {
-  router.push({ name: 'seller-listing-detail', params: { id: route.params.id } });
+  router.push({
+    name: 'seller-listing-detail',
+    params: { id: route.params.id },
+  });
 };
 
 const selectImage = (index) => {
@@ -888,7 +981,9 @@ const selectImage = (index) => {
 };
 const nextImage = () => {
   const gallery = thumbnailImages.value;
-  currentImageIndex.value = gallery.length ? (currentImageIndex.value + 1) % gallery.length : 0;
+  currentImageIndex.value = gallery.length
+    ? (currentImageIndex.value + 1) % gallery.length
+    : 0;
 };
 const prevImage = () => {
   const gallery = thumbnailImages.value;
@@ -915,7 +1010,10 @@ const toggleFavorite = async () => {
 
 const openSellerProfile = () => {
   if (!vehicle.value?.sellerId) return;
-  router.push({ name: 'public-user-profile', params: { id: vehicle.value.sellerId } });
+  router.push({
+    name: 'public-user-profile',
+    params: { id: vehicle.value.sellerId },
+  });
 };
 
 const openSellerInventory = () => {
@@ -932,15 +1030,26 @@ const openSellerInventory = () => {
 const contactSeller = openSellerProfile;
 
 const scheduleTestDrive = () => {
-  router.push({ name: 'public-appointment-booking', params: { id: vehicle.value?.id } });
+  router.push({
+    name: 'public-appointment-booking',
+    params: { id: vehicle.value?.id },
+  });
 };
 
-const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price || 0);
+const formatPrice = (price) =>
+  new Intl.NumberFormat('es-MX').format(price || 0);
 const formatNumber = (num) => new Intl.NumberFormat('es-MX').format(num || 0);
-const formatReviewDate = (value) => new Date(value).toLocaleDateString('es-MX', { year: 'numeric', month: 'short', day: 'numeric' });
+const formatReviewDate = (value) =>
+  new Date(value).toLocaleDateString('es-MX', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
 
 const openMaps = () => {
-  const address = encodeURIComponent(vehicle.value?.location?.addressLabel || `${vehicleLocation.value}`);
+  const address = encodeURIComponent(
+    vehicle.value?.location?.addressLabel || `${vehicleLocation.value}`
+  );
   window.open(`https://www.google.com/maps/search/${address}`, '_blank');
 };
 
@@ -952,7 +1061,9 @@ const loadListing = async () => {
   }
   vehicle.value = listing;
   isFavorite.value = await isVehicleSaved(listing.id);
-  sellerReviews.value = listing.sellerId ? await getPublicProfileReviews(listing.sellerId) : [];
+  sellerReviews.value = listing.sellerId
+    ? await getPublicProfileReviews(listing.sellerId)
+    : [];
   currentImageIndex.value = 0;
   initEditableVehicle();
 };

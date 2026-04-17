@@ -15,12 +15,17 @@
           </div>
         </div>
         <div class="hero-pills">
-          <span v-if="profile.verified" class="meta-pill success">Verificado</span>
+          <span v-if="profile.verified" class="meta-pill success"
+            >Verificado</span
+          >
           <span class="meta-pill">{{ ratingLabel }}</span>
           <span class="meta-pill">{{ reviews.length }} reseñas</span>
         </div>
         <p class="summary">
-          {{ profile.bio || 'Perfil disponible para revisar inventario, reseñas y datos públicos del anunciante.' }}
+          {{
+            profile.bio ||
+            'Perfil disponible para revisar inventario, reseñas y datos públicos del anunciante.'
+          }}
         </p>
       </div>
 
@@ -44,7 +49,10 @@
       <div class="section-header">
         <div>
           <h2>Publicaciones del perfil</h2>
-          <p class="section-copy">Superficie pública para ver el inventario visible de este vendedor o arrendador.</p>
+          <p class="section-copy">
+            Superficie pública para ver el inventario visible de este vendedor o
+            arrendador.
+          </p>
         </div>
       </div>
 
@@ -58,24 +66,38 @@
           <img :src="item.coverImage" :alt="item.title" />
           <div class="inventory-body">
             <strong>{{ item.title }}</strong>
-            <span class="inventory-badge">{{ item.mode === 'rental' ? 'Renta' : 'Venta' }}</span>
-            <p>{{ item.cityLabel || item.location?.city || 'Ubicación por confirmar' }}</p>
+            <span class="inventory-badge">{{
+              item.mode === 'rental' ? 'Renta' : 'Venta'
+            }}</span>
+            <p>
+              {{
+                item.cityLabel ||
+                item.location?.city ||
+                'Ubicación por confirmar'
+              }}
+            </p>
             <div class="inventory-price-row">
-              <span class="label">{{ item.mode === 'rental' ? 'Tarifa' : 'Precio' }}</span>
+              <span class="label">{{
+                item.mode === 'rental' ? 'Tarifa' : 'Precio'
+              }}</span>
               <span class="price">{{ priceLabel(item) }}</span>
             </div>
             <span class="inventory-cta">Ver publicación</span>
           </div>
         </button>
       </div>
-      <p v-else class="empty-copy">Este perfil aún no tiene publicaciones activas.</p>
+      <p v-else class="empty-copy">
+        Este perfil aún no tiene publicaciones activas.
+      </p>
     </section>
 
-    <section class="card reviews-section" id="reviews">
+    <section id="reviews" class="card reviews-section">
       <div class="section-header">
         <div>
           <h2>Reseñas visibles</h2>
-          <p class="section-copy">Opiniones públicas disponibles para apoyar la reputación del perfil.</p>
+          <p class="section-copy">
+            Opiniones públicas disponibles para apoyar la reputación del perfil.
+          </p>
         </div>
         <span class="meta-pill">{{ reviews.length }} registradas</span>
       </div>
@@ -83,25 +105,36 @@
       <div v-if="reviews.length" class="review-grid">
         <article v-for="review in reviews" :key="review.id" class="review-item">
           <div class="review-head">
-            <div class="review-avatar">{{ reviewInitial(review.authorName) }}</div>
+            <div class="review-avatar">
+              {{ reviewInitial(review.authorName) }}
+            </div>
             <div>
               <strong>{{ review.authorName }}</strong>
-              <span>{{ review.authorRole }} · {{ formatDate(review.createdAt) }}</span>
+              <span
+                >{{ review.authorRole }} ·
+                {{ formatDate(review.createdAt) }}</span
+              >
             </div>
             <span class="review-rating">{{ review.rating }}/5</span>
           </div>
           <p>{{ review.text }}</p>
         </article>
       </div>
-      <p v-else class="empty-copy">Aún no hay reseñas visibles para este perfil.</p>
+      <p v-else class="empty-copy">
+        Aún no hay reseñas visibles para este perfil.
+      </p>
     </section>
   </section>
 
   <section v-else class="fallback-page card">
     <p class="eyebrow">Perfil público</p>
     <h1>Perfil no disponible</h1>
-    <p>El perfil solicitado no existe o todavía no tiene datos públicos visibles.</p>
-    <button @click="router.push({ name: 'public-catalog' })">Volver al catálogo</button>
+    <p>
+      El perfil solicitado no existe o todavía no tiene datos públicos visibles.
+    </p>
+    <button @click="router.push({ name: 'public-catalog' })">
+      Volver al catálogo
+    </button>
   </section>
 </template>
 
@@ -118,27 +151,36 @@ const reviews = ref([]);
 
 const locationLabel = computed(() => {
   if (!profile.value) return '—';
-  return [profile.value.city, profile.value.state].filter(Boolean).join(', ') || 'Sin ubicación pública';
+  return (
+    [profile.value.city, profile.value.state].filter(Boolean).join(', ') ||
+    'Sin ubicación pública'
+  );
 });
 
-const memberSinceLabel = computed(() => {
-  if (!profile.value?.memberSince) return '—';
-  return new Date(profile.value.memberSince).toLocaleDateString('es-MX', {
-    year: 'numeric',
-    month: 'long',
-  });
-});
-
-const profileInitial = computed(() => String(profile.value?.displayName || 'A').trim().charAt(0).toUpperCase());
+const profileInitial = computed(() =>
+  String(profile.value?.displayName || 'A')
+    .trim()
+    .charAt(0)
+    .toUpperCase()
+);
 
 const averageRating = computed(() => {
   if (!reviews.value.length) return null;
-  const total = reviews.value.reduce((sum, item) => sum + Number(item.rating || 0), 0);
+  const total = reviews.value.reduce(
+    (sum, item) => sum + Number(item.rating || 0),
+    0
+  );
   return total / reviews.value.length;
 });
 
-const averageRatingLabel = computed(() => averageRating.value ? averageRating.value.toFixed(1) : '—');
-const ratingLabel = computed(() => averageRating.value ? `${averageRating.value.toFixed(1)} / 5` : 'Sin calificación');
+const averageRatingLabel = computed(() =>
+  averageRating.value ? averageRating.value.toFixed(1) : '—'
+);
+const ratingLabel = computed(() =>
+  averageRating.value
+    ? `${averageRating.value.toFixed(1)} / 5`
+    : 'Sin calificación'
+);
 
 function formatDate(value) {
   return new Date(value).toLocaleDateString('es-MX', {
@@ -157,7 +199,10 @@ function priceLabel(item) {
 }
 
 function reviewInitial(name) {
-  return String(name || 'A').trim().charAt(0).toUpperCase();
+  return String(name || 'A')
+    .trim()
+    .charAt(0)
+    .toUpperCase();
 }
 
 function openListing(id) {
@@ -333,7 +378,9 @@ onMounted(async () => {
   overflow: hidden;
   cursor: pointer;
   padding: 0;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .inventory-card:hover {

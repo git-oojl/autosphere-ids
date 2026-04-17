@@ -59,7 +59,9 @@ function resolveListingIdFromTitle(title) {
 
 function buildTimeline(statusKey, date, time) {
   const baseTimestamp = date ? `${date}T${time || '09:00'}:00` : null;
-  const confirmationStatus = ['pending'].includes(statusKey) ? 'pending' : 'done';
+  const confirmationStatus = ['pending'].includes(statusKey)
+    ? 'pending'
+    : 'done';
   const visitStatus = statusKey === 'cancelled' ? 'pending' : 'scheduled';
 
   return [
@@ -85,7 +87,9 @@ function buildAppointmentFromCalendarEntry(tab, item) {
   if (!item) return null;
 
   const status = normalizeStatusKey(item.statusKey || item.status);
-  const listingId = item.listingId || resolveListingIdFromTitle(item.vehicle || item.listingTitle);
+  const listingId =
+    item.listingId ||
+    resolveListingIdFromTitle(item.vehicle || item.listingTitle);
   const buyer =
     tab === 'comprador'
       ? null
@@ -113,7 +117,8 @@ function buildAppointmentFromCalendarEntry(tab, item) {
     status,
     date: item.date || null,
     time: item.time || null,
-    locationLabel: item.address || item.locationLabel || 'Ubicación por confirmar',
+    locationLabel:
+      item.address || item.locationLabel || 'Ubicación por confirmar',
     notes: item.notes || '',
     listingTitle: item.vehicle || item.listingTitle || 'Vehículo seleccionado',
     buyerName: buyer?.name || item.client || 'Cliente AutoSphere',
@@ -127,9 +132,10 @@ function buildAppointmentFromCalendarEntry(tab, item) {
   });
 }
 
-let appointmentState = (Array.isArray(appointmentsData)
-  ? appointmentsData
-  : appointmentsData?.items || []
+let appointmentState = (
+  Array.isArray(appointmentsData)
+    ? appointmentsData
+    : appointmentsData?.items || []
 ).map((item) => ({
   ...item,
   ...(appointmentDetailsMap[item.id] || {}),
@@ -256,31 +262,46 @@ export async function getAppointmentCalendar() {
 export async function getAppointmentSlots(listingId, options = {}) {
   const slots = slotsByListing[listingId] || [];
   if (!options.date) return resolveMock(slots);
-  return resolveMock(slots.find((entry) => entry.date === options.date) || null);
+  return resolveMock(
+    slots.find((entry) => entry.date === options.date) || null
+  );
 }
 
 export async function getAppointments(filters = {}) {
-  const items = filterAppointments(appointmentState, filters).map(enrichAppointment);
+  const items = filterAppointments(appointmentState, filters).map(
+    enrichAppointment
+  );
   return resolveMock(sortItems(items, filters.sort || 'date_asc'));
 }
 
 export async function getAppointmentById(id) {
-  const direct = appointmentState.find((item) => String(item.id) === String(id));
+  const direct = appointmentState.find(
+    (item) => String(item.id) === String(id)
+  );
   if (direct) return resolveMock(enrichAppointment(direct));
 
   const calendarEntry = findCalendarAppointmentById(id);
   if (!calendarEntry) return resolveMock(null);
 
   return resolveMock(
-    buildAppointmentFromCalendarEntry(calendarEntry.tab, calendarEntry.appointment)
+    buildAppointmentFromCalendarEntry(
+      calendarEntry.tab,
+      calendarEntry.appointment
+    )
   );
 }
 
-export async function getBuyerAppointments(buyerId = 'u-buyer-001', filters = {}) {
+export async function getBuyerAppointments(
+  buyerId = 'u-buyer-001',
+  filters = {}
+) {
   return getAppointments({ ...filters, buyerId });
 }
 
-export async function getSellerAppointments(sellerId = 'u-seller-001', filters = {}) {
+export async function getSellerAppointments(
+  sellerId = 'u-seller-001',
+  filters = {}
+) {
   return getAppointments({ ...filters, sellerId });
 }
 
@@ -304,7 +325,8 @@ export async function createAppointment(payload = {}) {
     notes: payload.notes || '',
     listingTitle: listing?.title || 'Vehículo seleccionado',
     buyerName: buyer?.name || payload.buyerName || 'Comprador AutoSphere',
-    sellerName: seller?.name || listing?.sellerDisplayName || 'Vendedor AutoSphere',
+    sellerName:
+      seller?.name || listing?.sellerDisplayName || 'Vendedor AutoSphere',
     timeline: [
       {
         label: 'Solicitud creada',
@@ -334,7 +356,10 @@ export async function createAppointment(payload = {}) {
 }
 
 export async function confirmAppointment(id) {
-  mutateAppointment(id, (appointment) => ({ ...appointment, status: 'confirmed' }));
+  mutateAppointment(id, (appointment) => ({
+    ...appointment,
+    status: 'confirmed',
+  }));
   return getAppointmentById(id);
 }
 

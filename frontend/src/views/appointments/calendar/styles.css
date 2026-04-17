@@ -48,7 +48,6 @@
   font-weight: 500;
 }
 
-
 .active-filter-chip {
   margin-top: 12px;
   display: inline-flex;
@@ -274,7 +273,6 @@
   border-color: #c7d2fe;
 }
 
-
 .select-btn {
   display: flex;
   align-items: center;
@@ -353,12 +351,24 @@
   border: 1px solid #e2e8f0;
 }
 
-.col-time { width: 88px; }
-.col-contact { width: 170px; }
-.col-vehicle { width: 220px; }
-.col-type { width: 110px; }
-.col-status { width: 120px; }
-.col-action { width: 130px; }
+.col-time {
+  width: 88px;
+}
+.col-contact {
+  width: 170px;
+}
+.col-vehicle {
+  width: 220px;
+}
+.col-type {
+  width: 110px;
+}
+.col-status {
+  width: 120px;
+}
+.col-action {
+  width: 130px;
+}
 
 .appointments-table th {
   text-align: left;

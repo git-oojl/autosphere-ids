@@ -8,7 +8,8 @@
           <div>
             <h1 class="dashboard-title">Dashboard de Vendedor</h1>
             <p class="dashboard-subtitle">
-              Gestiona tus anuncios y citas desde superficies ya conectadas • {{ currentTime }}
+              Gestiona tus anuncios y citas desde superficies ya conectadas •
+              {{ currentTime }}
             </p>
           </div>
           <button class="btn-primary" @click="createListing">
@@ -487,15 +488,31 @@
                   <div class="perf-label">Publicaciones activas</div>
                   <div class="perf-value">{{ stats.listings }}</div>
                   <div class="perf-bar">
-                    <div class="perf-fill" :style="{ width: Math.min(100, stats.listings * 12) + '%' }"></div>
+                    <div
+                      class="perf-fill"
+                      :style="{
+                        width: Math.min(100, stats.listings * 12) + '%',
+                      }"
+                    ></div>
                   </div>
                 </div>
 
                 <div class="performance-item">
                   <div class="perf-label">Citas confirmadas</div>
-                  <div class="perf-value">{{ stats.confirmedAppointments }}</div>
+                  <div class="perf-value">
+                    {{ stats.confirmedAppointments }}
+                  </div>
                   <div class="perf-bar">
-                    <div class="perf-fill" :style="{ width: stats.appointments ? (stats.confirmedAppointments / stats.appointments) * 100 + '%' : '0%' }"></div>
+                    <div
+                      class="perf-fill"
+                      :style="{
+                        width: stats.appointments
+                          ? (stats.confirmedAppointments / stats.appointments) *
+                              100 +
+                            '%'
+                          : '0%',
+                      }"
+                    ></div>
                   </div>
                 </div>
 
@@ -503,7 +520,12 @@
                   <div class="perf-label">Rentas publicadas</div>
                   <div class="perf-value">{{ stats.rentalListings }}</div>
                   <div class="perf-bar">
-                    <div class="perf-fill" :style="{ width: Math.min(100, stats.rentalListings * 20) + '%' }"></div>
+                    <div
+                      class="perf-fill"
+                      :style="{
+                        width: Math.min(100, stats.rentalListings * 20) + '%',
+                      }"
+                    ></div>
                   </div>
                 </div>
               </div>
@@ -527,7 +549,9 @@
               </div>
 
               <p class="tip-text">
-                <strong>Mantén continuidad:</strong> cada publicación y cada cita ya tienen ruta propia. Usa esta vista para entrar a detalle sin salir a pantallas vacías.
+                <strong>Mantén continuidad:</strong> cada publicación y cada
+                cita ya tienen ruta propia. Usa esta vista para entrar a detalle
+                sin salir a pantallas vacías.
               </p>
             </div>
           </div>
@@ -542,7 +566,10 @@ import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getSellerAppointments } from '../../../services/appointments.js';
 import { getListings } from '../../../services/catalog.js';
-import { DEMO_RENTAL_OWNER_ID, DEMO_SALE_OWNER_ID } from '../../../services/demoOwners.js';
+import {
+  DEMO_RENTAL_OWNER_ID,
+  DEMO_SALE_OWNER_ID,
+} from '../../../services/demoOwners.js';
 
 const router = useRouter();
 
@@ -574,8 +601,18 @@ const statusTextMap = {
 const loadSellerData = async () => {
   const [appointments, saleListings, rentalListings] = await Promise.all([
     getSellerAppointments('u-seller-001'),
-    getListings({ mode: 'venta', sellerId: DEMO_SALE_OWNER_ID, pageSize: 100, includeUnpublished: true }),
-    getListings({ mode: 'renta', sellerId: DEMO_RENTAL_OWNER_ID, pageSize: 100, includeUnpublished: true }),
+    getListings({
+      mode: 'venta',
+      sellerId: DEMO_SALE_OWNER_ID,
+      pageSize: 100,
+      includeUnpublished: true,
+    }),
+    getListings({
+      mode: 'renta',
+      sellerId: DEMO_RENTAL_OWNER_ID,
+      pageSize: 100,
+      includeUnpublished: true,
+    }),
   ]);
 
   const appts = Array.isArray(appointments) ? appointments : [];
@@ -584,14 +621,19 @@ const loadSellerData = async () => {
 
   stats.value = {
     listings: sales.filter((item) => item.status === 'published').length,
-    pendingAppointments: appts.filter((item) => item.status === 'pending').length,
-    confirmedAppointments: appts.filter((item) => item.status === 'confirmed').length,
+    pendingAppointments: appts.filter((item) => item.status === 'pending')
+      .length,
+    confirmedAppointments: appts.filter((item) => item.status === 'confirmed')
+      .length,
     appointments: appts.length,
-    rentalListings: rentals.filter((item) => item.status === 'published').length,
+    rentalListings: rentals.filter((item) => item.status === 'published')
+      .length,
   };
 
   upcomingAppointments.value = appts
-    .filter((item) => ['pending', 'confirmed', 'rescheduled'].includes(item.status))
+    .filter((item) =>
+      ['pending', 'confirmed', 'rescheduled'].includes(item.status)
+    )
     .slice(0, 3)
     .map((item) => ({
       id: item.id,
@@ -609,7 +651,8 @@ const loadSellerData = async () => {
     name: item.title,
     price: item.price,
     image: item.coverImage,
-    cityLabel: item.cityLabel || item.location?.city || 'Ubicación por confirmar',
+    cityLabel:
+      item.cityLabel || item.location?.city || 'Ubicación por confirmar',
     modeLabel: item.mode === 'rental' ? 'Renta' : 'Venta',
     status: item.status === 'published' ? 'active' : 'paused',
     statusText: item.status === 'published' ? 'Activo' : 'Borrador',
@@ -622,12 +665,16 @@ const manageListings = () => router.push({ name: 'user-listings' });
 const createListing = () => router.push({ name: 'create-listing' });
 const createAppointment = () => router.push({ name: 'my-appointments' });
 const viewAllAppointments = () => router.push({ name: 'seller-appointments' });
-const viewAppointment = (id) => router.push({ name: 'seller-appointment-detail', params: { id } });
-const editListing = (id) => router.push({ name: 'seller-listing-detail', params: { id } });
-const viewStats = (id) => router.push({ name: 'seller-listing-detail', params: { id } });
+const viewAppointment = (id) =>
+  router.push({ name: 'seller-appointment-detail', params: { id } });
+const editListing = (id) =>
+  router.push({ name: 'seller-listing-detail', params: { id } });
+const viewStats = (id) =>
+  router.push({ name: 'seller-listing-detail', params: { id } });
 const viewPublicListings = () => router.push({ name: 'user-listings' });
 const viewRentals = () => router.push({ name: 'user-rentals' });
-const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price || 0);
+const formatPrice = (price) =>
+  new Intl.NumberFormat('es-MX').format(price || 0);
 </script>
 
 <style scoped src="./styles.css"></style>

@@ -27,7 +27,8 @@ const userMap = users.reduce((acc, user) => {
   return acc;
 }, {});
 
-const adminListingItems = adminListingsData.listings || adminListingsData.items || [];
+const adminListingItems =
+  adminListingsData.listings || adminListingsData.items || [];
 const adminListingMap = adminListingItems.reduce((acc, item) => {
   acc[item.id] = item;
   return acc;
@@ -53,7 +54,10 @@ function buildSellerProfile(profileId, fallback = {}) {
   return {
     id: profileId,
     displayName:
-      fallback.displayName || seed.displayName || seed.name || 'Perfil AutoSphere',
+      fallback.displayName ||
+      seed.displayName ||
+      seed.name ||
+      'Perfil AutoSphere',
     verified: fallback.verified ?? seed.verified ?? false,
     city: seed.city || fallback.city || null,
     state: seed.state || fallback.state || null,
@@ -73,7 +77,10 @@ function normalizeSaleListing(listing) {
   const adminSeed = adminListingMap[listing.id] || {};
   const city = cityMap[detail.cityId || listing.cityId] || null;
   const sellerId = detail.sellerId || listing.sellerId;
-  const sellerProfile = buildSellerProfile(sellerId, detail.sellerProfile || {});
+  const sellerProfile = buildSellerProfile(
+    sellerId,
+    detail.sellerProfile || {}
+  );
 
   return {
     ...listing,
@@ -83,17 +90,26 @@ function normalizeSaleListing(listing) {
     model: detail.model || listing.model || adminSeed.model || '',
     year: detail.year || listing.year || adminSeed.year || null,
     color: detail.color || listing.color || adminSeed.color || '',
-    transmission: detail.transmission || listing.transmission || adminSeed.transmission || '',
+    transmission:
+      detail.transmission ||
+      listing.transmission ||
+      adminSeed.transmission ||
+      '',
     fuel: detail.fuel || listing.fuel || adminSeed.fuel || '',
-    mileageKm: detail.mileageKm ?? listing.mileageKm ?? adminSeed.mileageKm ?? null,
+    mileageKm:
+      detail.mileageKm ?? listing.mileageKm ?? adminSeed.mileageKm ?? null,
     price: detail.price ?? listing.price ?? adminSeed.price ?? 0,
     cityId: detail.cityId || listing.cityId || null,
     city,
-    cityLabel: city ? `${city.name}, ${city.state}` : detail.location?.city || '',
+    cityLabel: city
+      ? `${city.name}, ${city.state}`
+      : detail.location?.city || '',
     sellerId,
     sellerProfile,
     sellerDisplayName: sellerProfile.displayName,
-    gallery: detail.gallery || [detail.coverImage || listing.coverImage].filter(Boolean),
+    gallery:
+      detail.gallery ||
+      [detail.coverImage || listing.coverImage].filter(Boolean),
     coverImage: detail.coverImage || listing.coverImage || null,
     description: detail.description || adminSeed.description || '',
     location: detail.location || null,
@@ -127,16 +143,24 @@ function normalizeRentalListing(listing) {
     ...listing,
     ...detail,
     mode: 'rental',
-    rentalSpecs,
     brand: detail.brand || listing.brand || adminSeed.brand || '',
     model: detail.model || listing.model || adminSeed.model || '',
     year: detail.year || listing.year || adminSeed.year || null,
     color: detail.color || listing.color || adminSeed.color || '',
-    transmission: detail.transmission || listing.transmission || adminSeed.transmission || '',
+    transmission:
+      detail.transmission ||
+      listing.transmission ||
+      adminSeed.transmission ||
+      '',
     fuel: detail.fuel || listing.fuel || adminSeed.fuel || '',
-    mileageKm: detail.mileageKm ?? listing.mileageKm ?? adminSeed.mileageKm ?? null,
+    mileageKm:
+      detail.mileageKm ?? listing.mileageKm ?? adminSeed.mileageKm ?? null,
     rentalSpecs,
-    price: rentalSpecs.pricePerDay ?? listing.pricePerDay ?? adminSeed.pricePerDay ?? 0,
+    price:
+      rentalSpecs.pricePerDay ??
+      listing.pricePerDay ??
+      adminSeed.pricePerDay ??
+      0,
     pricePerDay: rentalSpecs.pricePerDay ?? listing.pricePerDay ?? 0,
     pricePerWeek: rentalSpecs.pricePerWeek ?? listing.pricePerWeek ?? null,
     pricePerMonth: rentalSpecs.pricePerMonth ?? listing.pricePerMonth ?? null,
@@ -148,15 +172,24 @@ function normalizeRentalListing(listing) {
     available: rentalSpecs.available ?? listing.available ?? true,
     cityId: detail.cityId || listing.cityId || null,
     city,
-    cityLabel: city ? `${city.name}, ${city.state}` : detail.location?.city || '',
+    cityLabel: city
+      ? `${city.name}, ${city.state}`
+      : detail.location?.city || '',
     sellerId,
     sellerProfile,
     sellerDisplayName: sellerProfile.displayName,
-    gallery: detail.gallery || [detail.coverImage || listing.coverImage].filter(Boolean),
+    gallery:
+      detail.gallery ||
+      [detail.coverImage || listing.coverImage].filter(Boolean),
     coverImage: detail.coverImage || listing.coverImage || null,
     description: detail.description || adminSeed.description || '',
     location: detail.location || null,
-    features: rentalSpecs.includedItems || detail.features || listing.features || adminSeed.features || [],
+    features:
+      rentalSpecs.includedItems ||
+      detail.features ||
+      listing.features ||
+      adminSeed.features ||
+      [],
     specs: detail.specs || {},
   };
 }
@@ -183,7 +216,9 @@ function getCatalogInventory(mode = 'all') {
 }
 
 function countDefinedMedia(listing) {
-  const gallery = Array.isArray(listing?.gallery) ? listing.gallery.filter(Boolean) : [];
+  const gallery = Array.isArray(listing?.gallery)
+    ? listing.gallery.filter(Boolean)
+    : [];
   const cover = listing?.coverImage ? 1 : 0;
   return Math.max(gallery.length, cover);
 }
@@ -193,31 +228,49 @@ export function getListingFeaturedScore(listing) {
 
   const mediaCount = countDefinedMedia(listing);
   const descriptionLength = String(listing.description || '').trim().length;
-  const featuresCount = Array.isArray(listing.features) ? listing.features.length : 0;
+  const featuresCount = Array.isArray(listing.features)
+    ? listing.features.length
+    : 0;
   const ratingAverage = Number(listing.sellerProfile?.ratingAverage || 0);
   const verifiedSeller = Boolean(listing.sellerProfile?.verified);
-  const hasLocation = Boolean(listing.cityLabel || listing.location?.city || listing.location?.addressLabel);
+  const hasLocation = Boolean(
+    listing.cityLabel ||
+    listing.location?.city ||
+    listing.location?.addressLabel
+  );
   const hasPrice = Number(listing.price || listing.pricePerDay || 0) > 0;
-  const isRentalAvailable = listing.mode !== 'rental' || listing.available !== false;
+  const isRentalAvailable =
+    listing.mode !== 'rental' || listing.available !== false;
 
   let score = 40;
   score += Math.min(15, mediaCount * 5);
-  score += descriptionLength >= 120 ? 12 : descriptionLength >= 60 ? 8 : descriptionLength >= 20 ? 4 : 0;
+  score +=
+    descriptionLength >= 120
+      ? 12
+      : descriptionLength >= 60
+        ? 8
+        : descriptionLength >= 20
+          ? 4
+          : 0;
   score += Math.min(12, featuresCount * 2);
   score += verifiedSeller ? 8 : 0;
   score += Math.min(10, Math.round(ratingAverage * 2));
   score += hasLocation ? 5 : 0;
   score += hasPrice ? 4 : 0;
   score += isRentalAvailable ? 6 : 0;
-  score += listing.year ? Math.max(0, Math.min(8, Number(listing.year) - 2018)) : 0;
+  score += listing.year
+    ? Math.max(0, Math.min(8, Number(listing.year) - 2018))
+    : 0;
 
   return score;
 }
 
 export function getListingFeaturedPercent(listing) {
-  return Math.max(0, Math.min(100, Math.round((getListingFeaturedScore(listing) / 120) * 100)));
+  return Math.max(
+    0,
+    Math.min(100, Math.round((getListingFeaturedScore(listing) / 120) * 100))
+  );
 }
-
 
 function matchesMultiValue(candidate, selectedValues = []) {
   if (selectedValues.length === 0) return true;
@@ -326,9 +379,9 @@ export async function getListingById(id) {
 
 export async function getFeaturedListings(options = {}) {
   const ids = toArray(options.ids);
-  const inventory = getCatalogInventory(normalizeCatalogMode(options.mode || 'all')).filter(
-    (item) => item.status === 'published'
-  );
+  const inventory = getCatalogInventory(
+    normalizeCatalogMode(options.mode || 'all')
+  ).filter((item) => item.status === 'published');
 
   const filtered = inventory.filter((item) => {
     if (options.sellerId && item.sellerId !== options.sellerId) return false;
@@ -337,7 +390,9 @@ export async function getFeaturedListings(options = {}) {
 
   const items =
     ids.length > 0 && options.strategy === 'curated'
-      ? ids.map((id) => filtered.find((entry) => entry.id === id)).filter(Boolean)
+      ? ids
+          .map((id) => filtered.find((entry) => entry.id === id))
+          .filter(Boolean)
       : [...filtered].sort((a, b) => {
           const diff = getListingFeaturedScore(b) - getListingFeaturedScore(a);
           if (diff !== 0) return diff;
@@ -377,7 +432,11 @@ export async function getSellerProfile(sellerId) {
   const listings = getCatalogInventory('all').filter(
     (item) => item.sellerId === sellerId && item.status === 'published'
   );
-  if (listings.length === 0 && !publicProfiles[sellerId] && !userMap[sellerId]) {
+  if (
+    listings.length === 0 &&
+    !publicProfiles[sellerId] &&
+    !userMap[sellerId]
+  ) {
     return resolveMock(null);
   }
 

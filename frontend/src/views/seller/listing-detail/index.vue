@@ -5,11 +5,14 @@
         <p class="eyebrow">Mis publicaciones</p>
         <h1>{{ listing.title }}</h1>
         <p class="hero-copy">
-          Vista interna de la publicación para revisar su estado, disponibilidad y citas relacionadas.
+          Vista interna de la publicación para revisar su estado, disponibilidad
+          y citas relacionadas.
         </p>
       </div>
       <div class="hero-actions">
-        <button type="button" class="secondary" @click="goBackToListings">Volver a publicaciones</button>
+        <button type="button" class="secondary" @click="goBackToListings">
+          Volver a publicaciones
+        </button>
         <button type="button" @click="openEditInList">Editar en lista</button>
       </div>
     </header>
@@ -20,23 +23,45 @@
         <div class="hero-meta">
           <span>{{ listing.mode === 'rental' ? 'Renta' : 'Venta' }}</span>
           <span>{{ statusLabel }}</span>
-          <span>{{ listing.cityLabel || listing.location?.city || 'Ubicación por confirmar' }}</span>
+          <span>{{
+            listing.cityLabel ||
+            listing.location?.city ||
+            'Ubicación por confirmar'
+          }}</span>
         </div>
         <div class="price-block">
           <strong>{{ priceLabel }}</strong>
-          <span v-if="listing.mode === 'rental' && listing.pricePerWeek && listing.pricePerMonth">
+          <span
+            v-if="
+              listing.mode === 'rental' &&
+              listing.pricePerWeek &&
+              listing.pricePerMonth
+            "
+          >
             {{ weeklyMonthlyLabel }}
           </span>
         </div>
-        <p class="description">{{ listing.description || 'Sin descripción pública registrada.' }}</p>
+        <p class="description">
+          {{ listing.description || 'Sin descripción pública registrada.' }}
+        </p>
       </article>
 
       <article class="card summary-card">
         <h2>Acciones rápidas</h2>
         <div class="actions">
-          <button type="button" @click="openEditInList">Editar publicación</button>
-          <button type="button" class="secondary" @click="openPublicView">Vista pública</button>
-          <button type="button" class="secondary" @click="goToRelatedAppointments">Ver citas relacionadas</button>
+          <button type="button" @click="openEditInList">
+            Editar publicación
+          </button>
+          <button type="button" class="secondary" @click="openPublicView">
+            Vista pública
+          </button>
+          <button
+            type="button"
+            class="secondary"
+            @click="goToRelatedAppointments"
+          >
+            Ver citas relacionadas
+          </button>
         </div>
 
         <div class="summary-grid">
@@ -54,7 +79,9 @@
           </div>
           <div>
             <span class="label">Última actualización</span>
-            <strong>{{ formatDate(listing.updatedAt || listing.createdAt) }}</strong>
+            <strong>{{
+              formatDate(listing.updatedAt || listing.createdAt)
+            }}</strong>
           </div>
         </div>
       </article>
@@ -64,19 +91,41 @@
       <article class="card details-card">
         <h2>Ficha de la publicación</h2>
         <div class="details-grid">
-          <div><span class="label">Marca</span><strong>{{ listing.brand || '—' }}</strong></div>
-          <div><span class="label">Modelo</span><strong>{{ listing.model || '—' }}</strong></div>
-          <div><span class="label">Año</span><strong>{{ listing.year || '—' }}</strong></div>
-          <div><span class="label">Transmisión</span><strong>{{ listing.transmission || '—' }}</strong></div>
-          <div><span class="label">Combustible</span><strong>{{ listing.fuel || '—' }}</strong></div>
-          <div><span class="label">Kilometraje</span><strong>{{ mileageLabel }}</strong></div>
+          <div>
+            <span class="label">Marca</span
+            ><strong>{{ listing.brand || '—' }}</strong>
+          </div>
+          <div>
+            <span class="label">Modelo</span
+            ><strong>{{ listing.model || '—' }}</strong>
+          </div>
+          <div>
+            <span class="label">Año</span
+            ><strong>{{ listing.year || '—' }}</strong>
+          </div>
+          <div>
+            <span class="label">Transmisión</span
+            ><strong>{{ listing.transmission || '—' }}</strong>
+          </div>
+          <div>
+            <span class="label">Combustible</span
+            ><strong>{{ listing.fuel || '—' }}</strong>
+          </div>
+          <div>
+            <span class="label">Kilometraje</span
+            ><strong>{{ mileageLabel }}</strong>
+          </div>
         </div>
         <div v-if="listing.mode === 'rental'" class="availability-panel">
           <span class="label">Disponibilidad</span>
-          <strong>{{ listing.available ? 'Disponible' : 'No disponible' }}</strong>
+          <strong>{{
+            listing.available ? 'Disponible' : 'No disponible'
+          }}</strong>
           <p>
             {{ formatDate(listing.availableFrom) }}
-            <span v-if="listing.availableTo">— {{ formatDate(listing.availableTo) }}</span>
+            <span v-if="listing.availableTo"
+              >— {{ formatDate(listing.availableTo) }}</span
+            >
           </p>
         </div>
       </article>
@@ -87,16 +136,39 @@
             <h2>Citas relacionadas</h2>
             <p>Solicitudes vinculadas a esta publicación.</p>
           </div>
-          <button type="button" class="secondary" @click="goToRelatedAppointments">Abrir en Mis citas</button>
+          <button
+            type="button"
+            class="secondary"
+            @click="goToRelatedAppointments"
+          >
+            Abrir en Mis citas
+          </button>
         </div>
 
         <div v-if="relatedAppointments.length" class="appointments-list">
-          <div v-for="appointment in relatedAppointments" :key="appointment.id" class="appointment-item">
+          <div
+            v-for="appointment in relatedAppointments"
+            :key="appointment.id"
+            class="appointment-item"
+          >
             <div>
-              <strong>{{ appointment.buyer?.name || appointment.buyerName || 'Cliente AutoSphere' }}</strong>
-              <p>{{ formatDate(appointment.date) }} · {{ appointment.time || 'Horario por confirmar' }}</p>
+              <strong>{{
+                appointment.buyer?.name ||
+                appointment.buyerName ||
+                'Cliente AutoSphere'
+              }}</strong>
+              <p>
+                {{ formatDate(appointment.date) }} ·
+                {{ appointment.time || 'Horario por confirmar' }}
+              </p>
             </div>
-            <button type="button" class="ghost" @click="openAppointment(appointment.id)">{{ appointmentStatusLabel(appointment.status) }}</button>
+            <button
+              type="button"
+              class="ghost"
+              @click="openAppointment(appointment.id)"
+            >
+              {{ appointmentStatusLabel(appointment.status) }}
+            </button>
           </div>
         </div>
         <div v-else class="empty-state">
@@ -109,7 +181,10 @@
   <section v-else class="listing-page">
     <div class="card not-found-card">
       <h1>Publicación no encontrada</h1>
-      <p>La publicación solicitada ya no está disponible o no pertenece a esta vista.</p>
+      <p>
+        La publicación solicitada ya no está disponible o no pertenece a esta
+        vista.
+      </p>
       <button type="button" @click="goBackToListings">Volver</button>
     </div>
   </section>
@@ -127,7 +202,8 @@ const router = useRouter();
 const listing = ref(null);
 const relatedAppointments = ref([]);
 
-const formatCurrency = (value) => `$${new Intl.NumberFormat('es-MX').format(value || 0)}`;
+const formatCurrency = (value) =>
+  `$${new Intl.NumberFormat('es-MX').format(value || 0)}`;
 const formatDate = (value) => {
   if (!value) return '—';
   const date = new Date(value);
@@ -139,13 +215,18 @@ const formatDate = (value) => {
   });
 };
 
-const statusLabel = computed(() => ({
-  published: 'Activa',
-  draft: 'Borrador',
-  archived: 'Archivada',
-  sold: 'Vendida',
-  unavailable: 'No disponible',
-}[listing.value?.status] || listing.value?.status || 'Sin estado'));
+const statusLabel = computed(
+  () =>
+    ({
+      published: 'Activa',
+      draft: 'Borrador',
+      archived: 'Archivada',
+      sold: 'Vendida',
+      unavailable: 'No disponible',
+    })[listing.value?.status] ||
+    listing.value?.status ||
+    'Sin estado'
+);
 
 const priceLabel = computed(() => {
   if (!listing.value) return '—';
@@ -161,23 +242,33 @@ const weeklyMonthlyLabel = computed(() => {
 
 const mileageLabel = computed(() => {
   if (!listing.value) return '—';
-  if (listing.value.mileageKm) return `${new Intl.NumberFormat('es-MX').format(listing.value.mileageKm)} km`;
-  if (listing.value.kmIncludedPerDay) return `${new Intl.NumberFormat('es-MX').format(listing.value.kmIncludedPerDay)} km / día`;
+  if (listing.value.mileageKm)
+    return `${new Intl.NumberFormat('es-MX').format(listing.value.mileageKm)} km`;
+  if (listing.value.kmIncludedPerDay)
+    return `${new Intl.NumberFormat('es-MX').format(listing.value.kmIncludedPerDay)} km / día`;
   return '—';
 });
 
-const appointmentStatusLabel = (status) => ({
-  pending: 'Pendiente',
-  confirmed: 'Confirmada',
-  completed: 'Completada',
-  cancelled: 'Cancelada',
-  rescheduled: 'Reagendada',
-}[status] || status || 'Sin estado');
+const appointmentStatusLabel = (status) =>
+  ({
+    pending: 'Pendiente',
+    confirmed: 'Confirmada',
+    completed: 'Completada',
+    cancelled: 'Cancelada',
+    rescheduled: 'Reagendada',
+  })[status] ||
+  status ||
+  'Sin estado';
 
-const listingModeQuery = computed(() => (listing.value?.mode === 'rental' ? 'rental' : 'sale'));
+const listingModeQuery = computed(() =>
+  listing.value?.mode === 'rental' ? 'rental' : 'sale'
+);
 
 const goBackToListings = () => {
-  router.push({ name: 'user-listings', query: { mode: listingModeQuery.value } });
+  router.push({
+    name: 'user-listings',
+    query: { mode: listingModeQuery.value },
+  });
 };
 
 const openEditInList = () => {
@@ -191,7 +282,13 @@ const openEditInList = () => {
 };
 
 const openPublicView = () => {
-  window.open(router.resolve({ name: 'public-listing-detail', params: { id: listing.value.id } }).href, '_blank');
+  window.open(
+    router.resolve({
+      name: 'public-listing-detail',
+      params: { id: listing.value.id },
+    }).href,
+    '_blank'
+  );
 };
 
 const goToRelatedAppointments = () => {

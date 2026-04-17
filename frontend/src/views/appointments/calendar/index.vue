@@ -181,7 +181,11 @@
       </div>
       <div class="filters-group">
         <span class="filter-label">Orden:</span>
-        <button class="order-toggle-btn" type="button" @click="toggleSortDirection">
+        <button
+          class="order-toggle-btn"
+          type="button"
+          @click="toggleSortDirection"
+        >
           {{ sortDirectionLabel }}
         </button>
       </div>
@@ -318,7 +322,10 @@
       </div>
     </div>
 
-    <div v-if="filteredGroupedAppointments.length === 0" class="empty-state-card">
+    <div
+      v-if="filteredGroupedAppointments.length === 0"
+      class="empty-state-card"
+    >
       <h2>No hay citas para mostrar</h2>
       <p>
         Ajusta el filtro de estado o cambia la vista para revisar otras citas.
@@ -463,9 +470,12 @@ const showNotification = (message, type = 'success') => {
   }, 3000);
 };
 
-const normalizeTab = (value) => ['comprador', 'vendedor', 'rentador'].includes(value) ? value : 'comprador';
-const normalizeViewBy = (value) => ['fecha', 'vehiculo'].includes(value) ? value : 'fecha';
-const normalizeSortDirection = (value) => ['asc', 'desc'].includes(value) ? value : 'desc';
+const normalizeTab = (value) =>
+  ['comprador', 'vendedor', 'rentador'].includes(value) ? value : 'comprador';
+const normalizeViewBy = (value) =>
+  ['fecha', 'vehiculo'].includes(value) ? value : 'fecha';
+const normalizeSortDirection = (value) =>
+  ['asc', 'desc'].includes(value) ? value : 'desc';
 const activeTab = ref(normalizeTab(route.query.tab));
 const viewBy = ref(normalizeViewBy(route.query.view));
 const sortDirection = ref(normalizeSortDirection(route.query.order));
@@ -476,7 +486,11 @@ const showCancelModal = ref(false);
 const rescheduleTarget = ref(null);
 const cancelTarget = ref(null);
 const currentDate = ref('');
-const appointmentsData = ref({ comprador: { appointments: [], stats: {} }, vendedor: { appointments: [], stats: {} }, rentador: { appointments: [], stats: {} } });
+const appointmentsData = ref({
+  comprador: { appointments: [], stats: {} },
+  vendedor: { appointments: [], stats: {} },
+  rentador: { appointments: [], stats: {} },
+});
 
 const rescheduleData = ref({
   date: '',
@@ -485,7 +499,8 @@ const rescheduleData = ref({
 });
 
 const loadCalendar = async () => {
-  appointmentsData.value = (await getAppointmentCalendar()) || appointmentsData.value;
+  appointmentsData.value =
+    (await getAppointmentCalendar()) || appointmentsData.value;
 };
 
 const vehicleFilter = computed(() => String(route.query.vehicle || '').trim());
@@ -494,12 +509,22 @@ const currentAppointments = computed(() => {
   if (!vehicleFilter.value) return items;
   const needle = vehicleFilter.value.toLowerCase();
   return items.filter((appointment) =>
-    [appointment.vehicle, appointment.listingTitle].some(
-      (value) => String(value || '').toLowerCase().includes(needle)
+    [appointment.vehicle, appointment.listingTitle].some((value) =>
+      String(value || '')
+        .toLowerCase()
+        .includes(needle)
     )
   );
 });
-const stats = computed(() => appointmentsData.value[activeTab.value]?.stats || { total: 0, pending: 0, confirmed: 0, completed: 0 });
+const stats = computed(
+  () =>
+    appointmentsData.value[activeTab.value]?.stats || {
+      total: 0,
+      pending: 0,
+      confirmed: 0,
+      completed: 0,
+    }
+);
 
 const totalCitas = computed(() => stats.value.total || 0);
 const citasPendientes = computed(() => stats.value.pending || 0);
@@ -509,15 +534,33 @@ const citasCompletadas = computed(() => stats.value.completed || 0);
 const tabs = computed(() => {
   const data = appointmentsData.value;
   return [
-    { id: 'comprador', label: 'Comprador', badge: data.comprador?.stats?.pending || null },
-    { id: 'vendedor', label: 'Vendedor', badge: data.vendedor?.stats?.pending || null },
-    { id: 'rentador', label: 'Arrendador', badge: data.rentador?.stats?.pending || null },
+    {
+      id: 'comprador',
+      label: 'Comprador',
+      badge: data.comprador?.stats?.pending || null,
+    },
+    {
+      id: 'vendedor',
+      label: 'Vendedor',
+      badge: data.vendedor?.stats?.pending || null,
+    },
+    {
+      id: 'rentador',
+      label: 'Arrendador',
+      badge: data.rentador?.stats?.pending || null,
+    },
   ];
 });
 
 const statusFilterLabel = computed(() => statusFilter.value || 'Todos');
-const sortDirectionLabel = computed(() => (sortDirection.value === 'desc' ? 'Más recientes primero' : 'Más antiguas primero'));
-const columnLabel = computed(() => (activeTab.value === 'comprador' ? 'Vendedor' : 'Cliente'));
+const sortDirectionLabel = computed(() =>
+  sortDirection.value === 'desc'
+    ? 'Más recientes primero'
+    : 'Más antiguas primero'
+);
+const columnLabel = computed(() =>
+  activeTab.value === 'comprador' ? 'Vendedor' : 'Cliente'
+);
 const subtitleText = computed(() => {
   const baseByTab = {
     comprador: 'Listado completo de tus citas como comprador.',
@@ -531,8 +574,18 @@ const subtitleText = computed(() => {
 });
 
 const getContactName = (appointment) => {
-  if (activeTab.value === 'comprador') return appointment.seller?.name || appointment.client || appointment.seller?.displayName;
-  return appointment.buyer?.name || appointment.client || appointment.renter?.name || appointment.seller?.name;
+  if (activeTab.value === 'comprador')
+    return (
+      appointment.seller?.name ||
+      appointment.client ||
+      appointment.seller?.displayName
+    );
+  return (
+    appointment.buyer?.name ||
+    appointment.client ||
+    appointment.renter?.name ||
+    appointment.seller?.name
+  );
 };
 
 const getContactPhone = (appointment) => {
@@ -540,13 +593,24 @@ const getContactPhone = (appointment) => {
   return appointment.buyer?.phone || appointment.renter?.phone || '—';
 };
 
-const getTipoLabel = (tipo) => ({ compra: 'Compra', venta: 'Venta', renta: 'Renta' }[tipo] || tipo);
-const getTipoClass = (tipo) => ({ compra: 'compra', venta: 'venta', renta: 'renta' }[tipo] || '');
-const getStatusClass = (status) => ({ Pendiente: 'pending', Confirmada: 'confirmed', Completada: 'completed', Cancelada: 'cancelled', Reagendada: 'pending' }[status] || 'pending');
+const getTipoLabel = (tipo) =>
+  ({ compra: 'Compra', venta: 'Venta', renta: 'Renta' })[tipo] || tipo;
+const getTipoClass = (tipo) =>
+  ({ compra: 'compra', venta: 'venta', renta: 'renta' })[tipo] || '';
+const getStatusClass = (status) =>
+  ({
+    Pendiente: 'pending',
+    Confirmada: 'confirmed',
+    Completada: 'completed',
+    Cancelada: 'cancelled',
+    Reagendada: 'pending',
+  })[status] || 'pending';
 
 const toAppointmentTimestamp = (appointment) => {
   if (!appointment?.date) return 0;
-  return new Date(`${appointment.date}T${appointment.time || '00:00'}:00`).getTime();
+  return new Date(
+    `${appointment.date}T${appointment.time || '00:00'}:00`
+  ).getTime();
 };
 
 const compareAppointmentsByDateTime = (left, right) => {
@@ -558,7 +622,9 @@ const compareAppointmentsByDateTime = (left, right) => {
 const filteredAppointments = computed(() => {
   let filtered = [...currentAppointments.value];
   if (statusFilter.value) {
-    filtered = filtered.filter((appointment) => appointment.status === statusFilter.value);
+    filtered = filtered.filter(
+      (appointment) => appointment.status === statusFilter.value
+    );
   }
   return filtered;
 });
@@ -572,15 +638,19 @@ const groupedAppointmentsByDate = computed(() => {
   const dayAfter = new Date(today);
   dayAfter.setDate(dayAfter.getDate() + 2);
 
-  const formatDateLabel = (date) => `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
+  const formatDateLabel = (date) =>
+    `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${date.getFullYear()}`;
 
   filteredAppointments.value.forEach((appointment) => {
     const appointmentDate = new Date(`${appointment.date}T12:00:00`);
     appointmentDate.setHours(0, 0, 0, 0);
     let key = formatDateLabel(appointmentDate);
-    if (appointmentDate.getTime() === today.getTime()) key = `Hoy - ${formatDateLabel(today)}`;
-    else if (appointmentDate.getTime() === tomorrow.getTime()) key = `Mañana - ${formatDateLabel(tomorrow)}`;
-    else if (appointmentDate.getTime() === dayAfter.getTime()) key = `Pasado mañana - ${formatDateLabel(dayAfter)}`;
+    if (appointmentDate.getTime() === today.getTime())
+      key = `Hoy - ${formatDateLabel(today)}`;
+    else if (appointmentDate.getTime() === tomorrow.getTime())
+      key = `Mañana - ${formatDateLabel(tomorrow)}`;
+    else if (appointmentDate.getTime() === dayAfter.getTime())
+      key = `Pasado mañana - ${formatDateLabel(dayAfter)}`;
     if (!groups[key]) groups[key] = [];
     groups[key].push(appointment);
   });
@@ -606,7 +676,10 @@ const groupedAppointmentsByVehicle = computed(() => {
   const groups = {};
 
   filteredAppointments.value.forEach((appointment) => {
-    const key = appointment.vehicle || appointment.listingTitle || 'Vehículo sin identificar';
+    const key =
+      appointment.vehicle ||
+      appointment.listingTitle ||
+      'Vehículo sin identificar';
     if (!groups[key]) groups[key] = [];
     groups[key].push(appointment);
   });
@@ -614,7 +687,9 @@ const groupedAppointmentsByVehicle = computed(() => {
   return Object.keys(groups)
     .map((key) => {
       const appointments = [...groups[key]].sort(compareAppointmentsByDateTime);
-      const anchor = appointments[0] ? toAppointmentTimestamp(appointments[0]) : 0;
+      const anchor = appointments[0]
+        ? toAppointmentTimestamp(appointments[0])
+        : 0;
       return {
         title: key,
         subtitle: `${appointments.length} cita${appointments.length === 1 ? '' : 's'}`,
@@ -624,16 +699,24 @@ const groupedAppointmentsByVehicle = computed(() => {
     })
     .sort((left, right) => {
       if (left.anchor !== right.anchor) {
-        return sortDirection.value === 'desc' ? right.anchor - left.anchor : left.anchor - right.anchor;
+        return sortDirection.value === 'desc'
+          ? right.anchor - left.anchor
+          : left.anchor - right.anchor;
       }
       return left.title.localeCompare(right.title, 'es');
     })
-    .map(({ anchor, ...group }) => group);
+    .map(({ title, subtitle, appointments }) => ({
+      title,
+      subtitle,
+      appointments,
+    }));
 });
 
-const filteredGroupedAppointments = computed(() => (
-  viewBy.value === 'vehiculo' ? groupedAppointmentsByVehicle.value : groupedAppointmentsByDate.value
-));
+const filteredGroupedAppointments = computed(() =>
+  viewBy.value === 'vehiculo'
+    ? groupedAppointmentsByVehicle.value
+    : groupedAppointmentsByDate.value
+);
 
 const minDate = computed(() => new Date().toISOString().split('T')[0]);
 
@@ -673,10 +756,16 @@ const setStatusFilter = (status) => {
 
 const viewAppointmentDetail = (appointment) => {
   if (activeTab.value === 'comprador') {
-    router.push({ name: 'buyer-appointment-detail', params: { id: appointment.id } });
+    router.push({
+      name: 'buyer-appointment-detail',
+      params: { id: appointment.id },
+    });
     return;
   }
-  router.push({ name: 'seller-appointment-detail', params: { id: appointment.id } });
+  router.push({
+    name: 'seller-appointment-detail',
+    params: { id: appointment.id },
+  });
 };
 
 const openRescheduleModal = (appointment) => {
@@ -719,7 +808,9 @@ const closeCancelModal = () => {
 
 const confirmCancelAppointment = async () => {
   if (!cancelTarget.value) return;
-  await cancelAppointmentService(cancelTarget.value.id, { reason: 'Cancelada desde calendario' });
+  await cancelAppointmentService(cancelTarget.value.id, {
+    reason: 'Cancelada desde calendario',
+  });
   await loadCalendar();
   closeCancelModal();
   showNotification('Cita cancelada exitosamente', 'success');

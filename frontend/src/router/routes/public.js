@@ -61,7 +61,8 @@ export default [
       {
         path: 'vehiculos/:id/agendar-cita',
         name: 'public-appointment-booking',
-        component: () => import('../../views/appointments/gestion-citas/index.vue'),
+        component: () =>
+          import('../../views/appointments/gestion-citas/index.vue'),
       },
       {
         path: 'citas',

@@ -3,13 +3,13 @@ import savedVehiclesData from '../mocks/buyer/saved-vehicles.json';
 import searchHistoryData from '../mocks/buyer/search-history.json';
 import { resolveMock } from './mockResponse.js';
 import { getBuyerAppointments, getAppointmentById } from './appointments.js';
-import { getListingById, getListings } from './catalog.js';
+import { getListingById } from './catalog.js';
 import { includesText, sortItems } from './mockUtils.js';
 
 let savedVehiclesState = [...savedVehiclesData.items];
-let searchHistoryState = [...searchHistoryData.items]
-  .sort((a, b) => String(b.timestamp || '').localeCompare(String(a.timestamp || '')));
-
+let searchHistoryState = [...searchHistoryData.items].sort((a, b) =>
+  String(b.timestamp || '').localeCompare(String(a.timestamp || ''))
+);
 
 function mapListingToSavedVehicle(item) {
   if (!item) return null;
@@ -19,7 +19,10 @@ function mapListingToSavedVehicle(item) {
     brand: item.brand,
     model: item.model,
     year: item.year,
-    price: item.mode === 'rental' ? item.pricePerDay ?? item.price ?? 0 : item.price ?? 0,
+    price:
+      item.mode === 'rental'
+        ? (item.pricePerDay ?? item.price ?? 0)
+        : (item.price ?? 0),
     sellerId: item.sellerId || null,
     cityId: item.cityId || null,
     city: item.city || null,
@@ -57,9 +60,7 @@ export async function getSavedVehicles(filters = {}) {
 
 export async function getSavedVehicleById(id) {
   // TODO: replace with GET /api/buyer/saved-vehicles/:id.
-  return resolveMock(
-    savedVehiclesState.find((item) => item.id === id) || null
-  );
+  return resolveMock(savedVehiclesState.find((item) => item.id === id) || null);
 }
 
 export async function getSearchHistory() {
@@ -74,23 +75,27 @@ export async function recordSearchHistory(payload = {}) {
   if (!query) return resolveMock(null);
 
   const inferredResultCount =
-    typeof payload.resultCount === 'number'
-      ? payload.resultCount
-      : undefined;
+    typeof payload.resultCount === 'number' ? payload.resultCount : undefined;
 
   const existingIndex = searchHistoryState.findIndex(
     (item) => item.query.trim().toLowerCase() === query.toLowerCase()
   );
 
   const entry = {
-    id: existingIndex !== -1 ? searchHistoryState[existingIndex].id : `sh-${Date.now()}`,
+    id:
+      existingIndex !== -1
+        ? searchHistoryState[existingIndex].id
+        : `sh-${Date.now()}`,
     query,
     timestamp: payload.timestamp || new Date().toISOString(),
     resultCount:
       inferredResultCount ??
       searchHistoryState[existingIndex]?.resultCount ??
       0,
-    filtersSummary: payload.filtersSummary || searchHistoryState[existingIndex]?.filtersSummary || '',
+    filtersSummary:
+      payload.filtersSummary ||
+      searchHistoryState[existingIndex]?.filtersSummary ||
+      '',
   };
 
   if (existingIndex !== -1) {

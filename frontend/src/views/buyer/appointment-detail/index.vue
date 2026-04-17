@@ -4,25 +4,52 @@
       <p class="eyebrow">AutoSphere</p>
       <h1>{{ detailTitle }}</h1>
       <p>{{ appointment.listingTitle }}</p>
-      <span class="status" :class="appointment.status">{{ statusLabel(appointment.status) }}</span>
+      <span class="status" :class="appointment.status">{{
+        statusLabel(appointment.status)
+      }}</span>
     </header>
 
     <div class="content-grid">
       <article class="card">
         <h2>Información principal</h2>
         <dl class="details-grid">
-          <div><dt>Fecha</dt><dd>{{ formatDate(appointment.date) }}</dd></div>
-          <div><dt>Hora</dt><dd>{{ appointment.time || 'Pendiente' }}</dd></div>
-          <div><dt>Ubicación</dt><dd>{{ appointment.locationLabel }}</dd></div>
-          <div><dt>{{ counterpartLabel }}</dt><dd>{{ appointment.seller?.name || appointment.sellerName || 'AutoSphere' }}</dd></div>
+          <div>
+            <dt>Fecha</dt>
+            <dd>{{ formatDate(appointment.date) }}</dd>
+          </div>
+          <div>
+            <dt>Hora</dt>
+            <dd>{{ appointment.time || 'Pendiente' }}</dd>
+          </div>
+          <div>
+            <dt>Ubicación</dt>
+            <dd>{{ appointment.locationLabel }}</dd>
+          </div>
+          <div>
+            <dt>{{ counterpartLabel }}</dt>
+            <dd>
+              {{
+                appointment.seller?.name ||
+                appointment.sellerName ||
+                'AutoSphere'
+              }}
+            </dd>
+          </div>
         </dl>
       </article>
 
       <article class="card">
         <h2>Acciones</h2>
         <div class="actions">
-          <button :disabled="!canOpenListing" @click="openListing">Ver publicación</button>
-          <button class="secondary" @click="router.push({ name: 'my-appointments' })">Volver a mis citas</button>
+          <button :disabled="!canOpenListing" @click="openListing">
+            Ver publicación
+          </button>
+          <button
+            class="secondary"
+            @click="router.push({ name: 'my-appointments' })"
+          >
+            Volver a mis citas
+          </button>
         </div>
         <p v-if="appointment.notes" class="notes">{{ appointment.notes }}</p>
       </article>
@@ -30,7 +57,10 @@
   </section>
 
   <section v-else class="detail-page">
-    <div class="card"><h1>Cita no encontrada</h1><button @click="router.push({ name: 'my-appointments' })">Volver</button></div>
+    <div class="card">
+      <h1>Cita no encontrada</h1>
+      <button @click="router.push({ name: 'my-appointments' })">Volver</button>
+    </div>
   </section>
 </template>
 
@@ -46,25 +76,140 @@ const canOpenListing = computed(() => Boolean(appointment.value?.listingId));
 const isRentalAppointment = computed(() => {
   const item = appointment.value;
   if (!item) return false;
-  return String(item.listingId || '').startsWith('rt-') || item.tipo === 'renta';
+  return (
+    String(item.listingId || '').startsWith('rt-') || item.tipo === 'renta'
+  );
 });
-const counterpartLabel = computed(() => (isRentalAppointment.value ? 'Arrendador' : 'Vendedor'));
-const detailTitle = computed(() => `Detalle de cita con ${counterpartLabel.value.toLowerCase()}`);
+const counterpartLabel = computed(() =>
+  isRentalAppointment.value ? 'Arrendador' : 'Vendedor'
+);
+const detailTitle = computed(
+  () => `Detalle de cita con ${counterpartLabel.value.toLowerCase()}`
+);
 
 function statusLabel(status) {
-  return ({ pending: 'Pendiente', confirmed: 'Confirmada', rescheduled: 'Reagendada', cancelled: 'Cancelada', completed: 'Completada' })[status] || status;
+  return (
+    {
+      pending: 'Pendiente',
+      confirmed: 'Confirmada',
+      rescheduled: 'Reagendada',
+      cancelled: 'Cancelada',
+      completed: 'Completada',
+    }[status] || status
+  );
 }
 function formatDate(value) {
   if (!value) return 'Fecha pendiente';
-  return new Date(`${value}T00:00:00`).toLocaleDateString('es-MX', { day: '2-digit', month: 'long', year: 'numeric' });
+  return new Date(`${value}T00:00:00`).toLocaleDateString('es-MX', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  });
 }
 function openListing() {
   if (!appointment.value?.listingId) return;
-  router.push({ name: 'public-listing-detail', params: { id: appointment.value.listingId } });
+  router.push({
+    name: 'public-listing-detail',
+    params: { id: appointment.value.listingId },
+  });
 }
-onMounted(async () => { appointment.value = await getAppointmentById(route.params.id); });
+onMounted(async () => {
+  appointment.value = await getAppointmentById(route.params.id);
+});
 </script>
 
 <style scoped>
-.detail-page{padding:112px 24px 40px;display:grid;gap:24px;max-width:1200px;margin:0 auto}.hero,.card{background:#fff;border-radius:24px;padding:24px;box-shadow:0 16px 40px rgba(15,30,44,.08)}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:12px;color:#64748b}.content-grid{display:grid;grid-template-columns:2fr 1fr;gap:24px}.details-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}.details-grid dt{font-size:13px;color:#64748b}.details-grid dd{margin:4px 0 0;font-weight:600}.status{display:inline-flex;width:fit-content;padding:6px 12px;border-radius:999px;background:#e2e8f0}.status.pending,.status.rescheduled{background:#fef3c7;color:#92400e}.status.confirmed{background:#dcfce7;color:#166534}.status.cancelled{background:#fee2e2;color:#991b1b}.status.completed{background:#dbeafe;color:#1d4ed8}.actions{display:flex;gap:12px;flex-wrap:wrap}.actions button,.card>button{border:none;border-radius:999px;padding:12px 16px;background:#0f1e2c;color:#fff;cursor:pointer}.actions button:disabled{opacity:.45;cursor:not-allowed}.secondary{background:#e2e8f0;color:#0f172a}.notes{margin-top:16px;color:#475569}@media(max-width:768px){.content-grid{grid-template-columns:1fr}}
+.detail-page {
+  padding: 112px 24px 40px;
+  display: grid;
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.hero,
+.card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 16px 40px rgba(15, 30, 44, 0.08);
+}
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 12px;
+  color: #64748b;
+}
+.content-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+.details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+.details-grid dt {
+  font-size: 13px;
+  color: #64748b;
+}
+.details-grid dd {
+  margin: 4px 0 0;
+  font-weight: 600;
+}
+.status {
+  display: inline-flex;
+  width: fit-content;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+.status.pending,
+.status.rescheduled {
+  background: #fef3c7;
+  color: #92400e;
+}
+.status.confirmed {
+  background: #dcfce7;
+  color: #166534;
+}
+.status.cancelled {
+  background: #fee2e2;
+  color: #991b1b;
+}
+.status.completed {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.actions button,
+.card > button {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 16px;
+  background: #0f1e2c;
+  color: #fff;
+  cursor: pointer;
+}
+.actions button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.secondary {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+.notes {
+  margin-top: 16px;
+  color: #475569;
+}
+@media (max-width: 768px) {
+  .content-grid {
+    grid-template-columns: 1fr;
+  }
+}
 </style>

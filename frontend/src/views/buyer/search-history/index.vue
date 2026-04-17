@@ -74,5 +74,56 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.history-page{padding:112px 24px 40px;display:grid;gap:24px}.hero,.card{background:#fff;border-radius:24px;padding:24px;box-shadow:0 16px 40px rgba(15,30,44,.08)}.eyebrow{text-transform:uppercase;letter-spacing:.12em;font-size:12px;color:#64748b}.history-list{display:grid;gap:16px}.history-item{display:flex;justify-content:space-between;gap:16px;align-items:center}.actions{display:flex;gap:12px;flex-wrap:wrap}.actions button,.empty-state button{border:none;border-radius:999px;padding:12px 16px;background:#0f1e2c;color:#fff;cursor:pointer}.secondary{background:#e2e8f0;color:#0f172a}@media(max-width:768px){.history-item{flex-direction:column;align-items:flex-start}}
+.history-page {
+  padding: 112px 24px 40px;
+  display: grid;
+  gap: 24px;
+}
+.hero,
+.card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 24px;
+  box-shadow: 0 16px 40px rgba(15, 30, 44, 0.08);
+}
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 12px;
+  color: #64748b;
+}
+.history-list {
+  display: grid;
+  gap: 16px;
+}
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+.actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.actions button,
+.empty-state button {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 16px;
+  background: #0f1e2c;
+  color: #fff;
+  cursor: pointer;
+}
+.secondary {
+  background: #e2e8f0;
+  color: #0f172a;
+}
+@media (max-width: 768px) {
+  .history-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
 </style>

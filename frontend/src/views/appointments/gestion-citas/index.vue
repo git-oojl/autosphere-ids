@@ -139,9 +139,15 @@
                   Hora preferida *
                 </label>
                 <select v-model="formData.time" required>
-                  <option v-if="availableTimes.length === 0" value="">Sin horarios disponibles</option>
+                  <option v-if="availableTimes.length === 0" value="">
+                    Sin horarios disponibles
+                  </option>
                   <option value="">Seleccionar hora</option>
-                  <option v-for="slot in availableTimes" :key="slot" :value="slot">
+                  <option
+                    v-for="slot in availableTimes"
+                    :key="slot"
+                    :value="slot"
+                  >
                     {{ slot }}
                   </option>
                 </select>
@@ -542,7 +548,11 @@
             </button>
           </div>
           <div class="vehicle-search">
-            <input v-model="vehicleSearch" type="text" placeholder="Buscar vehículo..." />
+            <input
+              v-model="vehicleSearch"
+              type="text"
+              placeholder="Buscar vehículo..."
+            />
           </div>
           <div class="vehicle-list">
             <div
@@ -588,7 +598,10 @@
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../../../stores/auth.js';
-import { createAppointment, getAppointmentSlots } from '../../../services/appointments.js';
+import {
+  createAppointment,
+  getAppointmentSlots,
+} from '../../../services/appointments.js';
 import { getListingById, getListings } from '../../../services/catalog.js';
 
 const router = useRouter();
@@ -642,7 +655,9 @@ const loadVehicles = async () => {
   rentalVehicles.value = rentals?.items || [];
 };
 
-const allVehicles = computed(() => (vehicleTab.value === 'venta' ? salesVehicles.value : rentalVehicles.value));
+const allVehicles = computed(() =>
+  vehicleTab.value === 'venta' ? salesVehicles.value : rentalVehicles.value
+);
 
 const filteredVehicles = computed(() => {
   if (!vehicleSearch.value) return allVehicles.value;
@@ -657,12 +672,24 @@ const filteredVehicles = computed(() => {
 const isRentalVehicle = (id) => id && String(id).startsWith('rt-');
 
 const getVehicleIcon = (type) => {
-  const icons = { SUV: '🚙', Sedán: '🚗', Pickup: '🛻', Hatchback: '🚘', Deportivo: '🏎️' };
+  const icons = {
+    SUV: '🚙',
+    Sedán: '🚗',
+    Pickup: '🛻',
+    Hatchback: '🚘',
+    Deportivo: '🏎️',
+  };
   return icons[type] || '🚗';
 };
 
 const getTypeClass = (type) => {
-  const classes = { SUV: 'suv', Sedán: 'sedan', Pickup: 'pickup', Hatchback: 'hatchback', Deportivo: 'sport' };
+  const classes = {
+    SUV: 'suv',
+    Sedán: 'sedan',
+    Pickup: 'pickup',
+    Hatchback: 'hatchback',
+    Deportivo: 'sport',
+  };
   return classes[type] || 'sedan';
 };
 
@@ -683,32 +710,52 @@ const minDate = computed(() => {
   return today.toISOString().split('T')[0];
 });
 
-const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price || 0);
+const formatPrice = (price) =>
+  new Intl.NumberFormat('es-MX').format(price || 0);
 const formatNumber = (num) => new Intl.NumberFormat('es-MX').format(num || 0);
 
 const handleImageError = (event) => {
-  event.target.src = 'https://placehold.co/400x300/2d5179/ffffff?text=AutoSphere';
+  event.target.src =
+    'https://placehold.co/400x300/2d5179/ffffff?text=AutoSphere';
 };
 
 const selectVehicle = (vehicle) => {
   selectedVehicle.value = vehicle;
   formData.value.vehicleId = vehicle.id;
-  formData.value.location = vehicle.location?.addressLabel ? 'Concesionaria' : formData.value.location;
+  formData.value.location = vehicle.location?.addressLabel
+    ? 'Concesionaria'
+    : formData.value.location;
   showVehicleSelector.value = false;
   vehicleSearch.value = '';
 };
 
 const goBack = () => {
   if (window.history.length > 1) router.back();
-  else router.push({ name: 'public-listing-detail', params: { id: route.params.id } });
+  else
+    router.push({
+      name: 'public-listing-detail',
+      params: { id: route.params.id },
+    });
 };
 
 const loadSlots = async () => {
   if (!formData.value.vehicleId || !formData.value.date) {
-    availableTimes.value = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+    availableTimes.value = [
+      '09:00',
+      '10:00',
+      '11:00',
+      '12:00',
+      '13:00',
+      '14:00',
+      '15:00',
+      '16:00',
+      '17:00',
+    ];
     return;
   }
-  const slotData = await getAppointmentSlots(formData.value.vehicleId, { date: formData.value.date });
+  const slotData = await getAppointmentSlots(formData.value.vehicleId, {
+    date: formData.value.date,
+  });
   const slots = slotData?.slots || [];
   availableTimes.value = slots.map((slot) => slot.time);
   if (!availableTimes.value.includes(formData.value.time)) {
@@ -745,7 +792,9 @@ const submitAppointment = async () => {
           ? formData.value.address
           : formData.value.location === 'Público'
             ? formData.value.publicPlace
-            : selectedVehicle.value.location?.addressLabel || selectedVehicle.value.cityLabel || 'Ubicación por confirmar',
+            : selectedVehicle.value.location?.addressLabel ||
+              selectedVehicle.value.cityLabel ||
+              'Ubicación por confirmar',
     });
 
     router.push({

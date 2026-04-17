@@ -29,9 +29,15 @@ export const useAuthStore = defineStore('auth', () => {
   const isGuest = computed(() => !isAuthenticated.value);
   const isAdmin = computed(() => roles.value.includes('admin'));
   const isUser = computed(() => isAuthenticated.value && !isAdmin.value);
-  const primaryRole = computed(() => (isAdmin.value ? 'admin' : isUser.value ? 'user' : 'guest'));
+  const primaryRole = computed(() =>
+    isAdmin.value ? 'admin' : isUser.value ? 'user' : 'guest'
+  );
   const capabilitySurfaces = computed(() =>
-    isUser.value ? ['buyer', 'seller', 'lessor'] : isAdmin.value ? ['admin'] : []
+    isUser.value
+      ? ['buyer', 'seller', 'lessor']
+      : isAdmin.value
+        ? ['admin']
+        : []
   );
   const canListVehicles = computed(() => isUser.value);
 
@@ -51,7 +57,11 @@ export const useAuthStore = defineStore('auth', () => {
     );
   }
 
-  function startSession({ nextUser = null, nextRoles = [], token = null } = {}) {
+  function startSession({
+    nextUser = null,
+    nextRoles = [],
+    token = null,
+  } = {}) {
     isAuthenticated.value = true;
     accessToken.value = token;
     user.value = nextUser;

@@ -142,7 +142,9 @@
             </div>
             <div class="udash-stat-body">
               <span class="udash-stat-lbl">Confirmadas</span>
-              <span class="udash-stat-val">{{ buyerConfirmedAppointments }}</span>
+              <span class="udash-stat-val">{{
+                buyerConfirmedAppointments
+              }}</span>
               <span class="udash-stat-sub">listas para atender</span>
             </div>
           </div>
@@ -606,11 +608,14 @@
             </div>
             <div class="udash-stat-body">
               <span class="udash-stat-lbl">Precio promedio</span>
-              <span class="udash-stat-val">${{ fmt(sellerData.averagePrice) }}</span>
-              <span class="udash-stat-sub positive">de tus publicaciones activas</span>
+              <span class="udash-stat-val"
+                >${{ fmt(sellerData.averagePrice) }}</span
+              >
+              <span class="udash-stat-sub positive"
+                >de tus publicaciones activas</span
+              >
             </div>
           </div>
-
         </div>
 
         <div class="udash-grid udash-grid--seller">
@@ -737,7 +742,9 @@
                     </div>
                   </div>
                   <span class="udash-featured-metric">${{ fmt(l.price) }}</span>
-                  <span class="udash-featured-metric" :title="l.cityLabel">{{ l.cityLabel }}</span>
+                  <span class="udash-featured-metric" :title="l.cityLabel">{{
+                    l.cityLabel
+                  }}</span>
                   <span class="udash-featured-metric">{{ l.modeLabel }}</span>
                   <span class="udash-listing-status" :class="l.status">{{
                     l.statusLabel
@@ -747,7 +754,12 @@
                       type="button"
                       class="udash-icon-btn sm"
                       aria-label="Editar"
-                      @click="sellerEditListing(l.id, l.mode === 'rental' ? 'renta' : 'venta')"
+                      @click="
+                        sellerEditListing(
+                          l.id,
+                          l.mode === 'rental' ? 'renta' : 'venta'
+                        )
+                      "
                     >
                       <svg
                         width="12"
@@ -901,13 +913,17 @@
                 stroke="#386ba8"
                 stroke-width="2"
               >
-                <path d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z" />
+                <path
+                  d="M20 7H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"
+                />
                 <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
               </svg>
             </div>
             <div class="udash-stat-body">
               <span class="udash-stat-lbl">Publicaciones visibles</span>
-              <span class="udash-stat-val">{{ landlordData.activeRentals }}</span>
+              <span class="udash-stat-val">{{
+                landlordData.activeRentals
+              }}</span>
               <span class="udash-stat-sub">disponibles para renta</span>
             </div>
           </div>
@@ -922,7 +938,9 @@
                 stroke="#d97706"
                 stroke-width="2"
               >
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                <path
+                  d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"
+                />
               </svg>
             </div>
             <div class="udash-stat-body">
@@ -957,13 +975,18 @@
             </div>
             <div class="udash-stat-body">
               <span class="udash-stat-lbl">Citas esta semana</span>
-              <span class="udash-stat-val">{{ landlordData.appointments }}</span>
+              <span class="udash-stat-val">{{
+                landlordData.appointments
+              }}</span>
               <span class="udash-stat-sub">relacionadas con rentas</span>
             </div>
           </div>
 
           <div class="udash-stat-card accent-green">
-            <div class="udash-stat-icon" style="background: rgba(255, 255, 255, 0.18)">
+            <div
+              class="udash-stat-icon"
+              style="background: rgba(255, 255, 255, 0.18)"
+            >
               <svg
                 width="20"
                 height="20"
@@ -977,9 +1000,19 @@
               </svg>
             </div>
             <div class="udash-stat-body">
-              <span class="udash-stat-lbl" style="color: rgba(255, 255, 255, 0.65)">Precio diario promedio</span>
-              <span class="udash-stat-val">${{ fmt(landlordData.monthlyIncome) }}</span>
-              <span class="udash-stat-sub" style="color: rgba(255, 255, 255, 0.82)">basado en tu inventario</span>
+              <span
+                class="udash-stat-lbl"
+                style="color: rgba(255, 255, 255, 0.65)"
+                >Precio diario promedio</span
+              >
+              <span class="udash-stat-val"
+                >${{ fmt(landlordData.monthlyIncome) }}</span
+              >
+              <span
+                class="udash-stat-sub"
+                style="color: rgba(255, 255, 255, 0.82)"
+                >basado en tu inventario</span
+              >
             </div>
           </div>
         </div>
@@ -989,7 +1022,14 @@
             <div class="udash-card">
               <div class="udash-card-head">
                 <div class="udash-card-head-l">
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#386ba8" stroke-width="2.2">
+                  <svg
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#386ba8"
+                    stroke-width="2.2"
+                  >
                     <rect x="3" y="4" width="18" height="18" rx="2" />
                     <line x1="16" y1="2" x2="16" y2="6" />
                     <line x1="8" y1="2" x2="8" y2="6" />
@@ -997,14 +1037,30 @@
                   </svg>
                   <h3>Próximas citas</h3>
                 </div>
-                <button type="button" class="udash-link" @click="landlordGoAppointments">Ver Mis citas</button>
+                <button
+                  type="button"
+                  class="udash-link"
+                  @click="landlordGoAppointments"
+                >
+                  Ver Mis citas
+                </button>
               </div>
-              <div v-if="landlordData.appointments_list.length === 0" class="udash-empty">
+              <div
+                v-if="landlordData.appointments_list.length === 0"
+                class="udash-empty"
+              >
                 <p>No hay citas relacionadas con tus rentas activas</p>
               </div>
               <div v-else>
-                <div v-for="appt in landlordData.appointments_list" :key="appt.id" class="udash-appt-row">
-                  <div class="udash-appt-date" :class="appt.isToday ? 'today' : 'future'">
+                <div
+                  v-for="appt in landlordData.appointments_list"
+                  :key="appt.id"
+                  class="udash-appt-row"
+                >
+                  <div
+                    class="udash-appt-date"
+                    :class="appt.isToday ? 'today' : 'future'"
+                  >
                     <span class="udash-appt-day">{{ appt.dayLabel }}</span>
                     <span class="udash-appt-time">{{ appt.time }}</span>
                   </div>
@@ -1012,9 +1068,22 @@
                     <span class="udash-appt-client">{{ appt.client }}</span>
                     <span class="udash-appt-vehicle">{{ appt.vehicle }}</span>
                   </div>
-                  <span class="udash-status" :class="appt.status">{{ appt.statusLabel }}</span>
-                  <button type="button" class="udash-icon-btn" @click="landlordOpenAppointment(appt.id)">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <span class="udash-status" :class="appt.status">{{
+                    appt.statusLabel
+                  }}</span>
+                  <button
+                    type="button"
+                    class="udash-icon-btn"
+                    @click="landlordOpenAppointment(appt.id)"
+                  >
+                    <svg
+                      width="13"
+                      height="13"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2.5"
+                    >
                       <polyline points="9 18 15 12 9 6" />
                     </svg>
                   </button>
@@ -1025,12 +1094,27 @@
             <div class="udash-card">
               <div class="udash-card-head">
                 <div class="udash-card-head-l">
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#386ba8" stroke-width="2.2">
-                    <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                  <svg
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#386ba8"
+                    stroke-width="2.2"
+                  >
+                    <polygon
+                      points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+                    />
                   </svg>
                   <h3>Publicaciones destacadas</h3>
                 </div>
-                <button type="button" class="udash-link" @click="landlordGoListings">Gestionar</button>
+                <button
+                  type="button"
+                  class="udash-link"
+                  @click="landlordGoListings"
+                >
+                  Gestionar
+                </button>
               </div>
               <div class="udash-featured-wrap udash-featured-wrap--rentals">
                 <div class="udash-featured-head udash-featured-head--rentals">
@@ -1041,27 +1125,78 @@
                   <span>Estado</span>
                   <span>Acciones</span>
                 </div>
-                <div v-for="l in landlordData.listings" :key="'lr-' + l.id" class="udash-featured-row udash-featured-row--rentals">
+                <div
+                  v-for="l in landlordData.listings"
+                  :key="'lr-' + l.id"
+                  class="udash-featured-row udash-featured-row--rentals"
+                >
                   <div class="udash-featured-vehicle">
-                    <img :src="l.image" :alt="l.title" class="udash-featured-thumb" width="48" height="36" @error="imgErr" />
+                    <img
+                      :src="l.image"
+                      :alt="l.title"
+                      class="udash-featured-thumb"
+                      width="48"
+                      height="36"
+                      @error="imgErr"
+                    />
                     <div class="udash-featured-titles">
                       <span class="udash-featured-name">{{ l.title }}</span>
-                      <span class="udash-featured-price">${{ fmt(l.pricePerDay) }}/día</span>
+                      <span class="udash-featured-price"
+                        >${{ fmt(l.pricePerDay) }}/día</span
+                      >
                     </div>
                   </div>
-                  <span class="udash-featured-metric">${{ fmt(l.pricePerDay) }}/día</span>
-                  <span class="udash-featured-metric" :title="l.cityLabel">{{ l.cityLabel }}</span>
-                  <span class="udash-featured-metric" :title="l.availabilityWindow">{{ l.availabilityWindow }}</span>
-                  <span class="udash-listing-status" :class="l.status">{{ l.statusLabel }}</span>
+                  <span class="udash-featured-metric"
+                    >${{ fmt(l.pricePerDay) }}/día</span
+                  >
+                  <span class="udash-featured-metric" :title="l.cityLabel">{{
+                    l.cityLabel
+                  }}</span>
+                  <span
+                    class="udash-featured-metric"
+                    :title="l.availabilityWindow"
+                    >{{ l.availabilityWindow }}</span
+                  >
+                  <span class="udash-listing-status" :class="l.status">{{
+                    l.statusLabel
+                  }}</span>
                   <div class="udash-featured-actions">
-                    <button type="button" class="udash-icon-btn sm" aria-label="Editar" @click="landlordEditListing(l.id)">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#386ba8" stroke-width="2.5">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    <button
+                      type="button"
+                      class="udash-icon-btn sm"
+                      aria-label="Editar"
+                      @click="landlordEditListing(l.id)"
+                    >
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#386ba8"
+                        stroke-width="2.5"
+                      >
+                        <path
+                          d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                        />
+                        <path
+                          d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                        />
                       </svg>
                     </button>
-                    <button type="button" class="udash-icon-btn sm" aria-label="Ver detalle" @click="landlordViewListing(l.id)">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#386ba8" stroke-width="2">
+                    <button
+                      type="button"
+                      class="udash-icon-btn sm"
+                      aria-label="Ver detalle"
+                      @click="landlordViewListing(l.id)"
+                    >
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#386ba8"
+                        stroke-width="2"
+                      >
                         <line x1="18" y1="20" x2="18" y2="10" />
                         <line x1="12" y1="20" x2="12" y2="4" />
                         <line x1="6" y1="20" x2="6" y2="14" />
@@ -1075,7 +1210,14 @@
             <div class="udash-card">
               <div class="udash-card-head udash-card-head--split">
                 <div class="udash-card-head-l">
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#386ba8" stroke-width="2.2">
+                  <svg
+                    width="17"
+                    height="17"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#386ba8"
+                    stroke-width="2.2"
+                  >
                     <rect x="1" y="3" width="15" height="13" />
                     <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
                     <circle cx="5.5" cy="18.5" r="2.5" />
@@ -1083,10 +1225,18 @@
                   </svg>
                   <div>
                     <h3>Inventario en renta</h3>
-                    <p class="udash-card-sub">Listado de vehículos publicados en esta superficie</p>
+                    <p class="udash-card-sub">
+                      Listado de vehículos publicados en esta superficie
+                    </p>
                   </div>
                 </div>
-                <button type="button" class="udash-link udash-link--head" @click="landlordGoListings">Ver todas las publicaciones</button>
+                <button
+                  type="button"
+                  class="udash-link udash-link--head"
+                  @click="landlordGoListings"
+                >
+                  Ver todas las publicaciones
+                </button>
               </div>
               <div class="udash-table udash-table--compact">
                 <div class="udash-table-head">
@@ -1096,9 +1246,20 @@
                   <span>Estado</span>
                   <span class="udash-th-actions">Acciones</span>
                 </div>
-                <div v-for="r in landlordData.rentals" :key="r.id" class="udash-table-row">
+                <div
+                  v-for="r in landlordData.rentals"
+                  :key="r.id"
+                  class="udash-table-row"
+                >
                   <div class="udash-rental-name">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#386ba8" stroke-width="2">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="#386ba8"
+                      stroke-width="2"
+                    >
                       <rect x="1" y="3" width="15" height="13" />
                       <polygon points="16 8 20 8 23 11 23 16 16 16 16 8" />
                       <circle cx="5.5" cy="18.5" r="2.5" />
@@ -1108,12 +1269,29 @@
                   </div>
                   <span class="udash-td">{{ r.start }}</span>
                   <span class="udash-td">{{ r.end }}</span>
-                  <span class="udash-condition" :class="r.condition">{{ r.conditionLabel }}</span>
+                  <span class="udash-condition" :class="r.condition">{{
+                    r.conditionLabel
+                  }}</span>
                   <div class="udash-table-actions">
-                    <button type="button" class="udash-icon-btn sm" @click="landlordEditListing(r.id)">
-                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#386ba8" stroke-width="2.5">
-                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                    <button
+                      type="button"
+                      class="udash-icon-btn sm"
+                      @click="landlordEditListing(r.id)"
+                    >
+                      <svg
+                        width="12"
+                        height="12"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="#386ba8"
+                        stroke-width="2.5"
+                      >
+                        <path
+                          d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"
+                        />
+                        <path
+                          d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"
+                        />
                       </svg>
                     </button>
                   </div>
@@ -1126,14 +1304,27 @@
             <div class="udash-card">
               <div class="udash-card-head">
                 <div class="udash-card-head-l">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#386ba8" stroke-width="2.2">
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#386ba8"
+                    stroke-width="2.2"
+                  >
                     <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
                   </svg>
                   <h3>Acciones rápidas</h3>
                 </div>
               </div>
               <div class="udash-quick-grid udash-quick-grid--outline">
-                <button v-for="a in landlordActions" :key="a.label" type="button" class="udash-quick-btn udash-quick-btn--outline" @click="a.onClick">
+                <button
+                  v-for="a in landlordActions"
+                  :key="a.label"
+                  type="button"
+                  class="udash-quick-btn udash-quick-btn--outline"
+                  @click="a.onClick"
+                >
                   <div class="udash-quick-icon udash-quick-icon--glyph">
                     <QuickActionGlyph :name="a.icon" />
                   </div>
@@ -1145,7 +1336,14 @@
             <div class="udash-card">
               <div class="udash-card-head">
                 <div class="udash-card-head-l">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#386ba8" stroke-width="2.2">
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#386ba8"
+                    stroke-width="2.2"
+                  >
                     <line x1="18" y1="20" x2="18" y2="10" />
                     <line x1="12" y1="20" x2="12" y2="4" />
                     <line x1="6" y1="20" x2="6" y2="14" />
@@ -1154,13 +1352,20 @@
                 </div>
               </div>
               <div class="udash-perf-block">
-                <div v-for="row in landlordData.performance" :key="row.label" class="udash-perf-row">
+                <div
+                  v-for="row in landlordData.performance"
+                  :key="row.label"
+                  class="udash-perf-row"
+                >
                   <div class="udash-perf-top">
                     <span class="udash-perf-label">{{ row.label }}</span>
                     <span class="udash-perf-pct">{{ row.value }}%</span>
                   </div>
                   <div class="udash-perf-track">
-                    <div class="udash-perf-fill" :style="{ width: row.value + '%' }" />
+                    <div
+                      class="udash-perf-fill"
+                      :style="{ width: row.value + '%' }"
+                    />
                   </div>
                 </div>
               </div>
@@ -1169,7 +1374,14 @@
             <div class="udash-card">
               <div class="udash-card-head">
                 <div class="udash-card-head-l">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#386ba8" stroke-width="2.2">
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#386ba8"
+                    stroke-width="2.2"
+                  >
                     <line x1="18" y1="20" x2="18" y2="10" />
                     <line x1="12" y1="20" x2="12" y2="4" />
                     <line x1="6" y1="20" x2="6" y2="14" />
@@ -1178,9 +1390,17 @@
                 </div>
               </div>
               <div class="udash-bar-chart">
-                <div v-for="(item, i) in landlordData.incomeChart" :key="i" class="udash-bar-col">
+                <div
+                  v-for="(item, i) in landlordData.incomeChart"
+                  :key="i"
+                  class="udash-bar-col"
+                >
                   <div class="udash-bar-wrap">
-                    <div class="udash-bar-fill" :class="{ current: item.current }" :style="{ height: (item.value / maxIncome) * 100 + '%' }"></div>
+                    <div
+                      class="udash-bar-fill"
+                      :class="{ current: item.current }"
+                      :style="{ height: (item.value / maxIncome) * 100 + '%' }"
+                    ></div>
                   </div>
                   <span class="udash-bar-lbl">{{ item.month }}</span>
                 </div>
@@ -1190,8 +1410,18 @@
             <div class="udash-card udash-tip-card">
               <div class="udash-card-head">
                 <div class="udash-card-head-l">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#386ba8" stroke-width="2.2" stroke-linejoin="round">
-                    <path d="M12 3l1.2 3.6h3.8l-3 2.2 1.1 3.5L12 11.9 8.9 12.3l1.1-3.5-3-2.2h3.8L12 3z" />
+                  <svg
+                    width="15"
+                    height="15"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#386ba8"
+                    stroke-width="2.2"
+                    stroke-linejoin="round"
+                  >
+                    <path
+                      d="M12 3l1.2 3.6h3.8l-3 2.2 1.1 3.5L12 11.9 8.9 12.3l1.1-3.5-3-2.2h3.8L12 3z"
+                    />
                   </svg>
                   <h3>Consejo del día</h3>
                 </div>
@@ -1218,13 +1448,19 @@ import {
   removeSavedVehicleById,
   removeSearchHistoryItem,
 } from '../../../services/buyer.js';
-import { getAppointmentCalendar, getSellerAppointments } from '../../../services/appointments.js';
+import {
+  getAppointmentCalendar,
+  getSellerAppointments,
+} from '../../../services/appointments.js';
 import {
   getFeaturedListings,
   getListingFeaturedPercent,
   getListings,
 } from '../../../services/catalog.js';
-import { DEMO_RENTAL_OWNER_ID, DEMO_SALE_OWNER_ID } from '../../../services/demoOwners.js';
+import {
+  DEMO_RENTAL_OWNER_ID,
+  DEMO_SALE_OWNER_ID,
+} from '../../../services/demoOwners.js';
 import QuickActionGlyph from '../../../components/dashboard/QuickActionGlyph.vue';
 
 const router = useRouter();
@@ -1257,9 +1493,13 @@ const sellerGoAppointments = () =>
   router.push({ name: 'my-appointments', query: { tab: 'vendedor' } });
 const sellerGoListings = () =>
   router.push({ name: 'user-listings', query: { mode: 'venta' } });
-const sellerEditListing = (id, mode = 'venta') => openListingEditModal(id, mode);
+const sellerEditListing = (id, mode = 'venta') =>
+  openListingEditModal(id, mode);
 const sellerOpenAppointment = (id) =>
-  router.push({ name: 'seller-appointment-detail', params: { id: String(id) } });
+  router.push({
+    name: 'seller-appointment-detail',
+    params: { id: String(id) },
+  });
 const sellerViewListing = (id) => openListingInternalDetail(id);
 
 const landlordGoAppointments = () =>
@@ -1269,7 +1509,10 @@ const landlordGoListings = () =>
 const landlordEditListing = (id) => openListingEditModal(id, 'renta');
 const landlordViewListing = (id) => openListingInternalDetail(id);
 const landlordOpenAppointment = (id) =>
-  router.push({ name: 'seller-appointment-detail', params: { id: String(id) } });
+  router.push({
+    name: 'seller-appointment-detail',
+    params: { id: String(id) },
+  });
 
 const buyerGoCatalog = () => router.push({ name: 'public-catalog' });
 const buyerGoAppointments = () =>
@@ -1375,8 +1618,10 @@ const buyerNextAppointmentLine = computed(() => {
   return `Próxima: ${first.cardDateLabel} ${first.time}`;
 });
 
-const buyerConfirmedAppointments = computed(() =>
-  buyerAppointmentsList.value.filter((item) => item.status === 'confirmed').length
+const buyerConfirmedAppointments = computed(
+  () =>
+    buyerAppointmentsList.value.filter((item) => item.status === 'confirmed')
+      .length
 );
 
 function formatSearchRelative(ts) {
@@ -1513,7 +1758,9 @@ async function loadBuyerData() {
       : (upcoming?.items ?? []);
     buyerAppointmentsList.value = upcomingList.map(mapBuyerAppointment);
     buyerData.value.appointments = buyerAppointmentsList.value.length;
-    buyerData.value.unread = buyerAppointmentsList.value.filter((item) => item.status === 'pending').length;
+    buyerData.value.unread = buyerAppointmentsList.value.filter(
+      (item) => item.status === 'pending'
+    ).length;
   } else {
     console.error('getUpcomingAppointments', upcomingR.reason);
   }
@@ -1537,7 +1784,9 @@ async function buyerRemoveSearch(id) {
 
 async function buyerRemoveFavorite(id) {
   await removeSavedVehicleById(id);
-  buyerData.value.favorites = buyerData.value.favorites.filter((item) => item.id !== id);
+  buyerData.value.favorites = buyerData.value.favorites.filter(
+    (item) => item.id !== id
+  );
   buyerData.value.savedCount = buyerData.value.favorites.length;
 }
 
@@ -1586,33 +1835,60 @@ const landlordData = ref({
 async function loadSellerData() {
   const [appointments, sales, featuredSales] = await Promise.all([
     getSellerAppointments('u-seller-001'),
-    getListings({ mode: 'venta', sellerId: DEMO_SALE_OWNER_ID, pageSize: 100, includeUnpublished: true }),
-    getFeaturedListings({ mode: 'venta', sellerId: DEMO_SALE_OWNER_ID, limit: 3 }),
+    getListings({
+      mode: 'venta',
+      sellerId: DEMO_SALE_OWNER_ID,
+      pageSize: 100,
+      includeUnpublished: true,
+    }),
+    getFeaturedListings({
+      mode: 'venta',
+      sellerId: DEMO_SALE_OWNER_ID,
+      limit: 3,
+    }),
   ]);
 
   const apptList = Array.isArray(appointments) ? appointments : [];
   const saleItems = sales?.items || [];
-  const publishedSales = saleItems.filter((item) => item.status === 'published');
-  const scoredSales = publishedSales.map((item) => getListingFeaturedPercent(item));
+  const publishedSales = saleItems.filter(
+    (item) => item.status === 'published'
+  );
+  const scoredSales = publishedSales.map((item) =>
+    getListingFeaturedPercent(item)
+  );
 
   sellerData.value.activeListings = publishedSales.length;
-  sellerData.value.messages = apptList.filter((item) => item.status === 'pending').length;
+  sellerData.value.messages = apptList.filter(
+    (item) => item.status === 'pending'
+  ).length;
   sellerData.value.unread = sellerData.value.messages;
   sellerData.value.appointments = apptList.length;
   sellerData.value.averagePrice = publishedSales.length
-    ? Math.round(publishedSales.reduce((sum, item) => sum + Number(item.price || 0), 0) / publishedSales.length)
+    ? Math.round(
+        publishedSales.reduce((sum, item) => sum + Number(item.price || 0), 0) /
+          publishedSales.length
+      )
     : 0;
   sellerData.value.averageQuality = scoredSales.length
-    ? Math.round(scoredSales.reduce((sum, value) => sum + value, 0) / scoredSales.length)
+    ? Math.round(
+        scoredSales.reduce((sum, value) => sum + value, 0) / scoredSales.length
+      )
     : 0;
   sellerData.value.performance = [
     {
       label: 'Publicados',
-      value: saleItems.length ? Math.round((sellerData.value.activeListings / saleItems.length) * 100) : 0,
+      value: saleItems.length
+        ? Math.round((sellerData.value.activeListings / saleItems.length) * 100)
+        : 0,
     },
     {
       label: 'Citas atendibles',
-      value: apptList.length ? Math.round(((apptList.length - sellerData.value.messages) / apptList.length) * 100) : 100,
+      value: apptList.length
+        ? Math.round(
+            ((apptList.length - sellerData.value.messages) / apptList.length) *
+              100
+          )
+        : 100,
     },
     {
       label: 'Ficha completa',
@@ -1623,13 +1899,20 @@ async function loadSellerData() {
     const dateObj = new Date(`${item.date}T12:00:00`);
     return {
       id: item.id,
-      dayLabel: dateObj.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' }).toUpperCase(),
+      dayLabel: dateObj
+        .toLocaleDateString('es-MX', { day: '2-digit', month: 'short' })
+        .toUpperCase(),
       time: item.time,
       client: item.buyerName || item.buyer?.name || 'Cliente AutoSphere',
       vehicle: item.listingTitle || 'Vehículo',
       isToday: item.date === new Date().toISOString().slice(0, 10),
       status: item.status,
-      statusLabel: ({ pending: 'Pendiente', confirmed: 'Confirmada', rescheduled: 'Reagendada' }[item.status] || item.status),
+      statusLabel:
+        {
+          pending: 'Pendiente',
+          confirmed: 'Confirmada',
+          rescheduled: 'Reagendada',
+        }[item.status] || item.status,
     };
   });
   sellerData.value.listings = (featuredSales || []).map((item) => ({
@@ -1637,7 +1920,8 @@ async function loadSellerData() {
     title: item.title,
     price: item.price,
     image: item.coverImage,
-    cityLabel: item.cityLabel || item.location?.city || 'Ubicación por confirmar',
+    cityLabel:
+      item.cityLabel || item.location?.city || 'Ubicación por confirmar',
     mode: item.mode,
     modeLabel: 'Venta',
     status: item.status === 'published' ? 'active' : 'paused',
@@ -1654,34 +1938,61 @@ async function loadLandlordData() {
       pageSize: 100,
       includeUnpublished: true,
     }),
-    getFeaturedListings({ mode: 'renta', sellerId: DEMO_RENTAL_OWNER_ID, limit: 3 }),
+    getFeaturedListings({
+      mode: 'renta',
+      sellerId: DEMO_RENTAL_OWNER_ID,
+      limit: 3,
+    }),
   ]);
 
   const calendarAppointments = calendar?.rentador?.appointments || [];
   const items = rentals?.items || [];
 
-  landlordData.value.activeRentals = items.filter((item) => item.available !== false).length;
+  landlordData.value.activeRentals = items.filter(
+    (item) => item.available !== false
+  ).length;
   landlordData.value.vehicles = items.length;
   landlordData.value.monthlyIncome = items.length
-    ? Math.round(items.reduce((sum, item) => sum + Number(item.pricePerDay || item.price || 0), 0) / items.length)
+    ? Math.round(
+        items.reduce(
+          (sum, item) => sum + Number(item.pricePerDay || item.price || 0),
+          0
+        ) / items.length
+      )
     : 0;
-  landlordData.value.reports = items.filter((item) => item.available === false).length;
-  landlordData.value.pending = calendarAppointments.filter((item) => item.status === 'Pendiente').length;
+  landlordData.value.reports = items.filter(
+    (item) => item.available === false
+  ).length;
+  landlordData.value.pending = calendarAppointments.filter(
+    (item) => item.status === 'Pendiente'
+  ).length;
   landlordData.value.appointments = calendarAppointments.length;
   landlordData.value.performance = [
     {
       label: 'Disponibilidad',
-      value: items.length ? Math.round((landlordData.value.activeRentals / items.length) * 100) : 0,
+      value: items.length
+        ? Math.round((landlordData.value.activeRentals / items.length) * 100)
+        : 0,
     },
     {
       label: 'Citas atendibles',
       value: calendarAppointments.length
-        ? Math.round(((calendarAppointments.length - landlordData.value.pending) / calendarAppointments.length) * 100)
+        ? Math.round(
+            ((calendarAppointments.length - landlordData.value.pending) /
+              calendarAppointments.length) *
+              100
+          )
         : 100,
     },
     {
       label: 'Ficha completa',
-      value: items.length ? Math.round(items.map((item) => getListingFeaturedPercent(item)).reduce((sum, value) => sum + value, 0) / items.length) : 0,
+      value: items.length
+        ? Math.round(
+            items
+              .map((item) => getListingFeaturedPercent(item))
+              .reduce((sum, value) => sum + value, 0) / items.length
+          )
+        : 0,
     },
   ];
 
@@ -1691,15 +2002,18 @@ async function loadLandlordData() {
     .map((item) => {
       const dateObj = new Date(`${item.date}T12:00:00`);
       const rawStatus = String(item.status || '').toLowerCase();
-      const status = {
-        pendiente: 'pending',
-        confirmada: 'confirmed',
-        completada: 'completed',
-        cancelada: 'cancelled',
-      }[rawStatus] || 'pending';
+      const status =
+        {
+          pendiente: 'pending',
+          confirmada: 'confirmed',
+          completada: 'completed',
+          cancelada: 'cancelled',
+        }[rawStatus] || 'pending';
       return {
         id: item.id,
-        dayLabel: dateObj.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' }).toUpperCase(),
+        dayLabel: dateObj
+          .toLocaleDateString('es-MX', { day: '2-digit', month: 'short' })
+          .toUpperCase(),
         time: item.time,
         client: item.client || item.renter?.name || 'Cliente AutoSphere',
         vehicle: item.vehicle,
@@ -1714,8 +2028,11 @@ async function loadLandlordData() {
     title: item.title,
     pricePerDay: Number(item.pricePerDay || item.price || 0),
     image: item.coverImage,
-    cityLabel: item.cityLabel || item.location?.city || 'Ubicación por confirmar',
-    availabilityWindow: [item.availableFrom, item.availableTo].filter(Boolean).join(' → ') || 'Vigencia por definir',
+    cityLabel:
+      item.cityLabel || item.location?.city || 'Ubicación por confirmar',
+    availabilityWindow:
+      [item.availableFrom, item.availableTo].filter(Boolean).join(' → ') ||
+      'Vigencia por definir',
     status: item.available === false ? 'paused' : 'active',
     statusLabel: item.available === false ? 'Ocupado' : 'Activo',
   }));

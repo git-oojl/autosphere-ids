@@ -84,13 +84,18 @@
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getListings } from '../../../services/catalog.js';
-import { DEMO_RENTAL_OWNER_ID, DEMO_SALE_OWNER_ID } from '../../../services/demoOwners.js';
+import { DEMO_RENTAL_OWNER_ID } from '../../../services/demoOwners.js';
 
 const router = useRouter();
 const activeRentals = ref([]);
 
 const loadRentals = async () => {
-  const response = await getListings({ mode: 'renta', sellerId: DEMO_RENTAL_OWNER_ID, pageSize: 100, includeUnpublished: true });
+  const response = await getListings({
+    mode: 'renta',
+    sellerId: DEMO_RENTAL_OWNER_ID,
+    pageSize: 100,
+    includeUnpublished: true,
+  });
   activeRentals.value = (response?.items || []).map((item) => ({
     id: item.id,
     vehicle: item.title,
@@ -104,10 +109,18 @@ const loadRentals = async () => {
 onMounted(loadRentals);
 
 const totalVehicles = computed(() => activeRentals.value.length);
-const pendingClosures = computed(() => activeRentals.value.filter((rental) => rental.status === 'No disponible').length);
+const pendingClosures = computed(
+  () =>
+    activeRentals.value.filter((rental) => rental.status === 'No disponible')
+      .length
+);
 const monthlyRevenue = computed(() => {
   if (!activeRentals.value.length) return '$0';
-  const average = activeRentals.value.reduce((sum, rental) => sum + Number(rental.pricePerDay || 0), 0) / activeRentals.value.length;
+  const average =
+    activeRentals.value.reduce(
+      (sum, rental) => sum + Number(rental.pricePerDay || 0),
+      0
+    ) / activeRentals.value.length;
   return `$${new Intl.NumberFormat('es-MX').format(Math.round(average))}`;
 });
 
@@ -122,8 +135,10 @@ const formatDate = (date) => {
 
 const registerVehicle = () => router.push({ name: 'create-listing' });
 const viewAllRentals = () => router.push({ name: 'user-rentals' });
-const editRental = (rental) => router.push({ name: 'lessor-rental-detail', params: { id: rental.id } });
-const closeRental = (id) => router.push({ name: 'lessor-close-rental', params: { id } });
+const editRental = (rental) =>
+  router.push({ name: 'lessor-rental-detail', params: { id: rental.id } });
+const closeRental = (id) =>
+  router.push({ name: 'lessor-close-rental', params: { id } });
 </script>
 
 <style scoped src="./styles.css"></style>

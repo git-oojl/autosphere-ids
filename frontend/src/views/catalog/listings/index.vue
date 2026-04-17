@@ -612,7 +612,14 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import {
+  ref,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  nextTick,
+  watch,
+} from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getListings } from '../../../services/catalog.js';
 import { recordSearchHistory } from '../../../services/buyer.js';
@@ -674,10 +681,12 @@ const handleImageLoad = (_event, vehicleId) => {
   imagesLoaded.value[vehicleId] = true;
 };
 const handleImageError = (event) => {
-  event.target.src = 'https://placehold.co/400x200/2d3748/ffffff?text=Error+de+carga';
+  event.target.src =
+    'https://placehold.co/400x200/2d3748/ffffff?text=Error+de+carga';
 };
 
-const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price || 0);
+const formatPrice = (price) =>
+  new Intl.NumberFormat('es-MX').format(price || 0);
 const formatMileage = (km) => new Intl.NumberFormat('es-MX').format(km || 0);
 const formatDate = (dateStr) => {
   if (!dateStr) return '—';
@@ -688,24 +697,31 @@ const today = new Date().toISOString().split('T')[0];
 
 const getCityName = (vehicle) => {
   if (!vehicle) return 'Ubicación por confirmar';
-  return vehicle.cityLabel || vehicle.city?.name || vehicle.location?.city || vehicle.cityId;
+  return (
+    vehicle.cityLabel ||
+    vehicle.city?.name ||
+    vehicle.location?.city ||
+    vehicle.cityId
+  );
 };
 
 let searchHistoryTimer = null;
 let lastRecordedSearchSignature = '';
 
-const hasMeaningfulSearch = computed(() => Boolean(
-  search.value.trim() ||
-  selectedBrands.value.length ||
-  selectedTypes.value.length ||
-  selectedCities.value.length ||
-  route.query.minYear ||
-  route.query.maxYear ||
-  availableFrom.value ||
-  availableTo.value ||
-  maxDeposit.value ||
-  minKmIncluded.value
-));
+const hasMeaningfulSearch = computed(() =>
+  Boolean(
+    search.value.trim() ||
+    selectedBrands.value.length ||
+    selectedTypes.value.length ||
+    selectedCities.value.length ||
+    route.query.minYear ||
+    route.query.maxYear ||
+    availableFrom.value ||
+    availableTo.value ||
+    maxDeposit.value ||
+    minKmIncluded.value
+  )
+);
 
 const buildSearchHistoryPayload = () => {
   if (!hasMeaningfulSearch.value) return null;
@@ -749,7 +765,10 @@ const scheduleSearchHistoryRecord = (delay = 700) => {
 const loadInventory = async () => {
   isLoading.value = true;
   try {
-    const response = await getListings({ mode: listingMode.value, pageSize: 100 });
+    const response = await getListings({
+      mode: listingMode.value,
+      pageSize: 100,
+    });
     vehiclesData.value = response?.items || [];
   } finally {
     isLoading.value = false;
@@ -760,12 +779,7 @@ const applyRouteQuery = () => {
   listingMode.value = route.query.mode === 'renta' ? 'renta' : 'venta';
   search.value = route.query.q || route.query.model || '';
   selectedBrands.value = route.query.brand ? [String(route.query.brand)] : [];
-  const minYear = route.query.minYear || '';
-  const maxYear = route.query.maxYear || '';
   yearOrder.value = 'newToOld';
-  if (minYear && maxYear && String(minYear) === String(maxYear)) {
-    search.value = search.value;
-  }
 };
 
 onMounted(async () => {
@@ -803,17 +817,37 @@ const switchMode = async (mode) => {
   });
 };
 
-const vehicles = computed(() => vehiclesData.value.filter((vehicle) => vehicle.status === 'published'));
+const vehicles = computed(() =>
+  vehiclesData.value.filter((vehicle) => vehicle.status === 'published')
+);
 
-const uniqueBrands = computed(() => [...new Set(vehicles.value.map((vehicle) => vehicle.brand).filter(Boolean))].sort());
-const uniqueTypes = computed(() => [...new Set(vehicles.value.map((vehicle) => vehicle.type).filter(Boolean))].sort());
-const uniqueCities = computed(() => [...new Set(vehicles.value.map((vehicle) => getCityName(vehicle)).filter(Boolean))].sort());
+const uniqueBrands = computed(() =>
+  [
+    ...new Set(vehicles.value.map((vehicle) => vehicle.brand).filter(Boolean)),
+  ].sort()
+);
+const uniqueTypes = computed(() =>
+  [
+    ...new Set(vehicles.value.map((vehicle) => vehicle.type).filter(Boolean)),
+  ].sort()
+);
+const uniqueCities = computed(() =>
+  [
+    ...new Set(
+      vehicles.value.map((vehicle) => getCityName(vehicle)).filter(Boolean)
+    ),
+  ].sort()
+);
 const filteredBrands = computed(() => {
   if (!brandSearch.value) return uniqueBrands.value;
-  return uniqueBrands.value.filter((brand) => brand.toLowerCase().includes(brandSearch.value.toLowerCase()));
+  return uniqueBrands.value.filter((brand) =>
+    brand.toLowerCase().includes(brandSearch.value.toLowerCase())
+  );
 });
-const getBrandCount = (brand) => vehicles.value.filter((vehicle) => vehicle.brand === brand).length;
-const getTypeCount = (type) => vehicles.value.filter((vehicle) => vehicle.type === type).length;
+const getBrandCount = (brand) =>
+  vehicles.value.filter((vehicle) => vehicle.brand === brand).length;
+const getTypeCount = (type) =>
+  vehicles.value.filter((vehicle) => vehicle.type === type).length;
 
 const handlePriceChange = () => {
   sortMethod.value = priceOrder.value === 'lowToHigh' ? 'price' : 'price-desc';
@@ -832,30 +866,37 @@ const handleSortChange = () => {
   }
 };
 
-const hasActiveFilters = computed(() => (
-  selectedBrands.value.length > 0 ||
-  selectedTypes.value.length > 0 ||
-  selectedCities.value.length > 0 ||
-  search.value ||
-  priceOrder.value !== 'lowToHigh' ||
-  yearOrder.value !== 'newToOld' ||
-  availableFrom.value ||
-  availableTo.value ||
-  maxDeposit.value ||
-  minKmIncluded.value
-));
+const hasActiveFilters = computed(
+  () =>
+    selectedBrands.value.length > 0 ||
+    selectedTypes.value.length > 0 ||
+    selectedCities.value.length > 0 ||
+    search.value ||
+    priceOrder.value !== 'lowToHigh' ||
+    yearOrder.value !== 'newToOld' ||
+    availableFrom.value ||
+    availableTo.value ||
+    maxDeposit.value ||
+    minKmIncluded.value
+);
 
 const activeFilters = computed(() => {
   const filters = [];
   if (search.value) filters.push(`Búsqueda: ${search.value}`);
-  if (selectedBrands.value.length) filters.push(`${selectedBrands.value.length} marcas`);
-  if (selectedTypes.value.length) filters.push(`${selectedTypes.value.length} tipos`);
-  if (selectedCities.value.length) filters.push(`${selectedCities.value.length} ciudades`);
+  if (selectedBrands.value.length)
+    filters.push(`${selectedBrands.value.length} marcas`);
+  if (selectedTypes.value.length)
+    filters.push(`${selectedTypes.value.length} tipos`);
+  if (selectedCities.value.length)
+    filters.push(`${selectedCities.value.length} ciudades`);
   if (priceOrder.value === 'highToLow') filters.push('Precio: mayor a menor');
   if (yearOrder.value === 'oldToNew') filters.push('Año: más antiguo');
-  if (availableFrom.value) filters.push(`Desde: ${formatDate(availableFrom.value)}`);
-  if (availableTo.value) filters.push(`Hasta: ${formatDate(availableTo.value)}`);
-  if (maxDeposit.value) filters.push(`Depósito ≤ $${formatPrice(maxDeposit.value)}`);
+  if (availableFrom.value)
+    filters.push(`Desde: ${formatDate(availableFrom.value)}`);
+  if (availableTo.value)
+    filters.push(`Hasta: ${formatDate(availableTo.value)}`);
+  if (maxDeposit.value)
+    filters.push(`Depósito ≤ $${formatPrice(maxDeposit.value)}`);
   if (minKmIncluded.value) filters.push(`Km/día ≥ ${minKmIncluded.value}`);
   return filters;
 });
@@ -908,7 +949,9 @@ const matchesYearQuery = (vehicle) => {
   const minYear = Number(route.query.minYear || 0);
   const maxYear = Number(route.query.maxYear || 9999);
   if (!route.query.minYear && !route.query.maxYear) return true;
-  return Number(vehicle.year || 0) >= minYear && Number(vehicle.year || 0) <= maxYear;
+  return (
+    Number(vehicle.year || 0) >= minYear && Number(vehicle.year || 0) <= maxYear
+  );
 };
 
 const filteredVehicles = computed(() => {
@@ -917,56 +960,96 @@ const filteredVehicles = computed(() => {
   if (search.value) {
     const q = search.value.toLowerCase();
     result = result.filter((vehicle) =>
-      [vehicle.title, vehicle.brand, vehicle.model, vehicle.sellerDisplayName, getCityName(vehicle)]
+      [
+        vehicle.title,
+        vehicle.brand,
+        vehicle.model,
+        vehicle.sellerDisplayName,
+        getCityName(vehicle),
+      ]
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(q))
     );
   }
 
   if (selectedBrands.value.length > 0) {
-    result = result.filter((vehicle) => selectedBrands.value.includes(vehicle.brand));
+    result = result.filter((vehicle) =>
+      selectedBrands.value.includes(vehicle.brand)
+    );
   }
 
   if (selectedTypes.value.length > 0) {
-    result = result.filter((vehicle) => selectedTypes.value.includes(vehicle.type));
+    result = result.filter((vehicle) =>
+      selectedTypes.value.includes(vehicle.type)
+    );
   }
 
   if (selectedCities.value.length > 0) {
-    result = result.filter((vehicle) => selectedCities.value.includes(getCityName(vehicle)));
+    result = result.filter((vehicle) =>
+      selectedCities.value.includes(getCityName(vehicle))
+    );
   }
 
   result = result.filter(matchesYearQuery);
 
   if (listingMode.value === 'renta') {
     if (availableFrom.value) {
-      result = result.filter((vehicle) => (vehicle.availableTo || '9999-12-31') >= availableFrom.value);
+      result = result.filter(
+        (vehicle) =>
+          (vehicle.availableTo || '9999-12-31') >= availableFrom.value
+      );
     }
     if (availableTo.value) {
-      result = result.filter((vehicle) => (vehicle.availableFrom || today) <= availableTo.value);
+      result = result.filter(
+        (vehicle) => (vehicle.availableFrom || today) <= availableTo.value
+      );
     }
     if (maxDeposit.value) {
-      result = result.filter((vehicle) => Number(vehicle.depositAmount || 0) <= Number(maxDeposit.value));
+      result = result.filter(
+        (vehicle) =>
+          Number(vehicle.depositAmount || 0) <= Number(maxDeposit.value)
+      );
     }
     if (minKmIncluded.value) {
-      result = result.filter((vehicle) => Number(vehicle.kmIncludedPerDay || 0) >= Number(minKmIncluded.value));
+      result = result.filter(
+        (vehicle) =>
+          Number(vehicle.kmIncludedPerDay || 0) >= Number(minKmIncluded.value)
+      );
     }
   }
 
   if (sortMethod.value === 'price') {
-    result = [...result].sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
+    result = [...result].sort(
+      (a, b) => Number(a.price || 0) - Number(b.price || 0)
+    );
   } else if (sortMethod.value === 'price-desc') {
-    result = [...result].sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
+    result = [...result].sort(
+      (a, b) => Number(b.price || 0) - Number(a.price || 0)
+    );
   } else if (sortMethod.value === 'year') {
-    result = [...result].sort((a, b) => Number(b.year || 0) - Number(a.year || 0));
+    result = [...result].sort(
+      (a, b) => Number(b.year || 0) - Number(a.year || 0)
+    );
   } else if (sortMethod.value === 'year-asc') {
-    result = [...result].sort((a, b) => Number(a.year || 0) - Number(b.year || 0));
+    result = [...result].sort(
+      (a, b) => Number(a.year || 0) - Number(b.year || 0)
+    );
   }
 
   return result;
 });
 
 watch(
-  [search, selectedBrands, selectedTypes, selectedCities, availableFrom, availableTo, maxDeposit, minKmIncluded],
+  [
+    search,
+    selectedBrands,
+    selectedTypes,
+    selectedCities,
+    availableFrom,
+    availableTo,
+    maxDeposit,
+    minKmIncluded,
+  ],
   () => {
     if (!hasMeaningfulSearch.value) return;
     scheduleSearchHistoryRecord();

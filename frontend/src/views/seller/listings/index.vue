@@ -123,9 +123,15 @@
               </button>
               <div v-if="showFilterDropdown" class="dropdown-menu">
                 <button type="button" @click="filterBy('all')">Todos</button>
-                <button type="button" @click="filterBy('published')">Activos</button>
-                <button type="button" @click="filterBy('draft')">Borradores</button>
-                <button type="button" @click="filterBy('archived')">Archivados</button>
+                <button type="button" @click="filterBy('published')">
+                  Activos
+                </button>
+                <button type="button" @click="filterBy('draft')">
+                  Borradores
+                </button>
+                <button type="button" @click="filterBy('archived')">
+                  Archivados
+                </button>
                 <button
                   v-if="listingType === 'sale'"
                   type="button"
@@ -209,7 +215,9 @@
                 <div class="vehicle-info">
                   <h3 class="vehicle-name">{{ listing.title }}</h3>
                   <div class="vehicle-meta">
-                    <span class="brand-model">{{ listing.brand }} {{ listing.model }}</span>
+                    <span class="brand-model"
+                      >{{ listing.brand }} {{ listing.model }}</span
+                    >
                     <span class="separator">•</span>
                     <span class="year">{{ listing.year }}</span>
                   </div>
@@ -219,14 +227,19 @@
                   <div v-else class="vehicle-price rental-price">
                     ${{ formatPrice(listing.pricePerDay) }}/día
                     <span class="price-period">
-                      | ${{ formatPrice(listing.pricePerWeek) }}/sem | ${{ formatPrice(listing.pricePerMonth) }}/mes
+                      | ${{ formatPrice(listing.pricePerWeek) }}/sem | ${{
+                        formatPrice(listing.pricePerMonth)
+                      }}/mes
                     </span>
                   </div>
                 </div>
               </div>
 
               <div class="listing-center">
-                <div class="status-badge" :class="getStatusClass(listing.status)">
+                <div
+                  class="status-badge"
+                  :class="getStatusClass(listing.status)"
+                >
                   <svg
                     viewBox="0 0 24 24"
                     fill="none"
@@ -250,16 +263,49 @@
                 </div>
                 <div class="metrics">
                   <div class="metric-item">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z" stroke="currentColor" stroke-width="2" />
-                      <circle cx="12" cy="10" r="3" stroke="currentColor" stroke-width="2" />
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M21 10C21 17 12 23 12 23C12 23 3 17 3 10C3 7.61305 3.94821 5.32387 5.63604 3.63604C7.32387 1.94821 9.61305 1 12 1C14.3869 1 16.6761 1.94821 18.364 3.63604C20.0518 5.32387 21 7.61305 21 10Z"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      />
+                      <circle
+                        cx="12"
+                        cy="10"
+                        r="3"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      />
                     </svg>
                     {{ listing.cityLabel || 'Ubicación por confirmar' }}
                   </div>
                   <div class="metric-item">
-                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="2" />
-                      <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2" />
+                    <svg
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect
+                        x="3"
+                        y="4"
+                        width="18"
+                        height="18"
+                        rx="2"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      />
+                      <line
+                        x1="3"
+                        y1="10"
+                        x2="21"
+                        y2="10"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      />
                     </svg>
                     {{ listing.modeLabel }}
                   </div>
@@ -301,7 +347,11 @@
                         stroke-width="2"
                       />
                       <path d="M8 4V8" stroke="currentColor" stroke-width="2" />
-                      <path d="M16 4V8" stroke="currentColor" stroke-width="2" />
+                      <path
+                        d="M16 4V8"
+                        stroke="currentColor"
+                        stroke-width="2"
+                      />
                     </svg>
                     {{ listing.transmission || 'Automática' }}
                   </span>
@@ -413,7 +463,11 @@
               </div>
 
               <div class="listing-actions">
-                <button class="action-btn btn-edit" type="button" @click="openEditModal(listing.id)">
+                <button
+                  class="action-btn btn-edit"
+                  type="button"
+                  @click="openEditModal(listing.id)"
+                >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                     <path
                       d="M17 3L21 7L7 21H3V17L17 3Z"
@@ -423,7 +477,11 @@
                   </svg>
                   Editar
                 </button>
-                <button class="action-btn btn-view" type="button" @click="openViewDetail(listing.id)">
+                <button
+                  class="action-btn btn-view"
+                  type="button"
+                  @click="openViewDetail(listing.id)"
+                >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                     <path
                       d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z"
@@ -440,7 +498,11 @@
                   </svg>
                   Ver
                 </button>
-                <button class="action-btn btn-delete" type="button" @click="deleteListing(listing.id)">
+                <button
+                  class="action-btn btn-delete"
+                  type="button"
+                  @click="deleteListing(listing.id)"
+                >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                     <path
                       d="M3 6H5H21M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"
@@ -547,7 +609,11 @@
                   : 'Intenta con otros filtros o crea un anuncio de renta.'
               }}
             </p>
-            <button class="btn-create-empty" type="button" @click="createNewListing">
+            <button
+              class="btn-create-empty"
+              type="button"
+              @click="createNewListing"
+            >
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -579,14 +645,20 @@
       </div>
     </div>
 
-    <div v-if="isEditModalOpen" class="modal-overlay" @click.self="closeEditModal">
+    <div
+      v-if="isEditModalOpen"
+      class="modal-overlay"
+      @click.self="closeEditModal"
+    >
       <div class="edit-modal">
         <div class="modal-header">
           <div>
             <p class="modal-eyebrow">Editar publicación</p>
             <h3>{{ editDraft.title || selectedListing?.title }}</h3>
           </div>
-          <button type="button" class="modal-close" @click="closeEditModal">×</button>
+          <button type="button" class="modal-close" @click="closeEditModal">
+            ×
+          </button>
         </div>
 
         <form class="modal-form" @submit.prevent="submitEdit">
@@ -598,7 +670,13 @@
             <label class="field">
               <span>Estado</span>
               <select v-model="editDraft.status">
-                <option v-for="option in availableStatuses" :key="option.value" :value="option.value">{{ option.label }}</option>
+                <option
+                  v-for="option in availableStatuses"
+                  :key="option.value"
+                  :value="option.value"
+                >
+                  {{ option.label }}
+                </option>
               </select>
             </label>
             <label class="field">
@@ -607,20 +685,40 @@
             </label>
             <label v-if="selectedListing?.mode === 'sale'" class="field">
               <span>Precio</span>
-              <input v-model.number="editDraft.price" type="number" min="0" step="1000" />
+              <input
+                v-model.number="editDraft.price"
+                type="number"
+                min="0"
+                step="1000"
+              />
             </label>
             <template v-else>
               <label class="field">
                 <span>Tarifa diaria</span>
-                <input v-model.number="editDraft.pricePerDay" type="number" min="0" step="100" />
+                <input
+                  v-model.number="editDraft.pricePerDay"
+                  type="number"
+                  min="0"
+                  step="100"
+                />
               </label>
               <label class="field">
                 <span>Tarifa semanal</span>
-                <input v-model.number="editDraft.pricePerWeek" type="number" min="0" step="100" />
+                <input
+                  v-model.number="editDraft.pricePerWeek"
+                  type="number"
+                  min="0"
+                  step="100"
+                />
               </label>
               <label class="field">
                 <span>Tarifa mensual</span>
-                <input v-model.number="editDraft.pricePerMonth" type="number" min="0" step="100" />
+                <input
+                  v-model.number="editDraft.pricePerMonth"
+                  type="number"
+                  min="0"
+                  step="100"
+                />
               </label>
             </template>
           </div>
@@ -631,8 +729,16 @@
           </label>
 
           <div class="modal-actions">
-            <button type="button" class="action-btn btn-view modal-secondary" @click="closeEditModal">Cancelar</button>
-            <button type="submit" class="action-btn btn-edit">Guardar cambios</button>
+            <button
+              type="button"
+              class="action-btn btn-view modal-secondary"
+              @click="closeEditModal"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="action-btn btn-edit">
+              Guardar cambios
+            </button>
           </div>
         </form>
       </div>
@@ -640,7 +746,9 @@
 
     <div v-if="showToast" class="toast-notification" :class="toastType">
       <span>{{ toastMessage }}</span>
-      <button class="toast-close" type="button" @click="showToast = false">×</button>
+      <button class="toast-close" type="button" @click="showToast = false">
+        ×
+      </button>
     </div>
   </div>
 </template>
@@ -683,7 +791,8 @@ const isEditModalOpen = ref(false);
 const editDraft = ref(createEmptyDraft());
 let searchTimer = null;
 
-const normalizeListingType = (value) => (value === 'rental' ? 'rental' : 'sale');
+const normalizeListingType = (value) =>
+  value === 'rental' ? 'rental' : 'sale';
 const normalizeFilter = (mode, value) =>
   FILTER_OPTIONS[mode].includes(value) ? value : 'all';
 const resolveOwnerId = (mode) =>
@@ -771,7 +880,8 @@ const getVehicleIcon = (type) =>
     Deportivo: '🏎️',
   })[type] || '🚗';
 
-const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price || 0);
+const formatPrice = (price) =>
+  new Intl.NumberFormat('es-MX').format(price || 0);
 const formatDate = (date) => {
   if (!date) return '—';
   const parsed = new Date(date);
@@ -796,7 +906,9 @@ const visiblePages = computed(() => {
   return pages;
 });
 
-const totalPages = computed(() => Math.max(1, Math.ceil(totalListings.value / itemsPerPage.value)));
+const totalPages = computed(() =>
+  Math.max(1, Math.ceil(totalListings.value / itemsPerPage.value))
+);
 
 const showNotification = (message, type = 'success') => {
   toastMessage.value = message;
@@ -820,7 +932,10 @@ const syncStateFromRoute = () => {
   listingType.value = mode;
   selectedFilter.value = normalizeFilter(mode, route.query.status || 'all');
   searchQuery.value = String(route.query.q || '');
-  currentPage.value = Math.max(1, Number.parseInt(route.query.page || '1', 10) || 1);
+  currentPage.value = Math.max(
+    1,
+    Number.parseInt(route.query.page || '1', 10) || 1
+  );
 };
 
 const updateRoute = (partial = {}) => {
@@ -853,8 +968,10 @@ const loadCounts = async () => {
     }),
   ]);
 
-  saleCount.value = saleResponse?.meta?.total ?? saleResponse?.items?.length ?? 0;
-  rentalCount.value = rentalResponse?.meta?.total ?? rentalResponse?.items?.length ?? 0;
+  saleCount.value =
+    saleResponse?.meta?.total ?? saleResponse?.items?.length ?? 0;
+  rentalCount.value =
+    rentalResponse?.meta?.total ?? rentalResponse?.items?.length ?? 0;
 };
 
 const loadListings = async () => {
@@ -872,7 +989,9 @@ const loadListings = async () => {
       sort: 'newest',
     });
 
-    listings.value = (response?.items || []).map((item) => enrichListing(item, listingType.value));
+    listings.value = (response?.items || []).map((item) =>
+      enrichListing(item, listingType.value)
+    );
     totalListings.value = response?.meta?.total ?? listings.value.length;
   } finally {
     isLoading.value = false;
@@ -939,14 +1058,21 @@ const hydrateSelectedListing = async (id) => {
 const openEditModal = async (id) => {
   const listing = await hydrateSelectedListing(id);
   if (!listing) {
-    showNotification('No se pudo abrir esta publicación para edición.', 'error');
+    showNotification(
+      'No se pudo abrir esta publicación para edición.',
+      'error'
+    );
     return;
   }
 
   selectedListing.value = listing;
   editDraft.value = buildEditDraft(listing);
   isEditModalOpen.value = true;
-  const nextQuery = { ...route.query, edit: id, mode: listing.mode === 'rental' ? 'rental' : 'sale' };
+  const nextQuery = {
+    ...route.query,
+    edit: id,
+    mode: listing.mode === 'rental' ? 'rental' : 'sale',
+  };
   router.replace({ query: nextQuery });
 };
 
@@ -984,12 +1110,18 @@ const submitEdit = async () => {
   }
 
   const updated = await updateSellerListing(selectedListing.value.id, payload);
-  const normalized = enrichListing({ ...selectedListing.value, ...updated, ...payload }, listingType.value);
+  const normalized = enrichListing(
+    { ...selectedListing.value, ...updated, ...payload },
+    listingType.value
+  );
   listings.value = listings.value.map((listing) =>
     listing.id === normalized.id ? normalized : listing
   );
   selectedListing.value = normalized;
-  showNotification('Cambios guardados en esta sesión de demostración.', 'success');
+  showNotification(
+    'Cambios guardados en esta sesión de demostración.',
+    'success'
+  );
   closeEditModal();
 };
 
@@ -1013,7 +1145,10 @@ const deleteListing = (id) => {
 };
 
 const handleClickOutside = (event) => {
-  if (filterDropdownRef.value && !filterDropdownRef.value.contains(event.target)) {
+  if (
+    filterDropdownRef.value &&
+    !filterDropdownRef.value.contains(event.target)
+  ) {
     showFilterDropdown.value = false;
   }
 };

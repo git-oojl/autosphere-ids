@@ -4,7 +4,9 @@ export function registerRouterGuards(router) {
   router.beforeEach((to, from, next) => {
     const auth = useAuthStore();
     const requiresAuth = to.matched.some((record) => record.meta?.requiresAuth);
-    const requiresGuest = to.matched.some((record) => record.meta?.requiresGuest);
+    const requiresGuest = to.matched.some(
+      (record) => record.meta?.requiresGuest
+    );
     const roleRequirements = to.matched
       .flatMap((record) => record.meta?.roles || [])
       .filter(Boolean);
