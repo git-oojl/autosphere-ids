@@ -1,114 +1,87 @@
 <template>
   <div class="security-page">
     <br /><br /><br /><br /><br />
-    <!-- Page Header -->
+
     <div class="page-header">
       <div class="header-container">
         <div class="header-left">
           <div>
             <h1 class="page-title">Seguridad</h1>
             <p class="page-subtitle">
-              Gestiona la seguridad de tu cuenta y protege tu información
+              Gestiona tu acceso y mantén actualizado tu canal de recuperación.
             </p>
           </div>
+        </div>
+
+        <div class="header-actions">
+          <button type="button" class="btn-secondary" @click="router.push({ name: 'user-profile' })">
+            Mi perfil
+          </button>
         </div>
       </div>
     </div>
 
-    <!-- Security Stats Cards -->
     <div class="stats-grid">
       <div class="stat-card">
         <div class="stat-icon blue">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
-              stroke="currentColor"
-              stroke-width="2"
-            />
-            <path
-              d="M12 8v4M12 16h.01"
-              stroke="currentColor"
-              stroke-width="2"
-            />
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="2" />
+            <path d="M12 8v4M12 16h.01" stroke="currentColor" stroke-width="2" />
           </svg>
         </div>
         <div class="stat-content">
-          <span class="stat-number">{{ securityScore }}%</span>
-          <span class="stat-title">Puntuación de seguridad</span>
+          <span class="stat-number">{{ canChangePassword ? 'Sí' : 'No' }}</span>
+          <span class="stat-title">Cambio de contraseña disponible</span>
         </div>
       </div>
+
       <div class="stat-card">
         <div class="stat-icon green">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <circle
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              stroke-width="2"
-            />
-            <path d="M12 6v6l4 2" stroke="currentColor" stroke-width="2" />
+            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" stroke="currentColor" stroke-width="2" />
+            <polyline points="22,6 12,13 2,6" stroke="currentColor" stroke-width="2" />
           </svg>
         </div>
         <div class="stat-content">
-          <span class="stat-number">{{ activeSessions }}</span>
-          <span class="stat-title">Sesiones activas</span>
+          <span class="stat-number">{{ recoveryChannelCount }}</span>
+          <span class="stat-title">Método de recuperación configurado</span>
+          <span class="stat-meta">{{ recoveryEmailLabel }}</span>
         </div>
       </div>
+
       <div class="stat-card">
         <div class="stat-icon purple">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M4 4h16v16H4V4z" stroke="currentColor" stroke-width="2" />
-            <path
-              d="M8 8h8M8 12h6M8 16h4"
-              stroke="currentColor"
-              stroke-width="2"
-            />
+            <path d="M8 8h8M8 12h6M8 16h4" stroke="currentColor" stroke-width="2" />
           </svg>
         </div>
         <div class="stat-content">
           <span class="stat-number">{{ lastPasswordDays }}</span>
-          <span class="stat-title">Días desde último cambio de contraseña</span>
+          <span class="stat-title">Días desde el último cambio</span>
         </div>
       </div>
+
       <div class="stat-card">
         <div class="stat-icon orange">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path
-              d="M12 2a10 10 0 1010 10 10 10 0 00-10-10z"
-              stroke="currentColor"
-              stroke-width="2"
-            />
-            <path
-              d="M12 6v4M12 14h.01"
-              stroke="currentColor"
-              stroke-width="2"
-            />
+            <path d="M12 2a10 10 0 1010 10 10 10 0 00-10-10z" stroke="currentColor" stroke-width="2" />
+            <path d="M12 6v4M12 14h.01" stroke="currentColor" stroke-width="2" />
           </svg>
         </div>
         <div class="stat-content">
-          <span class="stat-number">{{ securityIssues }}</span>
-          <span class="stat-title">Recomendaciones de seguridad</span>
+          <span class="stat-number">{{ recommendations.length }}</span>
+          <span class="stat-title">Recomendaciones activas</span>
         </div>
       </div>
     </div>
 
-    <!-- Main Content Grid -->
     <div class="content-grid">
-      <!-- Left Column -->
       <div class="left-column">
-        <!-- Cambiar Contraseña -->
-        <div class="security-card">
+        <div class="security-card" id="password-card">
           <div class="card-header">
             <div class="card-icon">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-              >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                 <path d="M7 11V7a5 5 0 0110 0v4" />
               </svg>
@@ -116,8 +89,7 @@
             <div class="card-header-text">
               <h2 class="card-title">Cambiar contraseña</h2>
               <p class="card-subtitle">
-                Actualiza tu contraseña regularmente para mantener tu cuenta
-                segura
+                Actualiza tu contraseña y refuerza el acceso principal a tu cuenta.
               </p>
             </div>
           </div>
@@ -125,18 +97,9 @@
             <form @submit.prevent="changePassword">
               <div class="form-group">
                 <label class="form-label">Contraseña actual</label>
-                <div
-                  class="input-wrapper"
-                  :class="{ focused: focus.currentPassword }"
-                >
+                <div class="input-wrapper" :class="{ focused: focus.currentPassword }">
                   <span class="input-icon">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                       <path d="M7 11V7a5 5 0 0110 0v4" />
                     </svg>
@@ -149,52 +112,24 @@
                     @focus="focus.currentPassword = true"
                     @blur="focus.currentPassword = false"
                   />
-                  <button
-                    type="button"
-                    class="password-toggle"
-                    @click="showCurrentPassword = !showCurrentPassword"
-                  >
-                    <svg
-                      v-if="!showCurrentPassword"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
+                  <button type="button" class="password-toggle" @click="showCurrentPassword = !showCurrentPassword">
+                    <svg v-if="!showCurrentPassword" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                       <circle cx="12" cy="12" r="3" />
                     </svg>
-                    <svg
-                      v-else
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
-                      <path
-                        d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"
-                      />
+                    <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
                       <line x1="1" y1="1" x2="23" y2="23" />
                     </svg>
                   </button>
                 </div>
               </div>
+
               <div class="form-group">
                 <label class="form-label">Nueva contraseña</label>
-                <div
-                  class="input-wrapper"
-                  :class="{ focused: focus.newPassword }"
-                >
+                <div class="input-wrapper" :class="{ focused: focus.newPassword }">
                   <span class="input-icon">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                       <path d="M7 11V7a5 5 0 0110 0v4" />
                     </svg>
@@ -207,68 +142,30 @@
                     @focus="focus.newPassword = true"
                     @blur="focus.newPassword = false"
                   />
-                  <button
-                    type="button"
-                    class="password-toggle"
-                    @click="showNewPassword = !showNewPassword"
-                  >
-                    <svg
-                      v-if="!showNewPassword"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
+                  <button type="button" class="password-toggle" @click="showNewPassword = !showNewPassword">
+                    <svg v-if="!showNewPassword" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                       <circle cx="12" cy="12" r="3" />
                     </svg>
-                    <svg
-                      v-else
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
-                      <path
-                        d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"
-                      />
+                    <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
                       <line x1="1" y1="1" x2="23" y2="23" />
                     </svg>
                   </button>
                 </div>
                 <div v-if="passwordForm.new" class="password-strength">
                   <div class="strength-bar">
-                    <div
-                      class="strength-fill"
-                      :style="{
-                        width: passwordStrength + '%',
-                        background: strengthColor,
-                      }"
-                    ></div>
+                    <div class="strength-fill" :style="{ width: passwordStrength + '%', background: strengthColor }"></div>
                   </div>
-                  <span
-                    class="strength-text"
-                    :style="{ color: strengthColor }"
-                    >{{ strengthText }}</span
-                  >
+                  <span class="strength-text" :style="{ color: strengthColor }">{{ strengthText }}</span>
                 </div>
               </div>
+
               <div class="form-group">
                 <label class="form-label">Confirmar nueva contraseña</label>
-                <div
-                  class="input-wrapper"
-                  :class="{ focused: focus.confirmPassword }"
-                >
+                <div class="input-wrapper" :class="{ focused: focus.confirmPassword }">
                   <span class="input-icon">
-                    <svg
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                       <path d="M7 11V7a5 5 0 0110 0v4" />
                     </svg>
@@ -281,536 +178,161 @@
                     @focus="focus.confirmPassword = true"
                     @blur="focus.confirmPassword = false"
                   />
-                  <button
-                    type="button"
-                    class="password-toggle"
-                    @click="showConfirmPassword = !showConfirmPassword"
-                  >
-                    <svg
-                      v-if="!showConfirmPassword"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
+                  <button type="button" class="password-toggle" @click="showConfirmPassword = !showConfirmPassword">
+                    <svg v-if="!showConfirmPassword" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
                       <circle cx="12" cy="12" r="3" />
                     </svg>
-                    <svg
-                      v-else
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                    >
-                      <path
-                        d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"
-                      />
+                    <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24" />
                       <line x1="1" y1="1" x2="23" y2="23" />
                     </svg>
                   </button>
                 </div>
               </div>
+
               <div class="form-actions">
-                <button
-                  type="submit"
-                  class="btn-primary"
-                  :disabled="isChangingPassword"
-                >
+                <button type="submit" class="btn-primary" :disabled="isChangingPassword">
                   <span v-if="isChangingPassword" class="spinner"></span>
-                  <svg
-                    v-else
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                  >
+                  <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                     <path d="M12 5v14M5 12h14" />
                   </svg>
-                  {{
-                    isChangingPassword
-                      ? 'Actualizando...'
-                      : 'Actualizar contraseña'
-                  }}
+                  {{ isChangingPassword ? 'Actualizando...' : 'Actualizar contraseña' }}
                 </button>
               </div>
             </form>
           </div>
         </div>
 
-        <!-- Autenticación de Dos Factores (2FA) - Solo para usuarios registrados -->
-        <div v-if="userRole !== 'admin'" class="security-card">
+        <div class="security-card">
           <div class="card-header">
             <div class="card-icon green">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-              >
-                <path
-                  d="M12 2a10 10 0 00-10 10 10 10 0 0010 10 10 10 0 0010-10"
-                />
-                <path d="M12 6v6l4 2" />
-                <circle cx="12" cy="12" r="3" />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
               </svg>
             </div>
             <div class="card-header-text">
-              <h2 class="card-title">Autenticación de dos factores</h2>
+              <h2 class="card-title">Recuperación de cuenta</h2>
               <p class="card-subtitle">
-                Añade una capa extra de seguridad a tu cuenta
-              </p>
-            </div>
-            <div class="card-badge" :class="{ active: twoFactorEnabled }">
-              {{ twoFactorEnabled ? 'Activado' : 'Desactivado' }}
-            </div>
-          </div>
-          <div class="card-body">
-            <div v-if="!twoFactorEnabled">
-              <p class="info-text">
-                Protege tu cuenta con verificación en dos pasos. Recibirás un
-                código único en tu teléfono cada vez que inicies sesión.
-              </p>
-              <button class="btn-secondary" @click="setupTwoFactor">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                >
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
-                Configurar 2FA
-              </button>
-            </div>
-            <div v-else class="two-factor-status">
-              <div class="status-row">
-                <span class="status-label">Método de verificación</span>
-                <span class="status-value">SMS / Autenticador</span>
-              </div>
-              <div class="status-row">
-                <span class="status-label">Teléfono vinculado</span>
-                <span class="status-value">{{
-                  userPhone || 'No vinculado'
-                }}</span>
-              </div>
-              <button class="btn-outline" @click="disableTwoFactor">
-                Desactivar 2FA
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Dispositivos Confiables - Solo para usuarios registrados -->
-        <div v-if="userRole !== 'admin'" class="security-card">
-          <div class="card-header">
-            <div class="card-icon purple">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-              >
-                <rect x="4" y="2" width="16" height="20" rx="2" ry="2" />
-                <line x1="12" y1="18" x2="12" y2="18" />
-              </svg>
-            </div>
-            <div class="card-header-text">
-              <h2 class="card-title">Dispositivos confiables</h2>
-              <p class="card-subtitle">
-                Administra los dispositivos que tienen acceso a tu cuenta
+                Mantén un correo vigente para recuperar acceso y recibir avisos importantes.
               </p>
             </div>
           </div>
           <div class="card-body">
-            <div class="devices-list">
-              <div
-                v-for="device in trustedDevices"
-                :key="device.id"
-                class="device-item"
-              >
-                <div class="device-icon">
-                  <svg
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <rect
-                      v-if="device.type === 'desktop'"
-                      x="2"
-                      y="3"
-                      width="20"
-                      height="14"
-                      rx="2"
-                      ry="2"
-                    />
-                    <rect
-                      v-else
-                      x="5"
-                      y="2"
-                      width="14"
-                      height="20"
-                      rx="2"
-                      ry="2"
-                    />
-                  </svg>
-                </div>
-                <div class="device-info">
-                  <span class="device-name">{{ device.name }}</span>
-                  <span class="device-detail"
-                    >{{ device.browser }} • {{ device.os }}</span
-                  >
-                  <span class="device-date"
-                    >Último acceso: {{ device.lastUsed }}</span
-                  >
-                </div>
-                <button
-                  class="device-remove"
-                  title="Eliminar dispositivo"
-                  @click="removeDevice(device.id)"
-                >
-                  <svg
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <path d="M18 6L6 18M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
+            <div class="status-row">
+              <span class="status-label">Correo de recuperación</span>
+              <span class="status-value">{{ recoveryEmailLabel }}</span>
             </div>
-            <button class="btn-outline" @click="logoutOtherDevices">
-              Cerrar sesión en otros dispositivos
+            <div class="status-row">
+              <span class="status-label">Disponibilidad</span>
+              <span class="status-value">{{ recoveryChannelCount ? 'Configurado' : 'Pendiente' }}</span>
+            </div>
+            <div class="recovery-note">
+              <p>{{ supportMessage }}</p>
+            </div>
+            <button type="button" class="btn-outline" @click="router.push({ name: 'user-profile' })">
+              Actualizar datos desde Mi perfil
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Right Column -->
       <div class="right-column">
-        <!-- Actividad Reciente -->
-        <div class="security-card">
-          <div class="card-header">
-            <div class="card-icon orange">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-              >
-                <circle cx="12" cy="12" r="10" />
-                <polyline points="12 6 12 12 16 14" />
-              </svg>
-            </div>
-            <div class="card-header-text">
-              <h2 class="card-title">Actividad reciente</h2>
-              <p class="card-subtitle">
-                Inicios de sesión y actividad en tu cuenta
-              </p>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="activity-list">
-              <div
-                v-for="activity in recentActivity"
-                :key="activity.id"
-                class="activity-item"
-              >
-                <div class="activity-icon" :class="activity.type">
-                  <svg
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <path
-                      v-if="activity.type === 'login'"
-                      d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"
-                    />
-                    <path
-                      v-else-if="activity.type === 'password'"
-                      d="M12 5v14M5 12h14"
-                    />
-                    <path v-else d="M20 12H4" />
-                  </svg>
-                </div>
-                <div class="activity-info">
-                  <span class="activity-title">{{ activity.title }}</span>
-                  <span class="activity-time">{{ activity.time }}</span>
-                </div>
-                <div v-if="activity.location" class="activity-location">
-                  {{ activity.location }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Recomendaciones de Seguridad -->
         <div class="security-card">
           <div class="card-header">
             <div class="card-icon blue">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-              >
-                <polygon points="12 2 2 7 12 12 22 7 12 2" />
-                <polyline points="2 17 12 22 22 17" />
-                <polyline points="2 12 12 17 22 12" />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z" />
               </svg>
             </div>
             <div class="card-header-text">
               <h2 class="card-title">Recomendaciones de seguridad</h2>
-              <p class="card-subtitle">Mejora la protección de tu cuenta</p>
+              <p class="card-subtitle">Sugerencias visibles para mantener tu acceso al día.</p>
             </div>
           </div>
           <div class="card-body">
             <div class="recommendations-list">
-              <div
-                v-for="rec in securityRecommendations"
-                :key="rec.id"
-                class="recommendation-item"
-                :class="{ completed: rec.completed }"
-              >
+              <div v-for="item in recommendations" :key="item.key" class="recommendation-item" :class="{ completed: item.completed }">
                 <div class="rec-check">
-                  <svg
-                    v-if="rec.completed"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                  >
+                  <svg v-if="item.completed" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                     <path d="M20 6L9 17l-5-5" />
                   </svg>
-                  <svg
-                    v-else
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                  >
-                    <circle cx="12" cy="12" r="10" />
+                  <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="9" />
                   </svg>
                 </div>
                 <div class="rec-info">
-                  <span class="rec-title">{{ rec.title }}</span>
-                  <span class="rec-desc">{{ rec.description }}</span>
+                  <span class="rec-title">{{ item.title }}</span>
+                  <span class="rec-desc">{{ item.description }}</span>
                 </div>
-                <button
-                  v-if="!rec.completed"
-                  class="rec-action"
-                  @click="takeAction(rec)"
-                >
-                  {{ rec.action }}
+                <button v-if="item.actionLabel" type="button" class="rec-action" @click="item.action()">
+                  {{ item.actionLabel }}
                 </button>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Zona de Peligro (solo visible para usuarios registrados) -->
-        <div v-if="userRole !== 'guest'" class="security-card danger-zone">
+        <div class="security-card">
           <div class="card-header">
-            <div class="card-icon red">
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="1.8"
-              >
-                <path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9" />
-                <path d="M13.73 21a2 2 0 01-3.46 0" />
+            <div class="card-icon orange">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <path d="M12 5v14M5 12h14" />
               </svg>
             </div>
             <div class="card-header-text">
-              <h2 class="card-title">Zona de peligro</h2>
-              <p class="card-subtitle">Acciones irreversibles para tu cuenta</p>
+              <h2 class="card-title">Accesos rápidos</h2>
+              <p class="card-subtitle">Atajos para revisar perfil, citas o recibir ayuda.</p>
             </div>
           </div>
-          <div class="card-body">
-            <div class="danger-item">
-              <div class="danger-info">
-                <span class="danger-title"
-                  >Cerrar sesión en todos los dispositivos</span
-                >
-                <span class="danger-desc"
-                  >Terminará todas las sesiones activas excepto la actual</span
-                >
+          <div class="card-body quick-links">
+            <button class="quick-link" type="button" @click="router.push({ name: 'user-profile' })">
+              <div class="quick-link-text">
+                <span class="quick-link-label">Ir a Mi perfil</span>
+                <span class="quick-link-desc">Editar datos personales y el correo de recuperación.</span>
               </div>
-              <button class="btn-warning" @click="logoutAllDevices">
-                Cerrar todas las sesiones
-              </button>
-            </div>
-            <div v-if="userRole !== 'admin'" class="danger-item">
-              <div class="danger-info">
-                <span class="danger-title"
-                  >Desactivar cuenta temporalmente</span
-                >
-                <span class="danger-desc"
-                  >Tu perfil quedará oculto hasta que lo reactives</span
-                >
-              </div>
-              <button class="btn-warning" @click="deactivateAccount">
-                Desactivar cuenta
-              </button>
-            </div>
-            <div class="danger-item">
-              <div class="danger-info">
-                <span class="danger-title"
-                  >Eliminar cuenta permanentemente</span
-                >
-                <span class="danger-desc">Esta acción es irreversible</span>
-              </div>
-              <button class="btn-danger" @click="showDeleteModal = true">
-                Eliminar cuenta
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 2FA Setup Modal -->
-    <div
-      v-if="show2FAModal"
-      class="modal-overlay"
-      @click.self="show2FAModal = false"
-    >
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>Configurar autenticación de dos factores</h2>
-          <button class="modal-close" @click="show2FAModal = false">×</button>
-        </div>
-        <div class="modal-body">
-          <div class="qr-container">
-            <div class="qr-placeholder">
-              <svg width="200" height="200" viewBox="0 0 200 200">
-                <rect width="200" height="200" fill="#f8f9fb" />
-                <rect x="20" y="20" width="160" height="160" fill="#e2e8f0" />
-                <rect x="40" y="40" width="40" height="40" fill="#94a3b8" />
-                <rect x="120" y="40" width="40" height="40" fill="#94a3b8" />
-                <rect x="40" y="120" width="40" height="40" fill="#94a3b8" />
-                <rect x="120" y="120" width="40" height="40" fill="#94a3b8" />
-                <rect x="80" y="80" width="40" height="40" fill="#3b82f6" />
-              </svg>
-            </div>
-            <p class="qr-instruction">
-              Escanea este código QR con Google Authenticator o similar
-            </p>
-            <p class="qr-code">
-              Código secreto: <strong>ABCD EFGH IJKL MNOP</strong>
-            </p>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Código de verificación</label>
-            <input
-              v-model="twoFactorCode"
-              type="text"
-              class="form-input"
-              placeholder="Ingresa el código de 6 dígitos"
-            />
-          </div>
-          <div class="modal-actions">
-            <button class="btn-secondary" @click="show2FAModal = false">
-              Cancelar
+              <span class="quick-link-arrow">›</span>
             </button>
-            <button class="btn-primary" @click="enableTwoFactor">
-              Verificar y activar
+            <button class="quick-link" type="button" @click="router.push({ name: 'my-appointments' })">
+              <div class="quick-link-text">
+                <span class="quick-link-label">Ver mis citas</span>
+                <span class="quick-link-desc">Revisar agenda y cambios relevantes de actividad.</span>
+              </div>
+              <span class="quick-link-arrow">›</span>
+            </button>
+            <button class="quick-link" type="button" @click="router.push({ name: 'public-contact' })">
+              <div class="quick-link-text">
+                <span class="quick-link-label">Contactar soporte</span>
+                <span class="quick-link-desc">Usa el canal de contacto si necesitas ayuda adicional.</span>
+              </div>
+              <span class="quick-link-arrow">›</span>
             </button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Delete Account Modal -->
-    <div
-      v-if="showDeleteModal"
-      class="modal-overlay"
-      @click.self="showDeleteModal = false"
-    >
-      <div class="modal-content small">
-        <div class="modal-header">
-          <h2>Eliminar cuenta</h2>
-          <button class="modal-close" @click="showDeleteModal = false">
-            ×
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="confirmation-icon warning">⚠️</div>
-          <p class="confirmation-text">
-            ¿Estás seguro de que deseas eliminar tu cuenta?
-          </p>
-          <p class="confirmation-subtext">
-            Esta acción es irreversible. Todos tus datos serán eliminados
-            permanentemente.
-          </p>
-          <div class="form-group">
-            <label class="form-label">Escribe "ELIMINAR" para confirmar</label>
-            <input v-model="deleteConfirmText" type="text" class="form-input" />
-          </div>
-          <div class="modal-actions">
-            <button class="btn-secondary" @click="showDeleteModal = false">
-              Cancelar
-            </button>
-            <button
-              class="btn-danger"
-              :disabled="deleteConfirmText !== 'ELIMINAR'"
-              @click="deleteAccount"
-            >
-              Eliminar cuenta
-            </button>
-          </div>
-        </div>
-      </div>
+    <div v-if="banner.visible" class="toast-notification" :class="banner.type">
+      <span>{{ banner.message }}</span>
+      <button class="toast-close" @click="banner.visible = false">×</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { getSecuritySettings, updatePassword } from '../../../services/account.js';
 
-// ============================================
-// USER ROLE DETECTION
-// ============================================
-// En producción, esto vendría del store de autenticación
-const userRole = ref('user'); // 'user' | 'admin'
-const userPhone = ref('+52 55 1234 5678');
+const router = useRouter();
 
-// Security data
-const securityScore = ref(85);
-const activeSessions = ref(2);
-const lastPasswordDays = ref(45);
-const securityIssues = ref(3);
-const twoFactorEnabled = ref(false);
-
-// Password form
-const passwordForm = ref({
-  current: '',
-  new: '',
-  confirm: '',
+const security = ref({
+  passwordLastUpdatedAt: null,
+  recoveryEmail: '',
+  canChangePassword: true,
+  supportMessage: '',
 });
 
 const focus = ref({
@@ -822,264 +344,119 @@ const focus = ref({
 const showCurrentPassword = ref(false);
 const showNewPassword = ref(false);
 const showConfirmPassword = ref(false);
+const passwordForm = ref({ current: '', new: '', confirm: '' });
 const isChangingPassword = ref(false);
+const banner = ref({ visible: false, type: 'success', message: '' });
 
-// 2FA
-const show2FAModal = ref(false);
-const twoFactorCode = ref('');
+const canChangePassword = computed(() => security.value.canChangePassword !== false);
+const recoveryEmailLabel = computed(() => security.value.recoveryEmail || 'No configurado');
+const recoveryChannelCount = computed(() => (security.value.recoveryEmail ? 1 : 0));
+const lastPasswordDays = computed(() => {
+  if (!security.value.passwordLastUpdatedAt) return '—';
+  const diff = Date.now() - new Date(security.value.passwordLastUpdatedAt).getTime();
+  return Math.max(0, Math.floor(diff / (1000 * 60 * 60 * 24)));
+});
+const supportMessage = computed(
+  () => security.value.supportMessage || 'Mantén este correo actualizado para recuperar el acceso cuando lo necesites.',
+);
 
-// Delete account
-const showDeleteModal = ref(false);
-const deleteConfirmText = ref('');
-
-// Trusted devices
-const trustedDevices = ref([
-  {
-    id: 1,
-    name: 'MacBook Pro',
-    type: 'desktop',
-    browser: 'Chrome',
-    os: 'macOS',
-    lastUsed: 'Hoy, 10:30 AM',
-  },
-  {
-    id: 2,
-    name: 'iPhone 14 Pro',
-    type: 'mobile',
-    browser: 'Safari',
-    os: 'iOS',
-    lastUsed: 'Ayer, 8:15 PM',
-  },
-]);
-
-// Recent activity
-const recentActivity = ref([
-  {
-    id: 1,
-    type: 'login',
-    title: 'Inicio de sesión',
-    time: 'Hoy, 10:30 AM',
-    location: 'Ciudad de México, MX',
-  },
-  {
-    id: 2,
-    type: 'login',
-    title: 'Inicio de sesión',
-    time: 'Ayer, 8:15 PM',
-    location: 'Guadalajara, MX',
-  },
-  {
-    id: 3,
-    type: 'password',
-    title: 'Cambio de contraseña',
-    time: 'Hace 3 días',
-    location: null,
-  },
-  {
-    id: 4,
-    type: 'security',
-    title: 'Configuración de seguridad actualizada',
-    time: 'Hace 1 semana',
-    location: null,
-  },
-]);
-
-// Security recommendations
-const securityRecommendations = ref([
-  {
-    id: 2,
-    title: 'Actualizar contraseña',
-    description: 'Tu contraseña tiene más de 90 días',
-    action: 'Actualizar',
-    completed: false,
-  },
-  {
-    id: 3,
-    title: 'Verificar número de teléfono',
-    description: 'Añade un número de teléfono para recuperación',
-    action: 'Verificar',
-    completed: true,
-  },
-  {
-    id: 4,
-    title: 'Revisar dispositivos conectados',
-    description: 'Hay 2 dispositivos con acceso a tu cuenta',
-    action: 'Revisar',
-    completed: false,
-  },
-]);
-
-// Password strength
 const passwordStrength = computed(() => {
   const pwd = passwordForm.value.new;
   if (!pwd) return 0;
   let strength = 0;
   if (pwd.length >= 8) strength += 25;
-  if (pwd.match(/[a-z]/) && pwd.match(/[A-Z]/)) strength += 25;
-  if (pwd.match(/[0-9]/)) strength += 25;
-  if (pwd.match(/[^a-zA-Z0-9]/)) strength += 25;
+  if (/[a-z]/.test(pwd) && /[A-Z]/.test(pwd)) strength += 25;
+  if (/[0-9]/.test(pwd)) strength += 25;
+  if (/[^a-zA-Z0-9]/.test(pwd)) strength += 25;
   return strength;
 });
-
 const strengthText = computed(() => {
-  const strength = passwordStrength.value;
-  if (strength < 25) return 'Muy débil';
-  if (strength < 50) return 'Débil';
-  if (strength < 75) return 'Media';
+  if (passwordStrength.value < 25) return 'Muy débil';
+  if (passwordStrength.value < 50) return 'Débil';
+  if (passwordStrength.value < 75) return 'Media';
   return 'Fuerte';
 });
-
 const strengthColor = computed(() => {
-  const strength = passwordStrength.value;
-  if (strength < 25) return '#ef4444';
-  if (strength < 50) return '#f59e0b';
-  if (strength < 75) return '#eab308';
+  if (passwordStrength.value < 25) return '#ef4444';
+  if (passwordStrength.value < 50) return '#f59e0b';
+  if (passwordStrength.value < 75) return '#3b82f6';
   return '#10b981';
 });
 
-// Methods
+const goToPasswordCard = () => {
+  const el = document.getElementById('password-card');
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
 
-const changePassword = () => {
-  if (
-    !passwordForm.value.current ||
-    !passwordForm.value.new ||
-    !passwordForm.value.confirm
-  ) {
-    alert('Por favor completa todos los campos');
-    return;
+const recommendations = computed(() => {
+  const items = [];
+
+  if (lastPasswordDays.value !== '—') {
+    items.push({
+      key: 'password-cycle',
+      title: 'Actualizar contraseña periódicamente',
+      description:
+        lastPasswordDays.value >= 90
+          ? `Tu último cambio fue hace ${lastPasswordDays.value} días.`
+          : `Tu último cambio fue hace ${lastPasswordDays.value} días.`,
+      completed: lastPasswordDays.value < 90,
+      actionLabel: lastPasswordDays.value >= 90 ? 'Actualizar' : null,
+      action: goToPasswordCard,
+    });
   }
 
+  items.push({
+    key: 'recovery-email',
+    title: 'Correo de recuperación vigente',
+    description: recoveryChannelCount.value
+      ? 'Ya cuentas con un correo disponible para recuperación y avisos importantes.'
+      : 'Agrega un correo de recuperación desde tu perfil.',
+    completed: !!recoveryChannelCount.value,
+    actionLabel: recoveryChannelCount.value ? 'Perfil' : 'Configurar',
+    action: () => router.push({ name: 'user-profile' }),
+  });
+
+  return items;
+});
+
+const showBanner = (message, type = 'success') => {
+  banner.value = { visible: true, type, message };
+  setTimeout(() => {
+    banner.value.visible = false;
+  }, 4000);
+};
+
+const loadSecurity = async () => {
+  security.value = await getSecuritySettings();
+};
+
+const changePassword = async () => {
+  if (!passwordForm.value.current || !passwordForm.value.new || !passwordForm.value.confirm) {
+    showBanner('Completa los tres campos para continuar.', 'error');
+    return;
+  }
   if (passwordForm.value.new !== passwordForm.value.confirm) {
-    alert('Las contraseñas nuevas no coinciden');
+    showBanner('Las contraseñas nuevas no coinciden.', 'error');
     return;
   }
-
   if (passwordForm.value.new.length < 8) {
-    alert('La contraseña debe tener al menos 8 caracteres');
+    showBanner('La nueva contraseña debe tener al menos 8 caracteres.', 'error');
     return;
   }
-
   if (passwordStrength.value < 50) {
-    alert('Por favor elige una contraseña más segura');
+    showBanner('Elige una contraseña más robusta antes de guardar.', 'error');
     return;
   }
 
   isChangingPassword.value = true;
-
-  setTimeout(() => {
-    alert('Contraseña actualizada correctamente');
-    passwordForm.value = { current: '', new: '', confirm: '' };
-    isChangingPassword.value = false;
-    lastPasswordDays.value = 0;
-  }, 1500);
+  const result = await updatePassword({ current: passwordForm.value.current, next: passwordForm.value.new });
+  security.value.passwordLastUpdatedAt = result.changedAt;
+  passwordForm.value = { current: '', new: '', confirm: '' };
+  isChangingPassword.value = false;
+  showBanner('Contraseña actualizada correctamente.');
 };
 
-const setupTwoFactor = () => {
-  show2FAModal.value = true;
-};
-
-const enableTwoFactor = () => {
-  if (twoFactorCode.value.length === 6) {
-    twoFactorEnabled.value = true;
-    show2FAModal.value = false;
-    twoFactorCode.value = '';
-    alert('Autenticación de dos factores activada correctamente');
-
-    // Marcar recomendación como completada
-    const rec = securityRecommendations.value.find((r) => r.id === 1);
-    if (rec) rec.completed = true;
-    securityIssues.value = securityRecommendations.value.filter(
-      (r) => !r.completed
-    ).length;
-    securityScore.value = 100 - securityIssues.value * 5;
-  } else {
-    alert('Por favor ingresa un código válido de 6 dígitos');
-  }
-};
-
-const disableTwoFactor = () => {
-  if (
-    confirm(
-      '¿Estás seguro de que deseas desactivar la autenticación de dos factores?'
-    )
-  ) {
-    twoFactorEnabled.value = false;
-    alert('Autenticación de dos factores desactivada');
-
-    const rec = securityRecommendations.value.find((r) => r.id === 1);
-    if (rec) rec.completed = false;
-    securityIssues.value = securityRecommendations.value.filter(
-      (r) => !r.completed
-    ).length;
-    securityScore.value = 100 - securityIssues.value * 5;
-  }
-};
-
-const removeDevice = (deviceId) => {
-  if (confirm('¿Eliminar este dispositivo de la lista de confiados?')) {
-    trustedDevices.value = trustedDevices.value.filter(
-      (d) => d.id !== deviceId
-    );
-    alert('Dispositivo eliminado');
-  }
-};
-
-const logoutOtherDevices = () => {
-  if (confirm('¿Cerrar sesión en todos los demás dispositivos?')) {
-    alert('Se ha cerrado sesión en todos los otros dispositivos');
-  }
-};
-
-const logoutAllDevices = () => {
-  if (
-    confirm(
-      '¿Cerrar sesión en TODOS los dispositivos? Serás redirigido al inicio de sesión.'
-    )
-  ) {
-    alert('Sesión cerrada en todos los dispositivos');
-    // router.push('/login')
-  }
-};
-
-const deactivateAccount = () => {
-  if (
-    confirm(
-      '¿Desactivar tu cuenta temporalmente? Podrás reactivarla más tarde.'
-    )
-  ) {
-    alert('Cuenta desactivada. Serás redirigido al inicio de sesión.');
-    // router.push('/login')
-  }
-};
-
-const deleteAccount = () => {
-  if (deleteConfirmText.value === 'ELIMINAR') {
-    alert('Cuenta eliminada permanentemente');
-    showDeleteModal.value = false;
-    // router.push('/login')
-  }
-};
-
-const takeAction = (recommendation) => {
-  if (recommendation.id === 1) {
-    setupTwoFactor();
-  } else if (recommendation.id === 2) {
-    document
-      .querySelector('.security-card')
-      .scrollIntoView({ behavior: 'smooth' });
-  } else {
-    alert(`Acción: ${recommendation.action}`);
-  }
-};
-
-// Initialize
-onMounted(() => {
-  // Calcular puntuación de seguridad inicial
-  securityIssues.value = securityRecommendations.value.filter(
-    (r) => !r.completed
-  ).length;
-  securityScore.value = Math.max(0, 100 - securityIssues.value * 5);
-});
+onMounted(loadSecurity);
 </script>
 
 <style scoped src="./styles.css"></style>

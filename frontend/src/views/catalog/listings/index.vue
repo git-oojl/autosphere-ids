@@ -419,7 +419,7 @@
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                   <circle cx="12" cy="10" r="3" />
                 </svg>
-                {{ getCityName(vehicle.cityId) }} · {{ vehicle.year }}
+                {{ getCityName(vehicle) }} · {{ vehicle.year }}
               </p>
               <div class="vehicle-details">
                 <span class="detail-badge">{{ vehicle.type }}</span>
@@ -577,7 +577,7 @@
                     <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                     <circle cx="12" cy="10" r="3" />
                   </svg>
-                  <span>{{ getCityName(vehicle.cityId) }}</span>
+                  <span>{{ getCityName(vehicle) }}</span>
                 </div>
               </div>
 
@@ -612,59 +612,18 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-
-// IMPORTAR DATOS DESDE JSON
-import salesData from '../../../mocks/catalog/listings.json';
-import rentalsData from '../../../mocks/catalog/rentals.json';
+import { ref, computed, onMounted, onBeforeUnmount, nextTick, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { getListings } from '../../../services/catalog.js';
+import { recordSearchHistory } from '../../../services/buyer.js';
 
 const router = useRouter();
+const route = useRoute();
 
-// ─── MODE ──────────────────────────────────────────────────────────────────────
-const listingMode = ref('venta'); // 'venta' | 'renta'
+const listingMode = ref('venta');
+const vehiclesData = ref([]);
+const isLoading = ref(false);
 
-const switchMode = (mode) => {
-  listingMode.value = mode;
-  clearAllFilters();
-};
-
-// ─── IMAGE HANDLING ────────────────────────────────────────────────────────────
-const imagesLoaded = ref({});
-
-const getOptimizedImageUrl = (url) => {
-  if (!url) return 'https://placehold.co/400x200/2d3748/ffffff?text=Sin+imagen';
-  if (url.includes('unsplash.com'))
-    return `${url}?w=400&h=200&fit=crop&auto=format&q=80`;
-  return url;
-};
-const handleImageLoad = (event, vehicleId) => {
-  imagesLoaded.value[vehicleId] = true;
-};
-const handleImageError = (event) => {
-  event.target.src =
-    'https://placehold.co/400x200/2d3748/ffffff?text=Error+de+carga';
-};
-
-// ─── HELPERS ───────────────────────────────────────────────────────────────────
-const cityNames = {
-  'mx-cdmx': 'Ciudad de México',
-  'mx-gdl': 'Guadalajara',
-  'mx-mty': 'Monterrey',
-  'mx-pue': 'Puebla',
-  'mx-mer': 'Mérida',
-};
-const getCityName = (cityId) => cityNames[cityId] || cityId;
-const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price);
-const formatMileage = (km) => new Intl.NumberFormat('es-MX').format(km);
-const formatDate = (dateStr) => {
-  if (!dateStr) return '—';
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
-};
-const today = new Date().toISOString().split('T')[0];
-
-// ─── FILTER STATE ──────────────────────────────────────────────────────────────
 const search = ref('');
 const brandSearch = ref('');
 const priceOrder = ref('lowToHigh');
@@ -673,8 +632,6 @@ const selectedBrands = ref([]);
 const selectedTypes = ref([]);
 const selectedCities = ref([]);
 const sortMethod = ref('');
-
-// Renta-specific
 const availableFrom = ref('');
 const availableTo = ref('');
 const maxDeposit = ref('');
@@ -705,49 +662,159 @@ const expandedSections = ref({
   city: false,
 });
 
-// ─── DATOS DESDE JSON ─────────────────────────────────────────────────────────
-// Usar los datos importados en lugar de hardcodeados
-const vehiclesData = ref(salesData);
-const rentalsDataRef = ref(rentalsData);
+const imagesLoaded = ref({});
+const getOptimizedImageUrl = (url) => {
+  if (!url) return 'https://placehold.co/400x200/2d3748/ffffff?text=Sin+imagen';
+  if (url.includes('unsplash.com')) {
+    return `${url}?w=400&h=200&fit=crop&auto=format&q=80`;
+  }
+  return url;
+};
+const handleImageLoad = (_event, vehicleId) => {
+  imagesLoaded.value[vehicleId] = true;
+};
+const handleImageError = (event) => {
+  event.target.src = 'https://placehold.co/400x200/2d3748/ffffff?text=Error+de+carga';
+};
 
-// ─── ACTIVE LIST ───────────────────────────────────────────────────────────────
-const vehicles = computed(() => {
-  const source =
-    listingMode.value === 'venta'
-      ? vehiclesData.value.items
-      : rentalsDataRef.value.items;
-  return source.filter((v) => v.status === 'published');
+const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price || 0);
+const formatMileage = (km) => new Intl.NumberFormat('es-MX').format(km || 0);
+const formatDate = (dateStr) => {
+  if (!dateStr) return '—';
+  const d = new Date(`${dateStr}T00:00:00`);
+  return d.toLocaleDateString('es-MX', { day: '2-digit', month: 'short' });
+};
+const today = new Date().toISOString().split('T')[0];
+
+const getCityName = (vehicle) => {
+  if (!vehicle) return 'Ubicación por confirmar';
+  return vehicle.cityLabel || vehicle.city?.name || vehicle.location?.city || vehicle.cityId;
+};
+
+let searchHistoryTimer = null;
+let lastRecordedSearchSignature = '';
+
+const hasMeaningfulSearch = computed(() => Boolean(
+  search.value.trim() ||
+  selectedBrands.value.length ||
+  selectedTypes.value.length ||
+  selectedCities.value.length ||
+  route.query.minYear ||
+  route.query.maxYear ||
+  availableFrom.value ||
+  availableTo.value ||
+  maxDeposit.value ||
+  minKmIncluded.value
+));
+
+const buildSearchHistoryPayload = () => {
+  if (!hasMeaningfulSearch.value) return null;
+
+  const parts = [];
+  if (search.value.trim()) parts.push(search.value.trim());
+  if (selectedBrands.value.length) parts.push(selectedBrands.value.join(', '));
+  if (selectedTypes.value.length) parts.push(selectedTypes.value.join(', '));
+  if (selectedCities.value.length) parts.push(selectedCities.value.join(', '));
+  if (listingMode.value === 'renta') parts.push('renta');
+
+  const queryText = parts.join(' · ').trim();
+  if (!queryText) return null;
+
+  return {
+    query: queryText,
+    resultCount: filteredVehicles.value.length,
+    filtersSummary: activeFilters.value.join(' · '),
+  };
+};
+
+const scheduleSearchHistoryRecord = (delay = 700) => {
+  clearTimeout(searchHistoryTimer);
+  searchHistoryTimer = setTimeout(async () => {
+    const payload = buildSearchHistoryPayload();
+    if (!payload) return;
+
+    const signature = JSON.stringify({
+      mode: listingMode.value,
+      query: payload.query,
+      filtersSummary: payload.filtersSummary,
+    });
+
+    if (signature === lastRecordedSearchSignature) return;
+
+    await recordSearchHistory(payload);
+    lastRecordedSearchSignature = signature;
+  }, delay);
+};
+
+const loadInventory = async () => {
+  isLoading.value = true;
+  try {
+    const response = await getListings({ mode: listingMode.value, pageSize: 100 });
+    vehiclesData.value = response?.items || [];
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const applyRouteQuery = () => {
+  listingMode.value = route.query.mode === 'renta' ? 'renta' : 'venta';
+  search.value = route.query.q || route.query.model || '';
+  selectedBrands.value = route.query.brand ? [String(route.query.brand)] : [];
+  const minYear = route.query.minYear || '';
+  const maxYear = route.query.maxYear || '';
+  yearOrder.value = 'newToOld';
+  if (minYear && maxYear && String(minYear) === String(maxYear)) {
+    search.value = search.value;
+  }
+};
+
+onMounted(async () => {
+  applyRouteQuery();
+  await loadInventory();
+  await nextTick();
+  scheduleSearchHistoryRecord(0);
 });
 
-onMounted(() => {
-  vehicles.value.forEach((v) => {
-    const img = new Image();
-    img.src = getOptimizedImageUrl(v.coverImage);
+watch(
+  () => route.fullPath,
+  async () => {
+    const prevMode = listingMode.value;
+    applyRouteQuery();
+    if (prevMode !== listingMode.value) {
+      await loadInventory();
+    }
+    await nextTick();
+    scheduleSearchHistoryRecord(0);
+  }
+);
+
+watch(listingMode, async () => {
+  await loadInventory();
+  await nextTick();
+  scheduleSearchHistoryRecord(0);
+});
+
+const switchMode = async (mode) => {
+  listingMode.value = mode;
+  clearAllFilters(false);
+  await router.replace({
+    name: 'public-catalog',
+    query: mode === 'renta' ? { mode: 'renta' } : {},
   });
-});
+};
 
-// ─── COMPUTED FILTER OPTIONS ───────────────────────────────────────────────────
-const uniqueBrands = computed(() =>
-  [...new Set(vehicles.value.map((v) => v.brand))].sort()
-);
-const uniqueTypes = computed(() =>
-  [...new Set(vehicles.value.map((v) => v.type))].sort()
-);
-const uniqueCities = computed(() =>
-  [...new Set(vehicles.value.map((v) => getCityName(v.cityId)))].sort()
-);
+const vehicles = computed(() => vehiclesData.value.filter((vehicle) => vehicle.status === 'published'));
+
+const uniqueBrands = computed(() => [...new Set(vehicles.value.map((vehicle) => vehicle.brand).filter(Boolean))].sort());
+const uniqueTypes = computed(() => [...new Set(vehicles.value.map((vehicle) => vehicle.type).filter(Boolean))].sort());
+const uniqueCities = computed(() => [...new Set(vehicles.value.map((vehicle) => getCityName(vehicle)).filter(Boolean))].sort());
 const filteredBrands = computed(() => {
   if (!brandSearch.value) return uniqueBrands.value;
-  return uniqueBrands.value.filter((b) =>
-    b.toLowerCase().includes(brandSearch.value.toLowerCase())
-  );
+  return uniqueBrands.value.filter((brand) => brand.toLowerCase().includes(brandSearch.value.toLowerCase()));
 });
-const getBrandCount = (brand) =>
-  vehicles.value.filter((v) => v.brand === brand).length;
-const getTypeCount = (type) =>
-  vehicles.value.filter((v) => v.type === type).length;
+const getBrandCount = (brand) => vehicles.value.filter((vehicle) => vehicle.brand === brand).length;
+const getTypeCount = (type) => vehicles.value.filter((vehicle) => vehicle.type === type).length;
 
-// ─── SORT SYNC ─────────────────────────────────────────────────────────────────
 const handlePriceChange = () => {
   sortMethod.value = priceOrder.value === 'lowToHigh' ? 'price' : 'price-desc';
 };
@@ -765,41 +832,39 @@ const handleSortChange = () => {
   }
 };
 
-// ─── ACTIVE FILTERS ────────────────────────────────────────────────────────────
-const hasActiveFilters = computed(
-  () =>
-    selectedBrands.value.length > 0 ||
-    selectedTypes.value.length > 0 ||
-    selectedCities.value.length > 0 ||
-    search.value ||
-    priceOrder.value !== 'lowToHigh' ||
-    yearOrder.value !== 'newToOld' ||
-    availableFrom.value ||
-    availableTo.value ||
-    maxDeposit.value ||
-    minKmIncluded.value
-);
+const hasActiveFilters = computed(() => (
+  selectedBrands.value.length > 0 ||
+  selectedTypes.value.length > 0 ||
+  selectedCities.value.length > 0 ||
+  search.value ||
+  priceOrder.value !== 'lowToHigh' ||
+  yearOrder.value !== 'newToOld' ||
+  availableFrom.value ||
+  availableTo.value ||
+  maxDeposit.value ||
+  minKmIncluded.value
+));
+
 const activeFilters = computed(() => {
-  const f = [];
-  if (search.value) f.push(`Búsqueda: ${search.value}`);
-  if (selectedBrands.value.length)
-    f.push(`${selectedBrands.value.length} marcas`);
-  if (selectedTypes.value.length) f.push(`${selectedTypes.value.length} tipos`);
-  if (selectedCities.value.length)
-    f.push(`${selectedCities.value.length} ciudades`);
-  if (priceOrder.value === 'highToLow') f.push('Precio: mayor a menor');
-  if (yearOrder.value === 'oldToNew') f.push('Año: más antiguo');
-  if (availableFrom.value) f.push(`Desde: ${formatDate(availableFrom.value)}`);
-  if (availableTo.value) f.push(`Hasta: ${formatDate(availableTo.value)}`);
-  if (maxDeposit.value) f.push(`Depósito ≤ $${formatPrice(maxDeposit.value)}`);
-  if (minKmIncluded.value) f.push(`Km/día ≥ ${minKmIncluded.value}`);
-  return f;
+  const filters = [];
+  if (search.value) filters.push(`Búsqueda: ${search.value}`);
+  if (selectedBrands.value.length) filters.push(`${selectedBrands.value.length} marcas`);
+  if (selectedTypes.value.length) filters.push(`${selectedTypes.value.length} tipos`);
+  if (selectedCities.value.length) filters.push(`${selectedCities.value.length} ciudades`);
+  if (priceOrder.value === 'highToLow') filters.push('Precio: mayor a menor');
+  if (yearOrder.value === 'oldToNew') filters.push('Año: más antiguo');
+  if (availableFrom.value) filters.push(`Desde: ${formatDate(availableFrom.value)}`);
+  if (availableTo.value) filters.push(`Hasta: ${formatDate(availableTo.value)}`);
+  if (maxDeposit.value) filters.push(`Depósito ≤ $${formatPrice(maxDeposit.value)}`);
+  if (minKmIncluded.value) filters.push(`Km/día ≥ ${minKmIncluded.value}`);
+  return filters;
 });
 
 const toggleSection = (section) => {
   expandedSections.value[section] = !expandedSections.value[section];
 };
-const clearAllFilters = () => {
+
+const clearAllFilters = (clearModeQuery = true) => {
   search.value = '';
   brandSearch.value = '';
   priceOrder.value = 'lowToHigh';
@@ -812,7 +877,14 @@ const clearAllFilters = () => {
   availableTo.value = '';
   maxDeposit.value = '';
   minKmIncluded.value = '';
+  if (clearModeQuery) {
+    router.replace({
+      name: 'public-catalog',
+      query: listingMode.value === 'renta' ? { mode: 'renta' } : {},
+    });
+  }
 };
+
 const removeFilter = (filter) => {
   if (filter.includes('Búsqueda')) search.value = '';
   if (filter.includes('marcas')) selectedBrands.value = [];
@@ -832,63 +904,82 @@ const removeFilter = (filter) => {
   if (filter.includes('Km')) minKmIncluded.value = '';
 };
 
-// ─── FILTERED VEHICLES ─────────────────────────────────────────────────────────
+const matchesYearQuery = (vehicle) => {
+  const minYear = Number(route.query.minYear || 0);
+  const maxYear = Number(route.query.maxYear || 9999);
+  if (!route.query.minYear && !route.query.maxYear) return true;
+  return Number(vehicle.year || 0) >= minYear && Number(vehicle.year || 0) <= maxYear;
+};
+
 const filteredVehicles = computed(() => {
-  let result = vehicles.value;
+  let result = [...vehicles.value];
 
   if (search.value) {
-    result = result.filter((v) =>
-      v.title.toLowerCase().includes(search.value.toLowerCase())
+    const q = search.value.toLowerCase();
+    result = result.filter((vehicle) =>
+      [vehicle.title, vehicle.brand, vehicle.model, vehicle.sellerDisplayName, getCityName(vehicle)]
+        .filter(Boolean)
+        .some((value) => String(value).toLowerCase().includes(q))
     );
   }
-  if (selectedBrands.value.length > 0)
-    result = result.filter((v) => selectedBrands.value.includes(v.brand));
-  if (selectedTypes.value.length > 0)
-    result = result.filter((v) => selectedTypes.value.includes(v.type));
-  if (selectedCities.value.length > 0)
-    result = result.filter((v) =>
-      selectedCities.value.includes(getCityName(v.cityId))
-    );
+
+  if (selectedBrands.value.length > 0) {
+    result = result.filter((vehicle) => selectedBrands.value.includes(vehicle.brand));
+  }
+
+  if (selectedTypes.value.length > 0) {
+    result = result.filter((vehicle) => selectedTypes.value.includes(vehicle.type));
+  }
+
+  if (selectedCities.value.length > 0) {
+    result = result.filter((vehicle) => selectedCities.value.includes(getCityName(vehicle)));
+  }
+
+  result = result.filter(matchesYearQuery);
 
   if (listingMode.value === 'renta') {
-    if (availableFrom.value)
-      result = result.filter((v) => v.availableTo >= availableFrom.value);
-    if (availableTo.value)
-      result = result.filter((v) => v.availableFrom <= availableTo.value);
-    if (maxDeposit.value)
-      result = result.filter(
-        (v) => v.depositAmount <= parseInt(maxDeposit.value)
-      );
-    if (minKmIncluded.value)
-      result = result.filter(
-        (v) => v.kmIncludedPerDay >= parseInt(minKmIncluded.value)
-      );
-    if (sortMethod.value === 'price')
-      result = [...result].sort((a, b) => a.pricePerDay - b.pricePerDay);
-    else if (sortMethod.value === 'price-desc')
-      result = [...result].sort((a, b) => b.pricePerDay - a.pricePerDay);
-    else if (sortMethod.value === 'year')
-      result = [...result].sort((a, b) => b.year - a.year);
-    else if (sortMethod.value === 'year-asc')
-      result = [...result].sort((a, b) => a.year - b.year);
-  } else {
-    if (sortMethod.value === 'price')
-      result = [...result].sort((a, b) => a.price - b.price);
-    else if (sortMethod.value === 'price-desc')
-      result = [...result].sort((a, b) => b.price - a.price);
-    else if (sortMethod.value === 'year')
-      result = [...result].sort((a, b) => b.year - a.year);
-    else if (sortMethod.value === 'year-asc')
-      result = [...result].sort((a, b) => a.year - b.year);
+    if (availableFrom.value) {
+      result = result.filter((vehicle) => (vehicle.availableTo || '9999-12-31') >= availableFrom.value);
+    }
+    if (availableTo.value) {
+      result = result.filter((vehicle) => (vehicle.availableFrom || today) <= availableTo.value);
+    }
+    if (maxDeposit.value) {
+      result = result.filter((vehicle) => Number(vehicle.depositAmount || 0) <= Number(maxDeposit.value));
+    }
+    if (minKmIncluded.value) {
+      result = result.filter((vehicle) => Number(vehicle.kmIncludedPerDay || 0) >= Number(minKmIncluded.value));
+    }
+  }
+
+  if (sortMethod.value === 'price') {
+    result = [...result].sort((a, b) => Number(a.price || 0) - Number(b.price || 0));
+  } else if (sortMethod.value === 'price-desc') {
+    result = [...result].sort((a, b) => Number(b.price || 0) - Number(a.price || 0));
+  } else if (sortMethod.value === 'year') {
+    result = [...result].sort((a, b) => Number(b.year || 0) - Number(a.year || 0));
+  } else if (sortMethod.value === 'year-asc') {
+    result = [...result].sort((a, b) => Number(a.year || 0) - Number(b.year || 0));
   }
 
   return result;
 });
 
-// ─── NAVIGATION ────────────────────────────────────────────────────────────────
+watch(
+  [search, selectedBrands, selectedTypes, selectedCities, availableFrom, availableTo, maxDeposit, minKmIncluded],
+  () => {
+    if (!hasMeaningfulSearch.value) return;
+    scheduleSearchHistoryRecord();
+  },
+  { deep: true }
+);
+
+onBeforeUnmount(() => {
+  clearTimeout(searchHistoryTimer);
+});
+
 const goToVehicleDetail = (vehicleId) => {
-  console.log('Navegando a detalle:', vehicleId, '| modo:', listingMode.value);
-  router.push(`/listados/${vehicleId}`);
+  router.push({ name: 'public-listing-detail', params: { id: vehicleId } });
 };
 </script>
 

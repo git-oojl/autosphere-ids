@@ -100,10 +100,10 @@ export default [
         meta: { requiresAuth: true },
       },
       {
-        path: 'mis-citas/:id',
+        path: 'cuenta/mis-citas/:id',
         name: 'my-appointments-with-id',
         component: () =>
-          import('../../views/appointments/gestion-citas/index.vue'),
+          import('../../views/buyer/appointment-detail/index.vue'),
         meta: { requiresAuth: true },
         props: true,
       },
@@ -125,7 +125,11 @@ export default [
       {
         path: 'cuenta/publicaciones/:id/editar',
         name: 'seller-edit-listing',
-        component: () => import('../../views/seller/edit-listing/index.vue'),
+        redirect: (to) => ({
+          name: 'seller-listing-detail',
+          params: to.params,
+          query: { edit: 'true' },
+        }),
         meta: { requiresAuth: true },
       },
 
@@ -133,7 +137,13 @@ export default [
       {
         path: 'cuenta/citas-de-mis-anuncios',
         name: 'seller-appointments',
-        component: () => import('../../views/seller/dashboard/index.vue'),
+        redirect: (to) => ({
+          name: 'my-appointments',
+          query: {
+            ...to.query,
+            tab: 'vendedor',
+          },
+        }),
         meta: { requiresAuth: true },
       },
 

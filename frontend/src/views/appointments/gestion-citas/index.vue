@@ -139,16 +139,11 @@
                   Hora preferida *
                 </label>
                 <select v-model="formData.time" required>
+                  <option v-if="availableTimes.length === 0" value="">Sin horarios disponibles</option>
                   <option value="">Seleccionar hora</option>
-                  <option value="09:00">09:00 AM</option>
-                  <option value="10:00">10:00 AM</option>
-                  <option value="11:00">11:00 AM</option>
-                  <option value="12:00">12:00 PM</option>
-                  <option value="13:00">01:00 PM</option>
-                  <option value="14:00">02:00 PM</option>
-                  <option value="15:00">03:00 PM</option>
-                  <option value="16:00">04:00 PM</option>
-                  <option value="17:00">05:00 PM</option>
+                  <option v-for="slot in availableTimes" :key="slot" :value="slot">
+                    {{ slot }}
+                  </option>
                 </select>
               </div>
             </div>
@@ -547,7 +542,7 @@
             </button>
           </div>
           <div class="vehicle-search">
-            <input type="text" placeholder="Buscar vehículo..." />
+            <input v-model="vehicleSearch" type="text" placeholder="Buscar vehículo..." />
           </div>
           <div class="vehicle-list">
             <div
@@ -590,17 +585,16 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
-
-// IMPORTAR LOS MOCKS DESDE JSON
-import salesDetails from '../../../mocks/catalog/listing-details.json';
-import rentalDetails from '../../../mocks/catalog/rental-details.json';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+import { useAuthStore } from '../../../stores/auth.js';
+import { createAppointment, getAppointmentSlots } from '../../../services/appointments.js';
+import { getListingById, getListings } from '../../../services/catalog.js';
 
 const router = useRouter();
 const route = useRoute();
+const auth = useAuthStore();
 
-// Toast notification
 const showToast = ref(false);
 const toastMessage = ref('');
 const toastType = ref('success');
@@ -614,21 +608,19 @@ const showNotification = (message, type = 'success') => {
   }, 3000);
 };
 
-// Datos del usuario (simulados - esto debería venir del store)
-
-// Formulario
 const isSubmitting = ref(false);
 const showVehicleSelector = ref(false);
 const vehicleSearch = ref('');
 const vehicleTab = ref('venta');
+const availableTimes = ref([]);
 
 const formData = ref({
   vehicleId: '',
   date: '',
   time: '',
-  fullName: '',
-  email: '',
-  phone: '',
+  fullName: auth.user?.name || '',
+  email: auth.user?.email || '',
+  phone: auth.user?.phone || '',
   appointmentType: 'test-drive',
   location: '',
   address: '',
@@ -637,84 +629,40 @@ const formData = ref({
   termsAccepted: false,
 });
 
-// Vehículo seleccionado
 const selectedVehicle = ref({});
-
-// Cargar vehículos desde los mocks
 const salesVehicles = ref([]);
 const rentalVehicles = ref([]);
 
-// Función para mapear los datos de los mocks
-const loadVehicles = () => {
-  // Cargar vehículos de venta (listing-details.json)
-  salesVehicles.value = Object.values(salesDetails).map((item) => ({
-    ...item,
-    source: 'sale',
-    mileageKm: item.mileageKm || item.specs?.kilometraje,
-    transmission: item.transmission || item.specs?.transmisión,
-    fuel: item.fuel || item.specs?.combustible,
-    type: item.type || item.specs?.tipo,
-    year: item.year || item.specs?.año,
-    color: item.color || item.specs?.color,
-  }));
-
-  // Cargar vehículos de renta (rental-details.json)
-  rentalVehicles.value = Object.values(rentalDetails).map((item) => ({
-    ...item,
-    source: 'rental',
-    mileageKm: item.specs?.kilometraje,
-    transmission: item.specs?.transmisión,
-    fuel: item.specs?.combustible,
-    type: item.specs?.tipo,
-    year: item.specs?.año,
-    color: item.specs?.color,
-  }));
+const loadVehicles = async () => {
+  const [sales, rentals] = await Promise.all([
+    getListings({ mode: 'venta', pageSize: 100 }),
+    getListings({ mode: 'renta', pageSize: 100 }),
+  ]);
+  salesVehicles.value = sales?.items || [];
+  rentalVehicles.value = rentals?.items || [];
 };
 
-// Todos los vehículos combinados
-const allVehicles = computed(() => {
-  if (vehicleTab.value === 'venta') {
-    return salesVehicles.value;
-  } else {
-    return rentalVehicles.value;
-  }
-});
+const allVehicles = computed(() => (vehicleTab.value === 'venta' ? salesVehicles.value : rentalVehicles.value));
 
 const filteredVehicles = computed(() => {
   if (!vehicleSearch.value) return allVehicles.value;
-  const search = vehicleSearch.value.toLowerCase();
-  return allVehicles.value.filter(
-    (v) =>
-      v.title.toLowerCase().includes(search) ||
-      v.brand?.toLowerCase().includes(search) ||
-      v.model?.toLowerCase().includes(search) ||
-      v.type?.toLowerCase().includes(search)
+  const query = vehicleSearch.value.toLowerCase();
+  return allVehicles.value.filter((vehicle) =>
+    [vehicle.title, vehicle.brand, vehicle.model, vehicle.type]
+      .filter(Boolean)
+      .some((value) => String(value).toLowerCase().includes(query))
   );
 });
 
-const isRentalVehicle = (id) => {
-  return id && id.startsWith('rt-');
-};
+const isRentalVehicle = (id) => id && String(id).startsWith('rt-');
 
 const getVehicleIcon = (type) => {
-  const icons = {
-    SUV: '🚙',
-    Sedán: '🚗',
-    Pickup: '🛻',
-    Hatchback: '🚘',
-    Deportivo: '🏎️',
-  };
+  const icons = { SUV: '🚙', Sedán: '🚗', Pickup: '🛻', Hatchback: '🚘', Deportivo: '🏎️' };
   return icons[type] || '🚗';
 };
 
 const getTypeClass = (type) => {
-  const classes = {
-    SUV: 'suv',
-    Sedán: 'sedan',
-    Pickup: 'pickup',
-    Hatchback: 'hatchback',
-    Deportivo: 'sport',
-  };
+  const classes = { SUV: 'suv', Sedán: 'sedan', Pickup: 'pickup', Hatchback: 'hatchback', Deportivo: 'sport' };
   return classes[type] || 'sedan';
 };
 
@@ -726,34 +674,50 @@ const getCityName = (cityId) => {
     'mx-pue': 'Puebla',
     'mx-mer': 'Mérida',
   };
-  return cities[cityId] || cityId;
+  return cities[cityId] || cityId || 'Ciudad por confirmar';
 };
 
 const minDate = computed(() => {
   const today = new Date();
-  const tomorrow = new Date(today);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  return tomorrow.toISOString().split('T')[0];
+  today.setDate(today.getDate() + 1);
+  return today.toISOString().split('T')[0];
 });
 
-// Métodos
-const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price);
+const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price || 0);
 const formatNumber = (num) => new Intl.NumberFormat('es-MX').format(num || 0);
 
-const handleImageError = (e) => {
-  e.target.src = 'https://placehold.co/400x300/2d5179/ffffff?text=AutoSphere';
+const handleImageError = (event) => {
+  event.target.src = 'https://placehold.co/400x300/2d5179/ffffff?text=AutoSphere';
 };
 
 const selectVehicle = (vehicle) => {
   selectedVehicle.value = vehicle;
   formData.value.vehicleId = vehicle.id;
+  formData.value.location = vehicle.location?.addressLabel ? 'Concesionaria' : formData.value.location;
   showVehicleSelector.value = false;
   vehicleSearch.value = '';
 };
 
 const goBack = () => {
-  router.back();
+  if (window.history.length > 1) router.back();
+  else router.push({ name: 'public-listing-detail', params: { id: route.params.id } });
 };
+
+const loadSlots = async () => {
+  if (!formData.value.vehicleId || !formData.value.date) {
+    availableTimes.value = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00'];
+    return;
+  }
+  const slotData = await getAppointmentSlots(formData.value.vehicleId, { date: formData.value.date });
+  const slots = slotData?.slots || [];
+  availableTimes.value = slots.map((slot) => slot.time);
+  if (!availableTimes.value.includes(formData.value.time)) {
+    formData.value.time = '';
+  }
+};
+
+watch(() => formData.value.date, loadSlots);
+watch(() => formData.value.vehicleId, loadSlots);
 
 const submitAppointment = async () => {
   if (!formData.value.termsAccepted) {
@@ -768,95 +732,47 @@ const submitAppointment = async () => {
 
   isSubmitting.value = true;
 
-  // Construir el objeto de la cita
-  const appointmentData = {
-    id: Date.now(),
-    vehicleId: selectedVehicle.value.id,
-    vehicleTitle: selectedVehicle.value.title,
-    vehiclePrice: selectedVehicle.value.price,
-    date: formData.value.date,
-    time: formData.value.time,
-    appointmentType: formData.value.appointmentType,
-    location: formData.value.location,
-    address: formData.value.address,
-    publicPlace: formData.value.publicPlace,
-    notes: formData.value.notes,
-    client: {
-      name: formData.value.fullName,
-      email: formData.value.email,
-      phone: formData.value.phone,
-    },
-    status: 'pending',
-    statusLabel: 'Pendiente',
-    createdAt: new Date().toISOString(),
-  };
+  try {
+    const created = await createAppointment({
+      listingId: selectedVehicle.value.id,
+      buyerId: auth.user?.id || 'u-buyer-001',
+      buyerName: formData.value.fullName,
+      date: formData.value.date,
+      time: formData.value.time,
+      notes: formData.value.notes,
+      locationLabel:
+        formData.value.location === 'Domicilio'
+          ? formData.value.address
+          : formData.value.location === 'Público'
+            ? formData.value.publicPlace
+            : selectedVehicle.value.location?.addressLabel || selectedVehicle.value.cityLabel || 'Ubicación por confirmar',
+    });
 
-  console.log('Cita agendada:', appointmentData);
-
-  // Simular envío al backend
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-
-  // Guardar en localStorage para persistencia (simulado)
-  const existingAppointments = JSON.parse(
-    localStorage.getItem('appointments') || '[]'
-  );
-  existingAppointments.push(appointmentData);
-  localStorage.setItem('appointments', JSON.stringify(existingAppointments));
-
-  showNotification(
-    'Cita agendada correctamente. Te enviaremos un correo de confirmación.',
-    'success'
-  );
-
-  // Redirigir a "Mis citas"
-  setTimeout(() => {
-    router.push({ name: 'my-appointments' });
-  }, 2000);
-
-  isSubmitting.value = false;
+    router.push({
+      name: 'public-appointment-success',
+      params: { id: selectedVehicle.value.id },
+      query: { appointmentId: created.id },
+    });
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 
 const showTerms = () => {
-  alert(
-    'Términos y condiciones de AutoSphere...\n\n1. Los datos proporcionados serán tratados conforme a nuestra política de privacidad.\n2. Las citas están sujetas a disponibilidad.\n3. El vendedor se compromete a responder en un plazo máximo de 24 horas.'
-  );
+  router.push({ name: 'public-terms' });
 };
 
-// Cargar vehículo desde query params (viene del detalle del vehículo)
-onMounted(() => {
-  // Cargar los vehículos desde los mocks
-  loadVehicles();
-
-  // Verificar si hay datos del vehículo en los query params
-  const vehicleId = route.query.vehicle;
-  const vehicleDataParam = route.query.vehicleData;
-
-  if (vehicleDataParam) {
-    try {
-      const decodedVehicle = JSON.parse(decodeURIComponent(vehicleDataParam));
-      if (decodedVehicle && decodedVehicle.id) {
-        selectedVehicle.value = decodedVehicle;
-        formData.value.vehicleId = decodedVehicle.id;
-      }
-    } catch (error) {
-      console.error('Error al decodificar datos del vehículo:', error);
-    }
-  } else if (vehicleId) {
-    // Buscar en venta o renta
-    let vehicle = salesVehicles.value.find((v) => v.id === vehicleId);
-    if (!vehicle) {
-      vehicle = rentalVehicles.value.find((v) => v.id === vehicleId);
-    }
-    if (vehicle) {
-      selectVehicle(vehicle);
-      // Cambiar la pestaña según el tipo de vehículo
-      if (vehicleId.startsWith('rt-')) {
-        vehicleTab.value = 'renta';
-      } else {
-        vehicleTab.value = 'venta';
-      }
+onMounted(async () => {
+  await loadVehicles();
+  const listingId = route.params.id || route.query.vehicle;
+  if (listingId) {
+    const listing = await getListingById(listingId);
+    if (listing) {
+      selectVehicle(listing);
+      vehicleTab.value = isRentalVehicle(listing.id) ? 'renta' : 'venta';
     }
   }
+  await loadSlots();
 });
 </script>
 

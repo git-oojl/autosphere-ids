@@ -1102,6 +1102,10 @@
   background: #fee2e2;
   color: #991b1b;
 }
+.udash-status.completed {
+  background: #ede9fe;
+  color: #6d28d9;
+}
 
 /* ── Acciones rápidas ───────────────────────── */
 .udash-quick-grid {
@@ -1164,7 +1168,7 @@
 
 /* Vendedor — 4 métricas + tarjeta CTA (misma altura y ritmo visual) */
 .udash-stats-seller {
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   align-items: stretch;
 }
 
@@ -1173,7 +1177,7 @@
   box-sizing: border-box;
 }
 
-.udash-stats-seller > .udash-stat-card:not(.udash-stat-card--cta) {
+.udash-stats-seller > .udash-stat-card {
   align-items: center;
 }
 
@@ -1248,17 +1252,32 @@
 .udash-featured-head,
 .udash-featured-row {
   display: grid;
-  grid-template-columns:
-    minmax(160px, 1.75fr)
-    minmax(76px, 0.42fr)
-    minmax(80px, 0.42fr)
-    minmax(72px, 0.38fr)
-    minmax(100px, 0.52fr)
-    minmax(84px, 0.48fr);
   align-items: center;
-  column-gap: 12px;
+  column-gap: 14px;
   row-gap: 0;
   padding: 11px 20px;
+}
+
+.udash-featured-head--sales,
+.udash-featured-row--sales {
+  grid-template-columns:
+    minmax(220px, 2.1fr)
+    minmax(110px, 0.85fr)
+    minmax(170px, 1.1fr)
+    minmax(82px, 0.6fr)
+    minmax(96px, 0.65fr)
+    minmax(84px, 0.55fr);
+}
+
+.udash-featured-head--rentals,
+.udash-featured-row--rentals {
+  grid-template-columns:
+    minmax(220px, 1.9fr)
+    minmax(110px, 0.8fr)
+    minmax(170px, 1fr)
+    minmax(180px, 1.1fr)
+    minmax(96px, 0.65fr)
+    minmax(84px, 0.55fr);
 }
 
 .udash-featured-head {
@@ -1343,11 +1362,12 @@
   display: inline-flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 6px;
   color: #475569;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   justify-self: end;
   width: 100%;
   min-width: 0;

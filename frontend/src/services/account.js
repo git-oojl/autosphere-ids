@@ -1,47 +1,30 @@
-import profileData from '../mocks/account/profile.json';
-import securityData from '../mocks/account/security.json';
+import profileSeed from '../mocks/account/profile.json';
+import securitySeed from '../mocks/account/security.json';
 import { resolveMock } from './mockResponse.js';
 
+let profileState = { ...profileSeed };
+
 export async function getProfile() {
-  // TODO: replace with GET /api/account/profile.
-  return resolveMock(profileData);
+  return resolveMock(profileState);
 }
 
 export async function updateProfile(payload = {}) {
-  // TODO: replace with PATCH /api/account/profile.
-  return resolveMock({
-    ...profileData,
+  profileState = {
+    ...profileState,
     ...payload,
-  });
+  };
+
+  return resolveMock(profileState);
 }
 
 export async function getSecuritySettings() {
-  // TODO: replace with GET /api/account/security.
-  return resolveMock(securityData);
+  return resolveMock(securitySeed);
 }
 
-export async function getActiveSessions() {
-  // TODO: replace with GET /api/account/security/sessions.
-  return resolveMock(securityData.activeSessions || []);
-}
-
-export async function updatePassword() {
-  // TODO: replace with PATCH /api/account/password.
-  return resolveMock({ ok: true });
-}
-
-export async function toggleTwoFactor(enabled) {
-  // TODO: replace with PATCH /api/account/security/two-factor.
-  return resolveMock({
-    ...securityData,
-    twoFactorEnabled: Boolean(enabled),
-  });
-}
-
-export async function revokeSession(sessionId) {
-  // TODO: replace with DELETE /api/account/security/sessions/:id.
+export async function updatePassword(payload = {}) {
   return resolveMock({
     ok: true,
-    sessionId,
+    changedAt: new Date().toISOString(),
+    ...payload,
   });
 }

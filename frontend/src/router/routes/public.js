@@ -54,6 +54,16 @@ export default [
         component: () => import('../../views/catalog/listing-detail/index.vue'),
       },
       {
+        path: 'usuarios/:id',
+        name: 'public-user-profile',
+        component: () => import('../../views/public/profile/index.vue'),
+      },
+      {
+        path: 'vehiculos/:id/agendar-cita',
+        name: 'public-appointment-booking',
+        component: () => import('../../views/appointments/gestion-citas/index.vue'),
+      },
+      {
         path: 'citas',
         name: 'public-appointments-calendar',
         component: () => import('../../views/appointments/calendar/index.vue'),

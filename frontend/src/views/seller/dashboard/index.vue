@@ -8,8 +8,7 @@
           <div>
             <h1 class="dashboard-title">Dashboard de Vendedor</h1>
             <p class="dashboard-subtitle">
-              Gestiona tus anuncios y citas • Última actualización: Hoy
-              {{ currentTime }}
+              Gestiona tus anuncios y citas desde superficies ya conectadas • {{ currentTime }}
             </p>
           </div>
           <button class="btn-primary" @click="createListing">
@@ -56,7 +55,7 @@
                 >
                   <path d="M12 19V5M5 12L12 5L19 12" />
                 </svg>
-                <span>+3 este mes</span>
+                <span>Inventario visible</span>
               </div>
             </div>
           </div>
@@ -75,9 +74,9 @@
                   />
                 </svg>
               </div>
-              <h2 class="stat-title">Mensajes</h2>
+              <h2 class="stat-title">Citas pendientes</h2>
             </div>
-            <p class="stat-value">{{ stats.messages }}</p>
+            <p class="stat-value">{{ stats.pendingAppointments }}</p>
             <div class="stat-footer">
               <div class="stat-change warning">
                 <svg
@@ -89,7 +88,7 @@
                   <circle cx="12" cy="12" r="10" />
                   <path d="M12 8v4M12 16h.01" />
                 </svg>
-                <span>2 sin responder</span>
+                <span>Requieren atención</span>
               </div>
             </div>
           </div>
@@ -112,7 +111,7 @@
               <h2 class="stat-title">Citas Esta Semana</h2>
             </div>
             <p class="stat-value">{{ stats.appointments }}</p>
-            <button class="btn-card" @click="createAppointment">
+            <button class="btn-card" @click="viewAllAppointments">
               <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -122,7 +121,7 @@
                 <line x1="12" y1="5" x2="12" y2="19" />
                 <line x1="5" y1="12" x2="19" y2="12" />
               </svg>
-              Crear Cita
+              Ver agenda
             </button>
           </div>
 
@@ -141,9 +140,9 @@
                   <circle cx="12" cy="12" r="3" />
                 </svg>
               </div>
-              <h2 class="stat-title">Vistas Totales</h2>
+              <h2 class="stat-title">Anuncios en renta</h2>
             </div>
-            <p class="stat-value">{{ stats.totalViews }}</p>
+            <p class="stat-value">{{ stats.rentalListings }}</p>
             <div class="stat-footer">
               <div class="stat-change positive">
                 <svg
@@ -154,7 +153,7 @@
                 >
                   <path d="M12 19V5M5 12L12 5L19 12" />
                 </svg>
-                <span>+15% vs. sem. pasada</span>
+                <span>Publicados desde tu cuenta</span>
               </div>
             </div>
           </div>
@@ -263,9 +262,9 @@
                   <thead>
                     <tr>
                       <th>Vehículo</th>
-                      <th>Vistas</th>
-                      <th>Mensajes</th>
-                      <th>Citas</th>
+                      <th>Precio</th>
+                      <th>Ciudad</th>
+                      <th>Modalidad</th>
                       <th>Estado</th>
                       <th>Acciones</th>
                     </tr>
@@ -432,7 +431,7 @@
                   <span>Nueva Cita</span>
                 </button>
 
-                <button class="action-card" @click="viewMessages">
+                <button class="action-card" @click="viewPublicListings">
                   <div class="action-icon">
                     <svg
                       viewBox="0 0 24 24"
@@ -445,10 +444,10 @@
                       />
                     </svg>
                   </div>
-                  <span>Mensajes</span>
+                  <span>Mis publicaciones</span>
                 </button>
 
-                <button class="action-card" @click="viewAnalytics">
+                <button class="action-card" @click="viewRentals">
                   <div class="action-icon">
                     <svg
                       viewBox="0 0 24 24"
@@ -461,7 +460,7 @@
                       <line x1="6" y1="20" x2="6" y2="16" />
                     </svg>
                   </div>
-                  <span>Analíticas</span>
+                  <span>Mis rentas</span>
                 </button>
               </div>
             </div>
@@ -485,26 +484,26 @@
 
               <div class="performance-grid">
                 <div class="performance-item">
-                  <div class="perf-label">Tasa de Conversión</div>
-                  <div class="perf-value">12.5%</div>
+                  <div class="perf-label">Publicaciones activas</div>
+                  <div class="perf-value">{{ stats.listings }}</div>
                   <div class="perf-bar">
-                    <div class="perf-fill" style="width: 12.5%"></div>
+                    <div class="perf-fill" :style="{ width: Math.min(100, stats.listings * 12) + '%' }"></div>
                   </div>
                 </div>
 
                 <div class="performance-item">
-                  <div class="perf-label">Tiempo de Respuesta</div>
-                  <div class="perf-value">1.2h</div>
+                  <div class="perf-label">Citas confirmadas</div>
+                  <div class="perf-value">{{ stats.confirmedAppointments }}</div>
                   <div class="perf-bar">
-                    <div class="perf-fill" style="width: 85%"></div>
+                    <div class="perf-fill" :style="{ width: stats.appointments ? (stats.confirmedAppointments / stats.appointments) * 100 + '%' : '0%' }"></div>
                   </div>
                 </div>
 
                 <div class="performance-item">
-                  <div class="perf-label">Tasa de Citas</div>
-                  <div class="perf-value">24%</div>
+                  <div class="perf-label">Rentas publicadas</div>
+                  <div class="perf-value">{{ stats.rentalListings }}</div>
                   <div class="perf-bar">
-                    <div class="perf-fill" style="width: 24%"></div>
+                    <div class="perf-fill" :style="{ width: Math.min(100, stats.rentalListings * 20) + '%' }"></div>
                   </div>
                 </div>
               </div>
@@ -528,9 +527,7 @@
               </div>
 
               <p class="tip-text">
-                <strong>Responde rápido:</strong> Los vendedores que responden
-                en menos de 2 horas tienen un 70% más de probabilidad de cerrar
-                una venta.
+                <strong>Mantén continuidad:</strong> cada publicación y cada cita ya tienen ruta propia. Usa esta vista para entrar a detalle sin salir a pantallas vacías.
               </p>
             </div>
           </div>
@@ -541,115 +538,96 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { getSellerAppointments } from '../../../services/appointments.js';
+import { getListings } from '../../../services/catalog.js';
+import { DEMO_RENTAL_OWNER_ID, DEMO_SALE_OWNER_ID } from '../../../services/demoOwners.js';
 
 const router = useRouter();
 
-// const userName = ref('Carlos Méndez');
-
-const currentTime = computed(() => {
-  const now = new Date();
-  return now.toLocaleTimeString('es-MX', {
+const currentTime = computed(() =>
+  new Date().toLocaleTimeString('es-MX', {
     hour: '2-digit',
     minute: '2-digit',
-  });
-});
+  })
+);
 
 const stats = ref({
-  listings: 24,
-  messages: 12,
-  appointments: 8,
-  totalViews: 1846,
+  listings: 0,
+  pendingAppointments: 0,
+  confirmedAppointments: 0,
+  appointments: 0,
+  rentalListings: 0,
 });
+const upcomingAppointments = ref([]);
+const featuredListings = ref([]);
 
-const upcomingAppointments = ref([
-  {
-    id: 1,
-    isToday: true,
-    date: 'Hoy',
-    time: '10:30',
-    client: 'Ana García',
-    vehicle: 'Nissan Sentra 2020',
-    status: 'confirmed',
-    statusText: 'Confirmada',
-  },
-  {
-    id: 2,
-    isToday: true,
-    date: 'Hoy',
-    time: '13:00',
-    client: 'Carlos Rodríguez',
-    vehicle: 'Porsche 911 2019',
-    status: 'pending',
-    statusText: 'Pendiente',
-  },
-  {
-    id: 3,
-    isToday: false,
-    date: 'Mar 22',
-    time: '09:00',
-    client: 'María López',
-    vehicle: 'BMW X5 2022',
-    status: 'confirmed',
-    statusText: 'Confirmada',
-  },
-]);
-
-const featuredListings = ref([
-  {
-    id: 1,
-    name: 'Nissan Sentra 2020',
-    price: 245000,
-    image: 'https://images.unsplash.com/photo-1549924231-f129b911e442?w=100',
-    views: 245,
-    messages: 3,
-    appointments: 2,
-    status: 'active',
-    statusText: 'Activo',
-  },
-  {
-    id: 2,
-    name: 'Porsche 911 2019',
-    price: 1850000,
-    image: 'https://images.unsplash.com/photo-1519681393784-d120267933ba?w=100',
-    views: 189,
-    messages: 5,
-    appointments: 1,
-    status: 'featured',
-    statusText: 'Destacado',
-  },
-  {
-    id: 3,
-    name: 'Chevrolet Silverado',
-    price: 785000,
-    image: 'https://images.unsplash.com/photo-1605559424843-9c3c3f4e9c2b?w=100',
-    views: 312,
-    messages: 8,
-    appointments: 4,
-    status: 'active',
-    statusText: 'Activo',
-  },
-]);
-
-const manageListings = (ListingId) => {
-  console.log('Gestionar anuncios:', ListingId);
-  router.push({
-    name: 'seller-listings', // Asegúrate que esta ruta exista en tu router
-    params: { id: ListingId },
-  });
+const statusTextMap = {
+  pending: 'Pendiente',
+  confirmed: 'Confirmada',
+  completed: 'Completada',
+  cancelled: 'Cancelada',
+  rescheduled: 'Reagendada',
 };
 
-const createListing = () => alert('Redirigiendo a Crear Anuncio...');
+const loadSellerData = async () => {
+  const [appointments, saleListings, rentalListings] = await Promise.all([
+    getSellerAppointments('u-seller-001'),
+    getListings({ mode: 'venta', sellerId: DEMO_SALE_OWNER_ID, pageSize: 100, includeUnpublished: true }),
+    getListings({ mode: 'renta', sellerId: DEMO_RENTAL_OWNER_ID, pageSize: 100, includeUnpublished: true }),
+  ]);
 
-const createAppointment = () => alert('Redirigiendo a Crear Cita...');
-const viewAllAppointments = () => alert('Redirigiendo a Citas...');
-const viewAppointment = (id) => alert(`Ver detalles de cita #${id}`);
-const editListing = (id) => alert(`Editar anuncio #${id}`);
-const viewStats = (id) => alert(`Estadísticas del anuncio #${id}`);
-const viewMessages = () => alert('Redirigiendo a Mensajes...');
-const viewAnalytics = () => alert('Redirigiendo a Analíticas...');
-const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price);
+  const appts = Array.isArray(appointments) ? appointments : [];
+  const sales = saleListings?.items || [];
+  const rentals = rentalListings?.items || [];
+
+  stats.value = {
+    listings: sales.filter((item) => item.status === 'published').length,
+    pendingAppointments: appts.filter((item) => item.status === 'pending').length,
+    confirmedAppointments: appts.filter((item) => item.status === 'confirmed').length,
+    appointments: appts.length,
+    rentalListings: rentals.filter((item) => item.status === 'published').length,
+  };
+
+  upcomingAppointments.value = appts
+    .filter((item) => ['pending', 'confirmed', 'rescheduled'].includes(item.status))
+    .slice(0, 3)
+    .map((item) => ({
+      id: item.id,
+      isToday: item.date === new Date().toISOString().slice(0, 10),
+      date: item.date,
+      time: item.time,
+      client: item.buyerName || item.buyer?.name || 'Cliente AutoSphere',
+      vehicle: item.listingTitle || 'Vehículo',
+      status: item.status,
+      statusText: statusTextMap[item.status] || item.status,
+    }));
+
+  featuredListings.value = [...sales, ...rentals].slice(0, 5).map((item) => ({
+    id: item.id,
+    name: item.title,
+    price: item.price,
+    image: item.coverImage,
+    cityLabel: item.cityLabel || item.location?.city || 'Ubicación por confirmar',
+    modeLabel: item.mode === 'rental' ? 'Renta' : 'Venta',
+    status: item.status === 'published' ? 'active' : 'paused',
+    statusText: item.status === 'published' ? 'Activo' : 'Borrador',
+  }));
+};
+
+onMounted(loadSellerData);
+
+const manageListings = () => router.push({ name: 'user-listings' });
+const createListing = () => router.push({ name: 'create-listing' });
+const createAppointment = () => router.push({ name: 'my-appointments' });
+const viewAllAppointments = () => router.push({ name: 'seller-appointments' });
+const viewAppointment = (id) => router.push({ name: 'seller-appointment-detail', params: { id } });
+const editListing = (id) => router.push({ name: 'seller-listing-detail', params: { id } });
+const viewStats = (id) => router.push({ name: 'seller-listing-detail', params: { id } });
+const viewPublicListings = () => router.push({ name: 'user-listings' });
+const viewRentals = () => router.push({ name: 'user-rentals' });
+const formatPrice = (price) => new Intl.NumberFormat('es-MX').format(price || 0);
 </script>
 
 <style scoped src="./styles.css"></style>

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "rv-001",
+    "profileId": "u-seller-001",
+    "authorName": "Mariana López",
+    "authorRole": "Compradora",
+    "rating": 5,
+    "text": "Agenda clara, vehículo tal como se publicó y seguimiento puntual antes de la cita.",
+    "createdAt": "2026-03-10"
+  },
+  {
+    "id": "rv-002",
+    "profileId": "u-seller-001",
+    "authorName": "Ricardo Torres",
+    "authorRole": "Comprador",
+    "rating": 4,
+    "text": "La atención fue rápida y el historial del vehículo estuvo disponible durante la revisión.",
+    "createdAt": "2026-02-18"
+  },
+  {
+    "id": "rv-003",
+    "profileId": "u-seller-002",
+    "authorName": "Daniela Pérez",
+    "authorRole": "Compradora",
+    "rating": 5,
+    "text": "Respondieron mis dudas por AutoSphere y pude comparar varias unidades del mismo vendedor.",
+    "createdAt": "2026-03-22"
+  },
+  {
+    "id": "rv-004",
+    "profileId": "u-seller-rent-001",
+    "authorName": "Luis Ramírez",
+    "authorRole": "Arrendatario",
+    "rating": 4,
+    "text": "Proceso de renta claro, entrega en sucursal y condiciones consistentes con el anuncio.",
+    "createdAt": "2026-03-28"
+  },
+  {
+    "id": "rv-005",
+    "profileId": "u-seller-rent-002",
+    "authorName": "Laura Fernández",
+    "authorRole": "Arrendataria",
+    "rating": 5,
+    "text": "Buen seguimiento previo a la entrega y disponibilidad confirmada desde la plataforma.",
+    "createdAt": "2026-04-03"
+  }
+]

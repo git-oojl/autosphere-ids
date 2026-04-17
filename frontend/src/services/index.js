@@ -8,3 +8,4 @@ export * from './lessor.js';
 export * from './public.js';
 export * from './seller.js';
 export * from './shared.js';
+export * from './profiles.js';

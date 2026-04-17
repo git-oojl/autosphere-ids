@@ -1,0 +1,82 @@
+{
+  "u-seller-001": {
+    "id": "u-seller-001",
+    "displayName": "Auto Select Norte",
+    "surface": "seller",
+    "city": "Ciudad de México",
+    "state": "CDMX",
+    "bio": "Agencia enfocada en seminuevos certificados con entrega por cita y documentación revisada.",
+    "verified": true,
+    "memberSince": "2022-03-15"
+  },
+  "u-seller-002": {
+    "id": "u-seller-002",
+    "displayName": "Seminuevos La Roca",
+    "surface": "seller",
+    "city": "Monterrey",
+    "state": "Nuevo León",
+    "bio": "Inventario de uso diario y pickups con atención comercial directa desde AutoSphere.",
+    "verified": true,
+    "memberSince": "2021-08-02"
+  },
+  "u-lessor-001": {
+    "id": "u-lessor-001",
+    "displayName": "Rentas Ejecutivas MX",
+    "surface": "lessor",
+    "city": "Ciudad de México",
+    "state": "CDMX",
+    "bio": "Operación de renta mensual y ejecutiva con entrega en sucursal y validación documental previa.",
+    "verified": true,
+    "memberSince": "2023-01-20"
+  },
+  "u-seller-rent-001": {
+    "id": "u-seller-rent-001",
+    "displayName": "Rentas Premium CDMX",
+    "surface": "lessor",
+    "city": "Ciudad de México",
+    "state": "CDMX",
+    "bio": "Flota urbana con disponibilidad diaria, semanal y mensual en CDMX.",
+    "verified": true,
+    "memberSince": "2024-02-10"
+  },
+  "u-seller-rent-002": {
+    "id": "u-seller-rent-002",
+    "displayName": "Rentas Guadalajara",
+    "surface": "lessor",
+    "city": "Guadalajara",
+    "state": "Jalisco",
+    "bio": "Rentas de SUVs y sedanes para traslado local y viajes de trabajo.",
+    "verified": true,
+    "memberSince": "2024-04-12"
+  },
+  "u-seller-rent-003": {
+    "id": "u-seller-rent-003",
+    "displayName": "Rentas MTY",
+    "surface": "lessor",
+    "city": "Monterrey",
+    "state": "Nuevo León",
+    "bio": "Operador regional con pickups y compactos para uso urbano e industrial ligero.",
+    "verified": true,
+    "memberSince": "2024-05-08"
+  },
+  "u-seller-rent-004": {
+    "id": "u-seller-rent-004",
+    "displayName": "Rentas Puebla",
+    "surface": "lessor",
+    "city": "Puebla",
+    "state": "Puebla",
+    "bio": "Inventario de renta para traslados familiares y ejecutivos.",
+    "verified": true,
+    "memberSince": "2024-06-01"
+  },
+  "u-seller-rent-005": {
+    "id": "u-seller-rent-005",
+    "displayName": "Rentas Yucatán",
+    "surface": "lessor",
+    "city": "Mérida",
+    "state": "Yucatán",
+    "bio": "Operación local con cobertura de aeropuerto y entregas en sucursal.",
+    "verified": true,
+    "memberSince": "2024-06-20"
+  }
+}
