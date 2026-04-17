@@ -1,14 +1,20 @@
 <template>
-  <div class="security-page">
+  <div class="security-page" :class="{ 'admin-security': auth.isAdmin }">
     <br /><br /><br /><br /><br />
 
     <div class="page-header">
       <div class="header-container">
         <div class="header-left">
           <div>
-            <h1 class="page-title">Seguridad</h1>
+            <h1 class="page-title">
+              {{ auth.isAdmin ? 'Seguridad administrativa' : 'Seguridad' }}
+            </h1>
             <p class="page-subtitle">
-              Gestiona tu acceso y mantén actualizado tu canal de recuperación.
+              {{
+                auth.isAdmin
+                  ? 'Resguarda el acceso operativo y mantén vigente el canal de recuperación de la cuenta admin.'
+                  : 'Gestiona tu acceso y mantén actualizado tu canal de recuperación.'
+              }}
             </p>
           </div>
         </div>
@@ -19,7 +25,7 @@
             class="btn-secondary"
             @click="router.push({ name: 'user-profile' })"
           >
-            Mi perfil
+            {{ auth.isAdmin ? 'Cuenta admin' : 'Mi perfil' }}
           </button>
         </div>
       </div>
@@ -42,8 +48,8 @@
           </svg>
         </div>
         <div class="stat-content">
-          <span class="stat-number">{{ canChangePassword ? 'Sí' : 'No' }}</span>
-          <span class="stat-title">Cambio de contraseña disponible</span>
+          <span class="stat-number">{{ auth.isAdmin ? 'Admin' : canChangePassword ? 'Sí' : 'No' }}</span>
+          <span class="stat-title">{{ auth.isAdmin ? 'Tipo de cuenta' : 'Cambio de contraseña disponible' }}</span>
         </div>
       </div>
 
@@ -64,7 +70,7 @@
         </div>
         <div class="stat-content">
           <span class="stat-number">{{ recoveryChannelCount }}</span>
-          <span class="stat-title">Método de recuperación configurado</span>
+          <span class="stat-title">{{ auth.isAdmin ? 'Canal de recuperación prioritario' : 'Método de recuperación configurado' }}</span>
           <span class="stat-meta">{{ recoveryEmailLabel }}</span>
         </div>
       </div>
@@ -103,7 +109,7 @@
         </div>
         <div class="stat-content">
           <span class="stat-number">{{ recommendations.length }}</span>
-          <span class="stat-title">Recomendaciones activas</span>
+          <span class="stat-title">{{ auth.isAdmin ? 'Revisiones manuales sugeridas' : 'Recomendaciones activas' }}</span>
         </div>
       </div>
     </div>
@@ -126,10 +132,15 @@
               </svg>
             </div>
             <div class="card-header-text">
-              <h2 class="card-title">Cambiar contraseña</h2>
+              <h2 class="card-title">
+                {{ auth.isAdmin ? 'Cambiar contraseña administrativa' : 'Cambiar contraseña' }}
+              </h2>
               <p class="card-subtitle">
-                Actualiza tu contraseña y refuerza el acceso principal a tu
-                cuenta.
+                {{
+                  auth.isAdmin
+                    ? 'Actualiza la contraseña de esta cuenta de operación y reduce el riesgo de acceso no deseado.'
+                    : 'Actualiza tu contraseña y refuerza el acceso principal a tu cuenta.'
+                }}
               </p>
             </div>
           </div>
@@ -374,10 +385,15 @@
               </svg>
             </div>
             <div class="card-header-text">
-              <h2 class="card-title">Recuperación de cuenta</h2>
+              <h2 class="card-title">
+                {{ auth.isAdmin ? 'Recuperación administrativa' : 'Recuperación de cuenta' }}
+              </h2>
               <p class="card-subtitle">
-                Mantén un correo vigente para recuperar acceso y recibir avisos
-                importantes.
+                {{
+                  auth.isAdmin
+                    ? 'Mantén un correo vigente para recuperar acceso y recibir avisos operativos de esta cuenta.'
+                    : 'Mantén un correo vigente para recuperar acceso y recibir avisos importantes.'
+                }}
               </p>
             </div>
           </div>
@@ -400,13 +416,51 @@
               class="btn-outline"
               @click="router.push({ name: 'user-profile' })"
             >
-              Actualizar datos desde Mi perfil
+              {{ auth.isAdmin ? 'Actualizar datos desde Cuenta admin' : 'Actualizar datos desde Mi perfil' }}
             </button>
           </div>
         </div>
       </div>
 
       <div class="right-column">
+        <div v-if="auth.isAdmin" class="security-card admin-ops-card">
+          <div class="card-header">
+            <div class="card-icon purple">
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.8"
+              >
+                <path d="M12 3l7 4v5c0 5-3.5 8.5-7 9-3.5-.5-7-4-7-9V7l7-4z" />
+                <path d="M9 12l2 2 4-4" />
+              </svg>
+            </div>
+            <div class="card-header-text">
+              <h2 class="card-title">Resguardo admin</h2>
+              <p class="card-subtitle">
+                Un acceso más sobrio, enfocado en operación y recuperación manual.
+              </p>
+            </div>
+          </div>
+          <div class="card-body admin-ops-list">
+            <div class="admin-ops-item">
+              <strong>Uso interno</strong>
+              <span>Esta vista no simula centro de seguridad, dispositivos o 2FA.</span>
+            </div>
+            <div class="admin-ops-item">
+              <strong>Canal prioritario</strong>
+              <span>El correo de recuperación es el punto principal para restablecer acceso.</span>
+            </div>
+            <div class="admin-ops-item">
+              <strong>Flujo real pendiente</strong>
+              <span>Los controles avanzados llegarán cuando Wave 2 conecte backend real.</span>
+            </div>
+          </div>
+        </div>
+
         <div class="security-card">
           <div class="card-header">
             <div class="card-icon blue">
@@ -425,9 +479,15 @@
               </svg>
             </div>
             <div class="card-header-text">
-              <h2 class="card-title">Recomendaciones de seguridad</h2>
+              <h2 class="card-title">
+                {{ auth.isAdmin ? 'Checklist administrativo' : 'Recomendaciones de seguridad' }}
+              </h2>
               <p class="card-subtitle">
-                Sugerencias visibles para mantener tu acceso al día.
+                {{
+                  auth.isAdmin
+                    ? 'Acciones manuales y visibles para mantener esta cuenta administrativa al día.'
+                    : 'Sugerencias visibles para mantener tu acceso al día.'
+                }}
               </p>
             </div>
           </div>
@@ -497,47 +557,25 @@
             <div class="card-header-text">
               <h2 class="card-title">Accesos rápidos</h2>
               <p class="card-subtitle">
-                Atajos para revisar perfil, citas o recibir ayuda.
+                {{
+                  auth.isAdmin
+                    ? 'Atajos para revisar cuenta, panel y ayuda operativa.'
+                    : 'Atajos para revisar perfil, citas o recibir ayuda.'
+                }}
               </p>
             </div>
           </div>
           <div class="card-body quick-links">
             <button
+              v-for="item in securityQuickLinks"
+              :key="item.label"
               class="quick-link"
               type="button"
-              @click="router.push({ name: 'user-profile' })"
+              @click="router.push(item.route)"
             >
               <div class="quick-link-text">
-                <span class="quick-link-label">Ir a Mi perfil</span>
-                <span class="quick-link-desc"
-                  >Editar datos personales y el correo de recuperación.</span
-                >
-              </div>
-              <span class="quick-link-arrow">›</span>
-            </button>
-            <button
-              class="quick-link"
-              type="button"
-              @click="router.push({ name: 'my-appointments' })"
-            >
-              <div class="quick-link-text">
-                <span class="quick-link-label">Ver mis citas</span>
-                <span class="quick-link-desc"
-                  >Revisar agenda y cambios relevantes de actividad.</span
-                >
-              </div>
-              <span class="quick-link-arrow">›</span>
-            </button>
-            <button
-              class="quick-link"
-              type="button"
-              @click="router.push({ name: 'public-contact' })"
-            >
-              <div class="quick-link-text">
-                <span class="quick-link-label">Contactar soporte</span>
-                <span class="quick-link-desc"
-                  >Usa el canal de contacto si necesitas ayuda adicional.</span
-                >
+                <span class="quick-link-label">{{ item.label }}</span>
+                <span class="quick-link-desc">{{ item.description }}</span>
               </div>
               <span class="quick-link-arrow">›</span>
             </button>
@@ -556,12 +594,14 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuthStore } from '../../../stores/auth.js';
 import {
   getSecuritySettings,
   updatePassword,
 } from '../../../services/account.js';
 
 const router = useRouter();
+const auth = useAuthStore();
 
 const security = ref({
   passwordLastUpdatedAt: null,
@@ -601,7 +641,9 @@ const lastPasswordDays = computed(() => {
 const supportMessage = computed(
   () =>
     security.value.supportMessage ||
-    'Mantén este correo actualizado para recuperar el acceso cuando lo necesites.'
+    (auth.isAdmin
+      ? 'Mantén este correo actualizado para recuperar el acceso administrativo cuando lo necesites.'
+      : 'Mantén este correo actualizado para recuperar el acceso cuando lo necesites.')
 );
 
 const passwordStrength = computed(() => {
@@ -632,17 +674,61 @@ const goToPasswordCard = () => {
   if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
 };
 
+const securityQuickLinks = computed(() =>
+  auth.isAdmin
+    ? [
+        {
+          label: 'Ir a Cuenta admin',
+          description: 'Editar datos internos y el canal de recuperación.',
+          route: { name: 'user-profile' },
+        },
+        {
+          label: 'Abrir dashboard admin',
+          description: 'Volver al panel operativo principal.',
+          route: { name: 'admin-dashboard' },
+        },
+        {
+          label: 'Contactar soporte',
+          description: 'Usa el canal de contacto si necesitas ayuda adicional.',
+          route: { name: 'public-contact' },
+        },
+      ]
+    : [
+        {
+          label: 'Ir a Mi perfil',
+          description: 'Editar datos personales y el correo de recuperación.',
+          route: { name: 'user-profile' },
+        },
+        {
+          label: 'Ver mis citas',
+          description: 'Revisar agenda y cambios relevantes de actividad.',
+          route: { name: 'my-appointments' },
+        },
+        {
+          label: 'Contactar soporte',
+          description: 'Usa el canal de contacto si necesitas ayuda adicional.',
+          route: { name: 'public-contact' },
+        },
+      ]
+);
+
 const recommendations = computed(() => {
   const items = [];
 
   if (lastPasswordDays.value !== '—') {
     items.push({
       key: 'password-cycle',
-      title: 'Actualizar contraseña periódicamente',
+      title: auth.isAdmin
+        ? 'Rotar contraseña administrativa'
+        : 'Actualizar contraseña periódicamente',
       description:
         lastPasswordDays.value >= 90
-          ? `Tu último cambio fue hace ${lastPasswordDays.value} días.`
-          : `Tu último cambio fue hace ${lastPasswordDays.value} días.`,
+          ? auth.isAdmin
+            ? `Tu cuenta admin lleva ${lastPasswordDays.value} días sin rotación de contraseña.`
+            : `Tu último cambio fue hace ${lastPasswordDays.value} días.`
+          : auth.isAdmin
+            ? `Última actualización hace ${lastPasswordDays.value} días.`
+            : `Tu último cambio fue hace ${lastPasswordDays.value} días.`,
       completed: lastPasswordDays.value < 90,
       actionLabel: lastPasswordDays.value >= 90 ? 'Actualizar' : null,
       action: goToPasswordCard,
@@ -651,14 +737,32 @@ const recommendations = computed(() => {
 
   items.push({
     key: 'recovery-email',
-    title: 'Correo de recuperación vigente',
+    title: auth.isAdmin
+      ? 'Correo administrativo vigente'
+      : 'Correo de recuperación vigente',
     description: recoveryChannelCount.value
-      ? 'Ya cuentas con un correo disponible para recuperación y avisos importantes.'
-      : 'Agrega un correo de recuperación desde tu perfil.',
+      ? auth.isAdmin
+        ? 'Ya cuentas con un correo disponible para recuperación y avisos operativos.'
+        : 'Ya cuentas con un correo disponible para recuperación y avisos importantes.'
+      : auth.isAdmin
+        ? 'Agrega o confirma el correo administrativo desde tu perfil.'
+        : 'Agrega un correo de recuperación desde tu perfil.',
     completed: !!recoveryChannelCount.value,
     actionLabel: recoveryChannelCount.value ? 'Perfil' : 'Configurar',
     action: () => router.push({ name: 'user-profile' }),
   });
+
+  if (auth.isAdmin) {
+    items.push({
+      key: 'admin-scope',
+      title: 'Validación fuerte pendiente de backend',
+      description:
+        'Esta vista mantiene controles manuales y evita promesas falsas de 2FA o gestión de dispositivos.',
+      completed: true,
+      actionLabel: 'Dashboard',
+      action: () => router.push({ name: 'admin-dashboard' }),
+    });
+  }
 
   return items;
 });

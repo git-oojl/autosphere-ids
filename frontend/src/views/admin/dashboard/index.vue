@@ -147,10 +147,10 @@
           </svg>
         </div>
         <div class="stat-content">
-          <span class="stat-number">{{ stats.pendingReports }}</span>
-          <span class="stat-title">Reportes Pendientes</span>
+          <span class="stat-number">{{ stats.pendingModeration }}</span>
+          <span class="stat-title">Moderación Pendiente</span>
         </div>
-        <div class="stat-change negative">+3</div>
+        <div class="stat-change negative">{{ stats.pendingModeration }}</div>
       </div>
     </div>
 
@@ -320,101 +320,6 @@
             </div>
             <span class="module-action">Moderar →</span>
           </div>
-
-          <!-- Reportes / Denuncias -->
-          <div class="module-card" @click="goToReports">
-            <div class="module-icon gradient-red">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M12 8V12M12 16H12.01M3 12C3 16.9706 7.02944 21 12 21C16.9706 21 21 16.9706 21 12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12Z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-              </svg>
-            </div>
-            <h4 class="module-title">Reportes / Denuncias</h4>
-            <p class="module-desc">Gestiona quejas y reportes de usuarios</p>
-            <div class="module-badge danger">
-              {{ stats.pendingReports }} pendientes
-            </div>
-            <span class="module-action">Revisar →</span>
-          </div>
-
-          <!-- Bloqueos / Suspensiones -->
-          <div class="module-card" @click="goToSuspensions">
-            <div class="module-icon gradient-dark">
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M18 8C18 4.68629 15.3137 2 12 2C8.68629 2 6 4.68629 6 8V11H18V8Z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-                <path
-                  d="M4 14C4 12.8954 4.89543 12 6 12H18C19.1046 12 20 12.8954 20 14V20C20 21.1046 19.1046 22 18 22H6C4.89543 22 4 21.1046 4 20V14Z"
-                  stroke="currentColor"
-                  stroke-width="2"
-                />
-                <circle cx="12" cy="17" r="1" fill="currentColor" />
-              </svg>
-            </div>
-            <h4 class="module-title">Bloqueos / Suspensiones</h4>
-            <p class="module-desc">
-              Gestiona usuarios bloqueados y suspendidos
-            </p>
-            <div class="module-badge danger">
-              {{ stats.suspendedUsers }} suspendidos
-            </div>
-            <span class="module-action">Gestionar →</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Recent Activity Section -->
-    <div class="recent-activity">
-      <div class="recent-header">
-        <h3>Actividad Reciente</h3>
-        <button class="view-all-btn">Ver todo →</button>
-      </div>
-      <div class="activity-list">
-        <div class="activity-item">
-          <div class="activity-icon green">✓</div>
-          <div class="activity-content">
-            <p>
-              <strong>Nuevo usuario registrado</strong> - Ana García se unió
-              como Compradora
-            </p>
-            <span class="activity-time">Hace 5 minutos</span>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-icon blue">📢</div>
-          <div class="activity-content">
-            <p>
-              <strong>Anuncio pendiente</strong> - Porsche 911 espera moderación
-            </p>
-            <span class="activity-time">Hace 15 minutos</span>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-icon yellow">⚠️</div>
-          <div class="activity-content">
-            <p>
-              <strong>Nuevo reporte</strong> - Denuncia de alta severidad
-              recibida
-            </p>
-            <span class="activity-time">Hace 1 hora</span>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-icon red">⛔</div>
-          <div class="activity-content">
-            <p>
-              <strong>Suspensión aplicada</strong> - Usuario Carlos R.
-              suspendido por 30 días
-            </p>
-            <span class="activity-time">Hace 2 horas</span>
-          </div>
         </div>
       </div>
     </div>
@@ -424,24 +329,30 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { getAdminDashboard } from '../../../services/admin.js';
 
-// Initialize router
 const router = useRouter();
 
-// Stats data
 const stats = ref({
-  totalUsers: 1247,
-  totalListings: 342,
-  totalAppointments: 156,
-  pendingReports: 12,
-  pendingModeration: 8,
-  suspendedUsers: 7,
+  totalUsers: 0,
+  totalListings: 0,
+  totalAppointments: 0,
+  pendingReports: 0,
+  pendingModeration: 0,
+  suspendedUsers: 0,
 });
 
-// Current date
 const currentDate = ref('');
 
-onMounted(() => {
+const loadDashboard = async () => {
+  const response = await getAdminDashboard();
+  stats.value = {
+    ...stats.value,
+    ...(response?.summary || {}),
+  };
+};
+
+onMounted(async () => {
   const now = new Date();
   currentDate.value = now.toLocaleDateString('es-MX', {
     weekday: 'long',
@@ -449,34 +360,23 @@ onMounted(() => {
     month: 'long',
     day: 'numeric',
   });
+  await loadDashboard();
 });
 
 const goToUsers = () => {
   router.push('/admin/usuarios');
 };
-
 const goToListings = () => {
   router.push('/admin/vehiculos');
 };
-
 const goToAppointments = () => {
   router.push('/admin/citas');
 };
-
 const goToCatalog = () => {
   router.push('/admin/catalogo');
 };
-
 const goToModeration = () => {
   router.push('/admin/moderacion');
-};
-
-const goToReports = () => {
-  router.push('/admin/reportes');
-};
-
-const goToSuspensions = () => {
-  router.push('/admin/suspensiones');
 };
 </script>
 

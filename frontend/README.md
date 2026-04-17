@@ -63,19 +63,19 @@ Contrato mínimo del store:
 - `hasRole(...)`
 - `hasAnyRole(...)`
 
-Roles disponibles en desarrollo:
+Modelo real de sesión en desarrollo:
 
 - invitado
-- comprador
-- vendedor
-- arrendador
+- usuario registrado
 - admin
+
+Comprador / vendedor / arrendador siguen existiendo como superficies de capacidad dentro de una cuenta autenticada, no como identidades de autenticación separadas.
 
 Rutas útiles para validación:
 
-- `/panel/comprador`
-- `/panel/vendedor`
-- `/panel/arrendador`
+- `/cuenta/dashboard`
+- `/cuenta/mis-citas`
+- `/cuenta/publicaciones`
 - `/admin`
 
 Cuando exista autenticación real, el switcher debe eliminarse sin afectar la implementación final.

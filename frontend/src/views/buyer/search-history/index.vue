@@ -78,13 +78,18 @@ onMounted(async () => {
   padding: 112px 24px 40px;
   display: grid;
   gap: 24px;
+  justify-items: center;
 }
 .hero,
 .card {
+  width: min(960px, 100%);
   background: #fff;
   border-radius: 24px;
   padding: 24px;
   box-shadow: 0 16px 40px rgba(15, 30, 44, 0.08);
+}
+.hero {
+  text-align: center;
 }
 .eyebrow {
   text-transform: uppercase;

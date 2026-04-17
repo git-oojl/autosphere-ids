@@ -655,9 +655,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-
-// IMPORTAR EL MOCK DESDE JSON
-import appointmentsMock from '../../../mocks/admin/appointments.json';
+import {
+  getAdminAppointments,
+  updateAdminAppointment,
+  deleteAdminAppointment,
+} from '../../../services/admin.js';
 
 const router = useRouter();
 
@@ -669,31 +671,7 @@ const stats = ref({
   completed: 0,
 });
 
-// APPOINTMENTS: Usar los datos importados del JSON
-const appointments = ref(
-  appointmentsMock.items.map((item) => ({
-    id: item.id,
-    listingId: item.listingId,
-    listingTitle: item.listingTitle,
-    listingPrice: item.listingPrice,
-    buyerId: item.buyerId,
-    buyerName: item.buyerName,
-    buyerPhone: item.buyerPhone,
-    buyerEmail: item.buyerEmail,
-    sellerId: item.sellerId,
-    sellerName: item.sellerName,
-    sellerPhone: item.sellerPhone,
-    sellerEmail: item.sellerEmail,
-    status: item.status,
-    date: item.date,
-    time: item.time,
-    type: item.type,
-    location: item.location,
-    address: item.address,
-    locationLabel: item.locationLabel,
-    notes: item.notes,
-  }))
-);
+const appointments = ref([]);
 
 // Filters
 const searchTerm = ref('');
@@ -782,6 +760,12 @@ const visiblePages = computed(() => {
   }
   return pages;
 });
+
+const loadAppointments = async () => {
+  const response = await getAdminAppointments();
+  appointments.value = response?.items || [];
+  updateStats();
+};
 
 // Methods
 const goBack = () => {
@@ -886,22 +870,14 @@ const closeDetailsModal = () => {
   selectedAppointment.value = null;
 };
 
-const confirmAppointment = (appointment) => {
-  const index = appointments.value.findIndex((a) => a.id === appointment.id);
-  if (index !== -1) {
-    appointments.value[index].status = 'confirmed';
-    alert(`Cita ${appointment.id} confirmada correctamente`);
-    updateStats();
-  }
+const confirmAppointment = async (appointment) => {
+  await updateAdminAppointment(appointment.id, { status: 'confirmed' });
+  await loadAppointments();
 };
 
-const completeAppointment = (appointment) => {
-  const index = appointments.value.findIndex((a) => a.id === appointment.id);
-  if (index !== -1) {
-    appointments.value[index].status = 'completed';
-    alert(`Cita ${appointment.id} marcada como completada`);
-    updateStats();
-  }
+const completeAppointment = async (appointment) => {
+  await updateAdminAppointment(appointment.id, { status: 'completed' });
+  await loadAppointments();
 };
 
 const cancelAppointment = (appointment) => {
@@ -910,21 +886,17 @@ const cancelAppointment = (appointment) => {
   showCancelModal.value = true;
 };
 
-const confirmCancel = () => {
+const confirmCancel = async () => {
   if (selectedAppointment.value) {
-    const index = appointments.value.findIndex(
-      (a) => a.id === selectedAppointment.value.id
-    );
-    if (index !== -1) {
-      appointments.value[index].status = 'cancelled';
-      alert(
-        `Cita ${selectedAppointment.value.id} cancelada${cancelReason.value ? `: ${cancelReason.value}` : ''}`
-      );
-    }
+    await updateAdminAppointment(selectedAppointment.value.id, {
+      status: 'cancelled',
+      cancelReason: cancelReason.value,
+    });
   }
   showCancelModal.value = false;
   selectedAppointment.value = null;
-  updateStats();
+  cancelReason.value = '';
+  await loadAppointments();
 };
 
 const deleteAppointment = (appointment) => {
@@ -932,35 +904,18 @@ const deleteAppointment = (appointment) => {
   showDeleteModal.value = true;
 };
 
-const confirmDelete = () => {
+const confirmDelete = async () => {
   if (selectedAppointment.value) {
-    const index = appointments.value.findIndex(
-      (a) => a.id === selectedAppointment.value.id
-    );
-    if (index !== -1) {
-      appointments.value.splice(index, 1);
-      alert(`Cita ${selectedAppointment.value.id} eliminada`);
-    }
+    await deleteAdminAppointment(selectedAppointment.value.id);
   }
   showDeleteModal.value = false;
   selectedAppointment.value = null;
-  updateStats();
-};
-
-const exportAppointments = () => {
-  const data = JSON.stringify(filteredAppointments.value, null, 2);
-  const blob = new Blob([data], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `citas_${new Date().toISOString().split('T')[0]}.json`;
-  a.click();
-  URL.revokeObjectURL(url);
+  await loadAppointments();
 };
 
 // Initialize
-onMounted(() => {
-  updateStats();
+onMounted(async () => {
+  await loadAppointments();
 });
 </script>
 

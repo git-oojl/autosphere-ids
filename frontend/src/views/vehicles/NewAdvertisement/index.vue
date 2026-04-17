@@ -1341,6 +1341,10 @@
             </div>
           </div>
 
+          <p v-if="submitFeedback.message" :class="['submission-feedback', submitFeedback.type]">
+            {{ submitFeedback.message }}
+          </p>
+
           <!-- NAVIGATION BUTTONS -->
           <div class="form-navigation">
             <button
@@ -1415,14 +1419,16 @@
 <script setup>
 import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import { createListing } from '../../../services/seller.js';
+import { registerRental } from '../../../services/lessor.js';
 
 const router = useRouter();
 const currentStep = ref(1);
 const isSubmitting = ref(false);
 const fileInput = ref(null);
 const uploadedImages = ref([]);
+const submitFeedback = ref({ type: 'error', message: '' });
 
-// Generate years array
 const currentYear = new Date().getFullYear();
 const years = computed(() => {
   const arr = [];
@@ -1432,7 +1438,6 @@ const years = computed(() => {
   return arr;
 });
 
-// Form data
 const formData = ref({
   listingType: 'sale',
   brand: '',
@@ -1463,6 +1468,10 @@ const formData = ref({
   acceptTerms: false,
 });
 
+const setFeedback = (type, message) => {
+  submitFeedback.value = { type, message };
+};
+
 const goToStep = (step) => {
   if (step < currentStep.value) {
     currentStep.value = step;
@@ -1482,11 +1491,10 @@ const previousStep = () => {
 };
 
 const validateStep = () => {
-  if (currentStep.value === 1) {
-    if (!formData.value.listingType) {
-      alert('Por favor selecciona el tipo de anuncio');
-      return false;
-    }
+  setFeedback('error', '');
+  if (currentStep.value === 1 && !formData.value.listingType) {
+    setFeedback('error', 'Selecciona si el anuncio será de venta o renta.');
+    return false;
   }
   return true;
 };
@@ -1506,23 +1514,24 @@ const handleDrop = (event) => {
 };
 
 const processFiles = (files) => {
+  setFeedback('error', '');
   const imageFiles = files.filter((file) => file.type.startsWith('image/'));
 
   if (uploadedImages.value.length + imageFiles.length > 10) {
-    alert('Máximo 10 fotos permitidas');
+    setFeedback('error', 'Máximo 10 fotos permitidas.');
     return;
   }
 
   imageFiles.forEach((file) => {
     if (file.size > 5 * 1024 * 1024) {
-      alert(`${file.name} es muy grande. Máximo 5MB`);
+      setFeedback('error', `${file.name} es muy grande. Máximo 5MB.`);
       return;
     }
 
     const reader = new FileReader();
     reader.onload = (e) => {
       uploadedImages.value.push({
-        file: file,
+        file,
         preview: e.target.result,
       });
     };
@@ -1534,23 +1543,84 @@ const removeImage = (index) => {
   uploadedImages.value.splice(index, 1);
 };
 
-const submitListing = () => {
+const submitListing = async () => {
+  setFeedback('error', '');
+
   if (uploadedImages.value.length < 3) {
-    alert('Por favor sube al menos 3 fotos del vehículo');
+    setFeedback('error', 'Sube al menos 3 fotos del vehículo para continuar.');
     return;
   }
 
   isSubmitting.value = true;
 
-  setTimeout(() => {
-    isSubmitting.value = false;
-    const type = formData.value.listingType === 'sale' ? 'venta' : 'renta';
-    alert(
-      `¡Anuncio de ${type} preparado correctamente!\n\nVehículo: ${formData.value.brand} ${formData.value.model} ${formData.value.year}\n\nAhora puedes revisarlo desde Mis publicaciones.`
+  try {
+    const payload = {
+      title: `${formData.value.brand} ${formData.value.model} ${formData.value.year}`.trim(),
+      brand: formData.value.brand,
+      model: formData.value.model,
+      year: formData.value.year,
+      category: formData.value.vehicleType,
+      mileageKm: formData.value.mileage,
+      color: formData.value.color,
+      transmission: formData.value.transmission,
+      fuel: formData.value.fuelType,
+      description: formData.value.description,
+      cityName: formData.value.city,
+      sellerPhone: formData.value.contactPhone,
+      sellerEmail: formData.value.contactEmail,
+      features: formData.value.features,
+      price: formData.value.price,
+      pricePerDay: formData.value.pricePerDay,
+      pricePerWeek: formData.value.pricePerWeek,
+      deposit: formData.value.deposit,
+      minRentalDays: formData.value.minRentalDays,
+      status: 'draft',
+    };
+
+    if (formData.value.listingType === 'sale') {
+      await createListing({
+        ...payload,
+        type: 'venta',
+      });
+    } else {
+      await registerRental({
+        ...payload,
+        vehicleLabel: payload.title,
+        status: 'scheduled',
+      });
+    }
+
+    setFeedback(
+      'success',
+      `Anuncio de ${formData.value.listingType === 'sale' ? 'venta' : 'renta'} preparado correctamente en el seam mock. En Wave 2 este formulario enviará el payload al backend real.`
     );
     router.push({ name: 'user-listings' });
-  }, 2000);
+  } catch (error) {
+    setFeedback('error', 'No fue posible preparar el anuncio. Intenta nuevamente.');
+  } finally {
+    isSubmitting.value = false;
+  }
 };
 </script>
 
-<style scoped src="./styles.css"></style>
+<style scoped src="./styles.css">
+.submission-feedback {
+  margin: 0 0 20px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.submission-feedback.success {
+  background: rgba(16, 185, 129, 0.12);
+  color: #065f46;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.submission-feedback.error {
+  background: rgba(239, 68, 68, 0.1);
+  color: #991b1b;
+  border: 1px solid rgba(239, 68, 68, 0.18);
+}
+</style>

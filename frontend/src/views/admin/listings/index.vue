@@ -690,9 +690,11 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-
-// IMPORTAR EL MOCK DESDE JSON
-import listingsMock from '../../../mocks/admin/listings.json';
+import {
+  getAdminListings,
+  saveAdminListing,
+  deleteAdminListing,
+} from '../../../services/admin.js';
 
 const router = useRouter();
 
@@ -704,37 +706,7 @@ const stats = ref({
   sold: 0,
 });
 
-// LISTINGS: Usar los datos importados del JSON
-const listings = ref(
-  listingsMock.items.map((item) => ({
-    id: item.id,
-    title: item.title,
-    brand: item.brand,
-    model: item.model,
-    year: item.year,
-    price: item.price,
-    type: item.type || 'venta',
-    category: item.category,
-    transmission: item.transmission,
-    fuel: item.fuel,
-    mileageKm: item.mileageKm,
-    cityId: item.cityId,
-    cityName: item.cityName,
-    sellerId: item.sellerId,
-    sellerName: item.sellerName,
-    sellerEmail: item.sellerEmail,
-    sellerPhone: item.sellerPhone,
-    coverImage: item.coverImage,
-    status: item.status,
-    color: item.color,
-    description: item.description,
-    features: item.features || [],
-    views: item.views || 0,
-    messages: item.messages || 0,
-    createdAt: item.createdAt,
-    updatedAt: item.updatedAt,
-  }))
-);
+const listings = ref([]);
 
 // Filters
 const searchTerm = ref('');
@@ -839,6 +811,12 @@ const visiblePages = computed(() => {
   }
   return pages;
 });
+
+const loadListings = async () => {
+  const response = await getAdminListings();
+  listings.value = response?.items || [];
+  updateStats();
+};
 
 // Methods
 const goBack = () => {
@@ -961,7 +939,7 @@ const closeListingModal = () => {
   selectedListing.value = null;
 };
 
-const saveListing = () => {
+const saveListing = async () => {
   if (
     !listingForm.value.title ||
     !listingForm.value.brand ||
@@ -977,72 +955,30 @@ const saveListing = () => {
     .split(',')
     .map((f) => f.trim())
     .filter((f) => f);
-  const newId = `vh-${Date.now()}`;
 
-  if (isEditing.value && listingForm.value.id) {
-    // Edit existing listing
-    const index = listings.value.findIndex(
-      (l) => l.id === listingForm.value.id
-    );
-    if (index !== -1) {
-      listings.value[index] = {
-        ...listings.value[index],
-        title: listingForm.value.title,
-        brand: listingForm.value.brand,
-        model: listingForm.value.model,
-        year: parseInt(listingForm.value.year),
-        price: parseInt(listingForm.value.price),
-        category: listingForm.value.category,
-        transmission: listingForm.value.transmission,
-        fuel: listingForm.value.fuel,
-        mileageKm: listingForm.value.mileageKm
-          ? parseInt(listingForm.value.mileageKm)
-          : null,
-        cityName: listingForm.value.cityName,
-        color: listingForm.value.color,
-        status: listingForm.value.status,
-        description: listingForm.value.description,
-        features: features,
-        updatedAt: new Date().toISOString(),
-      };
-      alert(`Anuncio ${listingForm.value.title} actualizado correctamente`);
-    }
-  } else {
-    // Create new listing
-    const newListing = {
-      id: newId,
-      title: listingForm.value.title,
-      brand: listingForm.value.brand,
-      model: listingForm.value.model,
-      year: parseInt(listingForm.value.year),
-      price: parseInt(listingForm.value.price),
-      type: 'venta',
-      category: listingForm.value.category,
-      transmission: listingForm.value.transmission,
-      fuel: listingForm.value.fuel,
-      mileageKm: listingForm.value.mileageKm
-        ? parseInt(listingForm.value.mileageKm)
-        : null,
-      cityName: listingForm.value.cityName,
-      sellerId: 'u-seller-001',
-      sellerName: 'Carlos Méndez',
-      sellerEmail: 'carlos.mendez@email.com',
-      sellerPhone: '55 8765 4321',
-      coverImage: '',
-      status: listingForm.value.status,
-      color: listingForm.value.color,
-      description: listingForm.value.description,
-      features: features,
-      views: 0,
-      messages: 0,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    listings.value.unshift(newListing);
-    alert(`Anuncio ${listingForm.value.title} creado correctamente`);
-  }
+  await saveAdminListing({
+    id: listingForm.value.id,
+    title: listingForm.value.title,
+    brand: listingForm.value.brand,
+    model: listingForm.value.model,
+    year: parseInt(listingForm.value.year),
+    price: parseInt(listingForm.value.price),
+    type: 'venta',
+    category: listingForm.value.category,
+    transmission: listingForm.value.transmission,
+    fuel: listingForm.value.fuel,
+    mileageKm: listingForm.value.mileageKm
+      ? parseInt(listingForm.value.mileageKm)
+      : null,
+    cityName: listingForm.value.cityName,
+    color: listingForm.value.color,
+    status: listingForm.value.status,
+    description: listingForm.value.description,
+    features,
+  });
+
   closeListingModal();
-  updateStats();
+  await loadListings();
 };
 
 const viewListing = (listing) => {
@@ -1060,24 +996,18 @@ const deleteListing = (listing) => {
   showDeleteModal.value = true;
 };
 
-const confirmDelete = () => {
+const confirmDelete = async () => {
   if (selectedListing.value) {
-    const index = listings.value.findIndex(
-      (l) => l.id === selectedListing.value.id
-    );
-    if (index !== -1) {
-      listings.value.splice(index, 1);
-      alert(`Anuncio ${selectedListing.value.title} eliminado`);
-    }
+    await deleteAdminListing(selectedListing.value.id);
   }
   showDeleteModal.value = false;
   selectedListing.value = null;
-  updateStats();
+  await loadListings();
 };
 
 // Initialize
-onMounted(() => {
-  updateStats();
+onMounted(async () => {
+  await loadListings();
 });
 </script>
 

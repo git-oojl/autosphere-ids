@@ -44,6 +44,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { requestPasswordReset } from '../../../services/auth.js';
 
 const router = useRouter();
 const email = ref('');
@@ -53,13 +54,16 @@ const successMessage = ref('');
 const handleSubmit = async () => {
   isLoading.value = true;
 
-  // Simular envío de correo
-  await new Promise((resolve) => setTimeout(resolve, 1500));
+  try {
+    const response = await requestPasswordReset({ email: email.value });
+    successMessage.value =
+      response?.message
+        ? `${response.message} para ${email.value}`
+        : `Se han enviado las instrucciones a ${email.value}`;
+  } finally {
+    isLoading.value = false;
+  }
 
-  successMessage.value = `Se han enviado las instrucciones a ${email.value}`;
-  isLoading.value = false;
-
-  // Opcional: redirigir después de 3 segundos
   setTimeout(() => {
     router.push({ name: 'auth-login' });
   }, 3000);

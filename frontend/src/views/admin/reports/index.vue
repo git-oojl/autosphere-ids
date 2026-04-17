@@ -600,9 +600,12 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-
-// IMPORTAR EL MOCK DESDE JSON
-import reportsMock from '../../../mocks/admin/reports.json';
+import {
+  getAdminReports,
+  startAdminReportReview,
+  resolveReport as resolveAdminReport,
+  deleteAdminReport,
+} from '../../../services/admin.js';
 
 const router = useRouter();
 
@@ -614,33 +617,7 @@ const stats = ref({
   resolved: 0,
 });
 
-// REPORTS: Usar los datos importados del JSON
-const reports = ref(
-  reportsMock.items.map((item) => ({
-    id: item.id,
-    reporterId: item.reporterId,
-    reporterName: item.reporterName,
-    reporterEmail: item.reporterEmail,
-    reporterPhone: item.reporterPhone,
-    reportedId: item.reportedId,
-    reportedName: item.reportedName,
-    reportedEmail: item.reportedEmail,
-    targetType: item.targetType,
-    targetId: item.targetId,
-    targetName: item.targetName,
-    title: item.title,
-    description: item.description,
-    type: item.type,
-    severity: item.severity,
-    status: item.status,
-    createdAt: item.createdAt,
-    updatedAt: item.updatedAt,
-    resolvedAt: item.resolvedAt,
-    resolution: item.resolution,
-    adminNotes: item.adminNotes,
-    evidence: item.evidence,
-  }))
-);
+const reports = ref([]);
 
 // Filters
 const searchTerm = ref('');
@@ -728,6 +705,12 @@ const visiblePages = computed(() => {
   }
   return pages;
 });
+
+const loadReports = async () => {
+  const response = await getAdminReports();
+  reports.value = response?.items || [];
+  updateStats();
+};
 
 // Methods
 const goBack = () => {
@@ -841,15 +824,9 @@ const closeDetailsModal = () => {
   selectedReport.value = null;
 };
 
-const startReview = (report) => {
-  const index = reports.value.findIndex((r) => r.id === report.id);
-  if (index !== -1) {
-    reports.value[index].status = 'reviewing';
-    reports.value[index].updatedAt = new Date().toISOString();
-    reports.value[index].adminNotes = 'En revisión por el equipo de moderación';
-    alert(`Reporte ${report.id} marcado como "En revisión"`);
-    updateStats();
-  }
+const startReview = async (report) => {
+  await startAdminReportReview(report.id);
+  await loadReports();
 };
 
 const resolveReport = (report) => {
@@ -861,24 +838,18 @@ const resolveReport = (report) => {
   showResolveModal.value = true;
 };
 
-const confirmResolve = () => {
+const confirmResolve = async () => {
   if (selectedReport.value) {
-    const index = reports.value.findIndex(
-      (r) => r.id === selectedReport.value.id
-    );
-    if (index !== -1) {
-      reports.value[index].status = 'resolved';
-      reports.value[index].resolvedAt = new Date().toISOString();
-      reports.value[index].resolution = resolveForm.value.action;
-      reports.value[index].adminNotes =
+    await resolveAdminReport(selectedReport.value.id, {
+      action: resolveForm.value.action,
+      notes:
         resolveForm.value.notes ||
-        `Resuelto - Acción: ${resolveForm.value.action || 'No especificada'}`;
-      alert(`Reporte ${selectedReport.value.id} resuelto`);
-    }
+        `Resuelto - Acción: ${resolveForm.value.action || 'No especificada'}`,
+    });
   }
   showResolveModal.value = false;
   selectedReport.value = null;
-  updateStats();
+  await loadReports();
 };
 
 const deleteReport = (report) => {
@@ -886,19 +857,13 @@ const deleteReport = (report) => {
   showDeleteModal.value = true;
 };
 
-const confirmDelete = () => {
+const confirmDelete = async () => {
   if (selectedReport.value) {
-    const index = reports.value.findIndex(
-      (r) => r.id === selectedReport.value.id
-    );
-    if (index !== -1) {
-      reports.value.splice(index, 1);
-      alert(`Reporte ${selectedReport.value.id} eliminado`);
-    }
+    await deleteAdminReport(selectedReport.value.id);
   }
   showDeleteModal.value = false;
   selectedReport.value = null;
-  updateStats();
+  await loadReports();
 };
 
 const exportReports = () => {
@@ -913,8 +878,8 @@ const exportReports = () => {
 };
 
 // Initialize
-onMounted(() => {
-  updateStats();
+onMounted(async () => {
+  await loadReports();
 });
 </script>
 
